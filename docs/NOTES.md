@@ -296,3 +296,25 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - [x] `recall.csv` has the hybrid row from eval.py (0.851 test)
 - [ ] **Tablet:** `python ml/tools/make_embed_fixture.py` (done) → `scripts/device_embed_bench.sh`. Parity (device vs laptop LiteRT, 50 inputs) and `embed_latency_device.csv` (teacher fp32 vs student int8, CPU vs GPU, median/P95/P99, device fields)
 - [ ] **Tablet:** semantic top-5 for 5 dev questions matches eval.py (open the app, let EmbedWorker finish, search)
+
+---
+
+## 2026-11-19 (Thu, continued): Tablet results, Phase 5 gate and Spike 1
+
+### Phase 5 on the Galaxy Tab A7 (SM-T505N, Android 12, Snapdragon 662), `docs/results/embed_latency_device.csv`
+| model | accelerator | median | P95 | P99 | parity vs laptop LiteRT (min cos, 50 inputs) |
+|---|---|---|---|---|---|
+| teacher fp32 (90 MB) | CPU | 269.9 ms | 271.0 ms | 271.4 ms | 1.00000 |
+| **student-l3 int8 (11.2 MB)** | CPU | **88.6 ms** | 88.9 ms | **89.0 ms** | 0.99994 |
+| both | GPU | init failed | | | |
+- **3.0× faster on device** (inference only, 100 fixed questions after 20 warm-ups; tokenization timed separately).
+- **GPU failure, root cause from logcat:** the GPU delegate doesn't support `GATHER_ND` (the word-embedding lookup), then an OpenCL kernel failed ("Unable to parse bc coord for BATCH axis"), so the model doesn't compile. Possible later fix: run the embedding lookup on CPU and the encoder on GPU. Not needed at 89 ms.
+- EmbedWorker embedded all 673 chunks in ~65 s on device.
+- **Semantic parity (gate):** device top-5 (device-embedded library and questions) vs laptop eval for 100 questions: **96/100 identical top-5, 100/100 identical top-1**, max score diff 3.2e-3. The 4 differences are near-tie swaps (e.g. GSAT p25/p28 have identical text).
+- [x] Phase 5 exit gate complete (token parity, hybrid row, device semantic match, `embed_latency_device.csv` with device fields).
+
+### Spike 1, on-device LLM: `docs/results/llm_spike.csv`
+- **Qwen3-0.6B int4, CPU:** loads in 17.2 s (free RAM 1,146 → 432 MB), **TTFT 19.5 s, 1.27 tokens/s**, 5.5 min total (392 tokens, mostly Qwen3's hidden thinking). Answer roughly right and cited, but expands DPLL wrongly.
+- **Same model, GPU:** killed by lmkd (signal 9) during OpenCL init: out of memory.
+- **Gemma 3 (1B, 270M):** gated on Hugging Face, so the downloads were error pages. Needs Ayo's licence acceptance + token to test.
+- **Conclusion:** on this 3 GB / Snapdragon 662 tablet, on-device QA works but is far too slow to use (~1 min even for a short answer without thinking). Phase 9 needs a decision from Ayo.
