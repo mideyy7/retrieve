@@ -93,3 +93,20 @@ def test_rrf_matches_shared_fixture():
     for case in fx["cases"]:
         got = [loc[0] for loc in harness.rrf([[(x,) for x in l] for l in case["lists"]])]
         assert got == case["expected"], case["name"]
+
+
+def test_recording_locations_and_time_range_answers():
+    chunks = [
+        {"doc_sha256": "rec", "page": None, "start_ms": 0}, {"doc_sha256": "rec", "page": None, "start_ms": 31_000},
+        {"doc_sha256": "rec", "page": None, "start_ms": 65_000}, {"doc_sha256": "pdf", "page": 3, "start_ms": None},
+    ]
+    assert common.location(chunks[1]) == ("rec", "t", 31_000)
+    assert common.location(chunks[3]) == ("pdf", 3)
+    spans = common.chunk_spans(chunks)
+    assert spans[("rec", "t", 31_000)] == (31_000, 65_000) and spans[("rec", "t", 65_000)] == (65_000, 95_000)
+    answer = {"doc_sha256": "rec", "start_ms": 40_000, "end_ms": 50_000}
+    ranked = [("pdf", 3), ("rec", "t", 0), ("rec", "t", 31_000)]
+    assert common.hit_ranks(ranked, [answer], spans) == 3          # only the chunk covering 40-50 s
+    assert common.hit_ranks([("rec", "t", 65_000)], [answer], spans) is None
+    assert common.hit_ranks(ranked, [{"doc_sha256": "pdf", "page": 3}], spans) == 1
+    assert common.hit_ranks([("pdf", 3)], [answer], spans) is None  # a slide never satisfies a recording answer

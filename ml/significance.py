@@ -16,8 +16,8 @@ N_BOOT = 10_000
 K = 5
 
 
-def hits(ranked, questions):
-    return np.array([(r := common.hit_ranks(x, q["answers"])) is not None and r <= K for x, q in zip(ranked, questions)], dtype=float)
+def hits(ranked, questions, spans):
+    return np.array([(r := common.hit_ranks(x, q["answers"], spans)) is not None and r <= K for x, q in zip(ranked, questions)], dtype=float)
 
 
 def main():
@@ -26,13 +26,14 @@ def main():
     cli = common.path("native/build-release/retrieve_cli")
     int8 = common.path("models/student-l3/model_int8.tflite")
     bm25 = harness.bm25_rankings(qs, chunks, cli)
+    spans = common.chunk_spans(chunks)
     sem = {
         "teacher MiniLM-L6 fp32": harness.rankings_from_scores(harness.semantic_scores(qs, chunks, "teacher"), chunks),
         "student-l3 fp32": harness.rankings_from_scores(harness.semantic_scores(qs, chunks, common.path("ml/checkpoints/student-l3")), chunks),
         "student-l3 int8 (LiteRT)": harness.rankings_from_scores(harness.semantic_scores(qs, chunks, int8), chunks),
     }
-    methods = {"BM25 (retrieve_cli)": hits(bm25, qs), **{k: hits(v, qs) for k, v in sem.items()}}
-    methods["hybrid BM25 + student-l3 int8"] = hits([harness.rrf([a, b]) for a, b in zip(bm25, sem["student-l3 int8 (LiteRT)"])], qs)
+    methods = {"BM25 (retrieve_cli)": hits(bm25, qs, spans), **{k: hits(v, qs, spans) for k, v in sem.items()}}
+    methods["hybrid BM25 + student-l3 int8"] = hits([harness.rrf([a, b]) for a, b in zip(bm25, sem["student-l3 int8 (LiteRT)"])], qs, spans)
 
     rng = np.random.default_rng(common.SEED)
     idx = rng.integers(0, len(qs), size=(N_BOOT, len(qs)))

@@ -84,11 +84,48 @@ def param_breakdown(module):
 
 # ---- Metrics ---------------------------------------------------------------------------------
 
-def hit_ranks(ranked_locations, answers):
-    """1-based rank of the first chunk on an answer page, or None."""
-    wanted = {(a["doc_sha256"], a["page"]) for a in answers}
+def location(chunk):
+    """Where a chunk is: (doc, page) for slides/PDFs, (doc, "t", start_ms) for recordings. Fusion and
+    hit checks work on locations, so two chunks of one slide count as one place, while each ~30 s of
+    a recording is its own place (the app's Rrf.locationKey sorts the same way)."""
+    if chunk["page"] is not None:
+        return (chunk["doc_sha256"], chunk["page"])
+    return (chunk["doc_sha256"], "t", chunk["start_ms"])
+
+
+def chunk_spans(chunks):
+    """(doc, "t", start) -> (start, end) for recording chunks: a chunk runs until the next chunk of the
+    same recording starts; the last one is taken to last 30 s."""
+    starts = {}
+    for c in chunks:
+        if c["page"] is None:
+            starts.setdefault(c["doc_sha256"], []).append(c["start_ms"])
+    spans = {}
+    for doc, ss in starts.items():
+        ss = sorted(ss)
+        for i, s in enumerate(ss):
+            spans[(doc, "t", s)] = (s, ss[i + 1] if i + 1 < len(ss) else s + 30_000)
+    return spans
+
+
+def is_hit(loc, answer, spans):
+    """Slide answers match the exact (doc, page); recording answers {doc, start_ms, end_ms} match any
+    chunk of that recording whose span overlaps the answer's time range."""
+    if loc[0] != answer["doc_sha256"]:
+        return False
+    if "page" in answer:
+        return len(loc) == 2 and loc[1] == answer["page"]
+    if len(loc) != 3:
+        return False
+    start, end = spans.get(loc, (loc[2], loc[2] + 30_000))
+    return start < answer["end_ms"] and answer["start_ms"] < end
+
+
+def hit_ranks(ranked_locations, answers, spans=None):
+    """1-based rank of the first location that answers the question, or None."""
+    spans = spans or {}
     for rank, loc in enumerate(ranked_locations, 1):
-        if loc in wanted:
+        if any(is_hit(loc, a, spans) for a in answers):
             return rank
     return None
 

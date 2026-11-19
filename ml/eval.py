@@ -28,7 +28,7 @@ def bm25_rankings(questions, chunks, cli):
     with tempfile.TemporaryDirectory() as tmp:
         idx = os.path.join(tmp, "corpus.idx")
         subprocess.run([cli, "build", common.path("ml/data/chunks.json"), idx], check=True, capture_output=True)
-        loc = {c["stable_key"]: (c["doc_sha256"], c["page"]) for c in chunks}
+        loc = {c["stable_key"]: common.location(c) for c in chunks}
         out = []
         for q in questions:
             r = subprocess.run([cli, "search", idx, q["question"], "-k", str(K)], capture_output=True, text=True)
@@ -50,7 +50,7 @@ def semantic_scores(questions, chunks, model):
 
 
 def rankings_from_scores(scores, chunks):
-    loc = [(c["doc_sha256"], c["page"]) for c in chunks]
+    loc = [common.location(c) for c in chunks]
     # Stable sort on -score: ties keep chunk order, so results are reproducible.
     return [[loc[i] for i in np.argsort(-row, kind="stable")[:K]] for row in scores]
 
@@ -88,7 +88,8 @@ def main():
         semantic = rankings_from_scores(semantic_scores(questions, chunks, args.model), chunks)
         ranked = [rrf([a, b]) for a, b in zip(lexical, semantic)]
 
-    ranks = [common.hit_ranks(r, q["answers"]) for r, q in zip(ranked, questions)]
+    spans = common.chunk_spans(chunks)
+    ranks = [common.hit_ranks(r, q["answers"], spans) for r, q in zip(ranked, questions)]
     m = common.metrics(ranks)
     name = args.label or (args.method if args.method == "bm25" else f"{args.method}:{args.model}")
     print(f"{name:<40} split={args.split:<5} n={m['n']:<4} "
