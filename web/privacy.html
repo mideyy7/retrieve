@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy policy · Retrieve</title>
+<meta name="description" content="What Retrieve does with your files: everything is processed on your phone and nothing you add is uploaded.">
+<meta name="theme-color" content="#F7F7F5">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="logo" href="./" aria-label="Retrieve home"><img src="assets/favicon.svg" width="30" height="30" alt="">Retrieve</a>
+    <a class="get" href="./">Back to home</a>
+  </div>
+</header>
+
+<main class="wrap doc">
+  <h1>Privacy policy</h1>
+  <p class="updated">Last updated 19 November 2026 · applies to the Retrieve Android app (<code>com.mideyy7.retrieve</code>) and this website.</p>
+
+  <p class="summary">Retrieve processes your files on your phone. The app has no account, no server, no ads and no analytics. Nothing you add, search for or ask is sent to the developer or anyone else by Retrieve.</p>
+
+  <h2>What the app handles, and where it stays</h2>
+  <ul>
+    <li><b>Files you choose.</b> PDFs and caption files (.vtt) that you pick with Android’s file picker. Retrieve can only open files you select; it can’t browse the rest of your storage.</li>
+    <li><b>What it builds from them.</b> The text of each page or caption, a search index, and number vectors used for search by meaning. These are stored in the app’s private storage on your phone. The original PDFs stay where they are; Retrieve keeps a reference to them so it can show the slide.</li>
+    <li><b>Your searches and questions.</b> Searches and questions are processed on the phone. Recent searches are kept on the phone so you can repeat them, and you can clear them in the app.</li>
+    <li><b>Answers.</b> The Ask feature runs a language model (Gemma 3 1B) on the phone. Your question and the passages it uses never leave the device.</li>
+  </ul>
+
+  <h2>What leaves your phone</h2>
+  <p>Retrieve does not send your files, their text, your searches, your questions or the answers anywhere. It works in airplane mode. Two parts of the app use Google services:</p>
+  <ul>
+    <li><b>Google Play</b> installs and updates the app, and downloads the answering model (about 580 MB) the first time you open Ask. That download is handled by Google Play under <a href="https://policies.google.com/privacy" rel="noopener">Google’s privacy policy</a>.</li>
+    <li><b>Google ML Kit text recognition</b> reads slides that are images. The recognition model is bundled with the app and runs on the phone. Google states that ML Kit may contact Google’s servers for things like bug fixes and model updates, and sends Google metrics about how the API performs (for example device type, app version and error codes). These do not include the images or text being read. See <a href="https://developers.google.com/ml-kit/terms" rel="noopener">ML Kit’s terms</a>.</li>
+  </ul>
+  <p>Because of these libraries, the app’s install page lists internet access. Retrieve’s own code makes no network requests.</p>
+
+  <h2>Deleting your data</h2>
+  <p>Delete a document in the app to remove its text and index. Uninstalling Retrieve, or clearing its storage in Android settings, deletes everything it stored. The developer holds no copy, so there is nothing to request or delete on a server.</p>
+
+  <h2>Children</h2>
+  <p>Retrieve is a study tool for students and isn’t directed at children under 13.</p>
+
+  <h2>This website</h2>
+  <p>This site has no cookies, analytics or trackers. It is hosted on Cloudflare Pages, which processes standard request data (such as IP address) to serve and protect the site. Fonts load from Google Fonts, so your browser contacts Google’s font servers.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, the new version is posted here with a new date. A change that sends any of your data off the phone would be announced in the app first.</p>
+
+  <h2>Contact</h2>
+  <!-- TODO before Play submission: replace with the contact email shown on the Play listing. -->
+  <p>Questions about privacy: <span class="contact">[contact email]</span></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <a class="logo" href="./" style="font-size:1rem"><img src="assets/favicon.svg" width="24" height="24" alt="">Retrieve</a>
+      <nav><a href="./">Home</a><a href="./#faq">FAQ</a></nav>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
