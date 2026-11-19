@@ -276,3 +276,23 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - Running the downloaded `litert_lm_main` binary was blocked (unsigned binary, Gatekeeper bypass), and the library route is the Phase 9 path anyway.
 - Candidates (litert-community, not gated): Qwen3-0.6B int4 343 MB `bf1aba9c`, Gemma 3 1B int4 584 MB `e9d9ae55`, Gemma 3 270M int8 304 MB `a63c2450`.
 - On the tablet: `spikes/spike1_llm_device.sh Qwen3-0.6B_dynamic_wi4b32_afp32.litertlm cpu`, then the Gemma 1B. It pushes one model at a time (the tablet has ~3.9 GB free).
+
+---
+
+## 2026-11-19 (Thu, continued): Phase 5 built without the tablet; measurements pending
+
+### Built and tested on the laptop
+- **Kotlin WordPiece tokenizer**: identical ids to HuggingFace on all **454** fixture cases (questions, WikiText-2, edge cases: accents, İ, CJK, emoji, zero-width/control chars, math letters, over-long words, truncation). Java vs Rust differences handled: Unicode White_Space, per-code-point lowercasing, dropping format characters.
+- **On-device embeddings**: LiteRT 2.3.2 `CompiledModel` (CPU/GPU) running the bundled student-l3 int8 (11.2 MB, stored uncompressed in the APK). `EmbedWorker` fills `chunks.embedding`; `SemanticIndex` does brute-force dot product in stableKey order (same tie-break as eval.py). `assets/embedding/model.json` holds the model SHA-256; a changed model clears and re-embeds everything. Install with `python ml/tools/install_app_model.py` (the .tflite is gitignored).
+- **Hybrid search** for plain questions: keyword top 10 + semantic top 10, RRF (k 60) over locations, exactly as eval.py. `ml/data/rrf_fixture.json` is checked by both pytest and Kotlin `RrfTest`. Query-language queries stay keyword-only (semantic can't honour NOT, phrases or filters yet).
+- 53 unit tests pass; the R8 release build (44 MB) includes LiteRT.
+
+### Known issues / to do
+- **eval.py audio locations:** `(doc_sha256, page)` with page = None would merge every chunk of a recording into one location. This must become (doc, start/end time) before the Phase 6 audio questions exist.
+- LiteRT-LM (debug) and LiteRT are both in the debug APK (114 MB). Check for native-lib conflicts when the LLM spike runs.
+
+### Phase 5 exit gate
+- [x] Token-id parity test passes (454/454)
+- [x] `recall.csv` has the hybrid row from eval.py (0.851 test)
+- [ ] **Tablet:** `python ml/tools/make_embed_fixture.py` (done) → `scripts/device_embed_bench.sh`. Parity (device vs laptop LiteRT, 50 inputs) and `embed_latency_device.csv` (teacher fp32 vs student int8, CPU vs GPU, median/P95/P99, device fields)
+- [ ] **Tablet:** semantic top-5 for 5 dev questions matches eval.py (open the app, let EmbedWorker finish, search)
