@@ -1,0 +1,2 @@
+date,git_commit,machine,model,recipe,fp32_mb,int8_mb,ratio,inputs,mean_cos_vs_fp32,min_cos_vs_fp32,script
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,student-l3,dynamic_wi8_afp32,42.0,11.2,3.74,50,0.99929,0.99901,ml/quantize.py

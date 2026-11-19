@@ -1,0 +1,3 @@
+date,git_commit,machine,model,file,size_mb,inputs,max_abs_diff,min_cosine,tolerance,passed,script
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,student-l3,models/student-l3/model_fp32.tflite,42.0,50,1.714e-07,1.000000,0.0001,True,ml/export_litert.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,teacher,models/teacher/model_fp32.tflite,90.1,50,2.906e-07,1.000000,0.0001,True,ml/export_litert.py

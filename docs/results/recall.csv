@@ -1,0 +1,11 @@
+date,git_commit,machine,method,split,n,recall@1,recall@5,recall@10,mrr@10,max_len,seed,script
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,BM25 (retrieve_cli),dev,19,0.3684,0.6316,0.8421,0.4973,128,1234,ml/eval.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,teacher MiniLM-L6 fp32,dev,19,0.4211,0.8421,0.8947,0.5816,128,1234,ml/eval.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,student-l3 fp32,dev,19,0.4211,0.7368,0.8421,0.5544,128,1234,ml/eval.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,student-l3 int8 (LiteRT),dev,19,0.4211,0.7368,0.8421,0.5544,128,1234,ml/eval.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,hybrid BM25 + student-l3 int8 (RRF k=60),dev,19,0.4211,0.7895,0.8947,0.5430,128,1234,ml/eval.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,BM25 (retrieve_cli),test,101,0.5941,0.8119,0.8515,0.6767,128,1234,ml/eval.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,teacher MiniLM-L6 fp32,test,101,0.5347,0.8416,0.9109,0.6682,128,1234,ml/eval.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,student-l3 fp32,test,101,0.5149,0.8020,0.8515,0.6302,128,1234,ml/eval.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,student-l3 int8 (LiteRT),test,101,0.5149,0.8020,0.8515,0.6324,128,1234,ml/eval.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,hybrid BM25 + student-l3 int8 (RRF k=60),test,101,0.5149,0.8515,0.9109,0.6629,128,1234,ml/eval.py

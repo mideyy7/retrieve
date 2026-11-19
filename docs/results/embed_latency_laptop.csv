@@ -1,0 +1,3 @@
+date,git_commit,machine,model,params,size_mb,median_ms,p95_ms,threads,batch,max_len,inputs,torch,script
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,teacher MiniLM-L6 fp32 (PyTorch),22565376,90.3,10.99,11.83,4,1,128,100,2.14.1,ml/baseline.py
+2026-11-19,d6c8ca2,Apple M1 8GB macOS 15.6,student-l3 fp32 (PyTorch),10429056,41.7,5.76,6.55,4,1,128,100,2.14.1,ml/baseline.py
