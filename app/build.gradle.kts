@@ -76,6 +76,10 @@ android {
     testOptions {
         unitTests.isIncludeAndroidResources = true
     }
+
+    // Exported Room schemas as debug assets, so MigrationTestHelper (under Robolectric, which reads
+    // the debug variant's merged assets) can build old versions. Not included in release builds.
+    sourceSets.getByName("debug").assets.directories.add("$projectDir/schemas")
 }
 
 dependencies {
@@ -102,4 +106,5 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.coroutines.test)
+    testImplementation(libs.room.testing)
 }

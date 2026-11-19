@@ -61,6 +61,8 @@ data class Chunk(
     /** Start of the chunk in the recording, null for PDFs. */
     val startMs: Long?,
     val text: String,
+    /** True if the page's text came from OCR rather than the PDF's text layer (added in schema v2). */
+    @ColumnInfo(defaultValue = "0") val ocr: Boolean = false,
     /** float32 little-endian embedding, filled in Phase 5. */
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB) val embedding: ByteArray? = null,
 ) {
@@ -68,7 +70,7 @@ data class Chunk(
     override fun equals(other: Any?): Boolean =
         other is Chunk && id == other.id && stableKey == other.stableKey && docId == other.docId &&
             module == other.module && week == other.week && page == other.page &&
-            startMs == other.startMs && text == other.text &&
+            startMs == other.startMs && text == other.text && ocr == other.ocr &&
             (embedding?.contentEquals(other.embedding) ?: (other.embedding == null))
 
     override fun hashCode(): Int = stableKey.hashCode()

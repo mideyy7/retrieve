@@ -64,6 +64,7 @@ class DocumentIndexerTest {
         assertEquals(listOf("0123456789ab:p1:0", "0123456789ab:p2:0", "0123456789ab:p3:0"), chunks.map { it.stableKey })
         assertEquals(listOf(1, 2, 3), chunks.map { it.page })
         assertTrue(chunks.all { it.module == "COMP26120" && it.week == 4 && it.startMs == null })
+        assertEquals(listOf(false, true, false), chunks.map { it.ocr })
         assertEquals(DocStatus.READY, db.documents().byId(id)!!.status)
         assertEquals(listOf(true), closed)
     }

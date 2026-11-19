@@ -26,6 +26,7 @@ data class ExportedChunk(
     val week: Int,
     val page: Int?,
     @SerialName("start_ms") val startMs: Long?,
+    val ocr: Boolean,
     val text: String,
 )
 
@@ -36,7 +37,7 @@ object ChunkExporter {
         val docs = documents.associateBy { it.id }
         val exported = chunks.sortedBy { it.stableKey }.map { c ->
             val d = requireNotNull(docs[c.docId]) { "chunk ${c.stableKey} has no document" }
-            ExportedChunk(c.stableKey, d.sha256, d.name, d.type.name, c.module, c.week, c.page, c.startMs, c.text)
+            ExportedChunk(c.stableKey, d.sha256, d.name, d.type.name, c.module, c.week, c.page, c.startMs, c.ocr, c.text)
         }
         return json.encodeToString(ChunkExport.serializer(), ChunkExport(appVersion = appVersion, chunks = exported)) + "\n"
     }

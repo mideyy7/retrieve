@@ -39,6 +39,7 @@ class DocumentIndexer(
             return IndexOutcome.Failed(e.message ?: "import failed")
         }
 
+        val ocrPages = pages.filter { it.ocr }.map { it.page }.toSet()
         val chunks = chunker.chunkPages(pages.map { it.text }).map { pc ->
             Chunk(
                 stableKey = StableKeys.page(doc.sha256, pc.page, pc.index),
@@ -48,6 +49,7 @@ class DocumentIndexer(
                 page = pc.page,
                 startMs = null,
                 text = pc.text,
+                ocr = pc.page in ocrPages,
             )
         }
         db.ingest().replaceChunksAndMarkReady(doc.id, chunks)
