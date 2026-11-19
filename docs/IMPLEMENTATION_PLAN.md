@@ -31,7 +31,7 @@ These are gaps in the spec that would cause rework or invalid numbers if they we
 - **Stable chunk identity.** `Chunk.stableKey` = `"{docSha256[:12]}:p{page}:{i}"` for PDFs and `"{docSha256[:12]}:t{startMs}"` for audio. Room keeps an autoincrement `id`. The C++ index uses its own dense `uint32` ids plus a mapping table. Never put Room ids in files outside the app.
 - **Results files.** `docs/results/<area>.csv`. Every row has `date, git_commit, device, android_version, chipset, script, ...metrics`. `docs/results/README.md` maps each CV bracket to its CSV row and the command that produced it.
 - **Device info** is captured by code (`Build.MODEL`, `Build.VERSION.RELEASE`, `Build.SOC_MODEL`), never typed by hand.
-- **One test phone** for every on-device number, chosen in Phase 0 and never changed.
+- **One measurement phone** for every on-device number that goes in results tables, the README or the CV. Decision (2026-11-19): the Galaxy Tab A7 (3 GB) is the **development device**, used to build and check correctness. A newer **phone with 6 GB+ RAM** will be the **measurement device**, and every device benchmark (embedding latency, search P99, transcription, battery, LLM) is re-run on it with the existing scripts. Tablet numbers stay in NOTES as development data and never mix with phone numbers in a table.
 - **Seeds** are fixed and logged in every training and eval script.
 
 ---

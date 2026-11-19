@@ -318,3 +318,10 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - **Same model, GPU:** killed by lmkd (signal 9) during OpenCL init: out of memory.
 - **Gemma 3 (1B, 270M):** gated on Hugging Face, so the downloads were error pages. Needs Ayo's licence acceptance + token to test.
 - **Conclusion:** on this 3 GB / Snapdragon 662 tablet, on-device QA works but is far too slow to use (~1 min even for a short answer without thinking). Phase 9 needs a decision from Ayo.
+
+### Decision (2026-11-19): development device vs measurement device
+- The Q&A spike showed the 3 GB tablet can't run an LLM at a usable speed. Ayo will get a newer phone for measurements.
+- **Tablet = development device** (build everything, check correctness). **Phone = measurement device:** all on-device CV/README numbers are re-measured on it, not just Q&A, so the one-device rule (spec §6) still holds.
+- Phone wanted: **≥ 6 GB RAM (8 GB better)**, Android 12+, a recent chip. Ideally one with a LiteRT-LM NPU build (Snapdragon 8 Gen 2/3/Elite = sm8550/8650/8750, or Tensor G5).
+- Phase 9 keeps the generative LLM. On the tablet it's built and checked for correctness with Qwen3-0.6B (slow but works). Gemma needs Ayo's Hugging Face licence acceptance + token.
+- Re-measure on the phone: `scripts/device_embed_bench.sh`, `spikes/spike1_llm_device.sh`, `spikes/spike2_whisper_device.sh`, and the Phase 7/8 benchmarks once written.
