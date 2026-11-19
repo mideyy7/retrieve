@@ -12,6 +12,10 @@ add_library(retrieve_core STATIC
     index/builder.cpp
     index/index.cpp
     index/bm25.cpp
+    query/ast.cpp
+    query/lexer.cpp
+    query/parser.cpp
+    query/executor.cpp
 )
 target_include_directories(retrieve_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_options(retrieve_core PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion -Wshorten-64-to-32)
@@ -45,6 +49,8 @@ else()
             tests/tokenizer_test.cpp
             tests/index_test.cpp
             tests/bm25_test.cpp
+            tests/parser_test.cpp
+            tests/executor_test.cpp
         )
         target_link_libraries(retrieve_tests PRIVATE retrieve_core GTest::gtest_main)
         include(GoogleTest)

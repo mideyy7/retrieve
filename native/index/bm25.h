@@ -31,23 +31,13 @@ double bm25TermScore(double idf, uint32_t tf, uint32_t docLength, double avgDocL
 // True if `doc` contains `terms` at consecutive positions.
 bool containsPhrase(const Index& index, uint32_t doc, const std::vector<std::string>& terms);
 
-// A parsed Phase 2 query: free terms (match any) and quoted phrases (must all match).
-// Phase 3 replaces this with the full query language.
-struct SimpleQuery {
-    std::vector<std::string> terms;
-    std::vector<std::vector<std::string>> phrases;
-};
-SimpleQuery parseSimpleQuery(std::string_view query);
-
+// Parses `query` with the query language (docs/query-language.md) and returns the top-k hits from
+// the planned executor. Throws query::QueryError for invalid syntax. An empty query, or one with
+// nothing searchable in it, returns no hits.
 class Searcher {
 public:
     explicit Searcher(const Index& index, Bm25Params params = {}) : index_(index), params_(params) {}
-
-    // Top-k docs by BM25 over all distinct query terms (free and phrase terms). A doc is a
-    // candidate if it contains every phrase and, when there are no phrases, any free term.
-    // Ties are broken by ascending doc id, so results are fully deterministic.
     std::vector<Hit> search(std::string_view query, size_t k) const;
-    std::vector<Hit> search(const SimpleQuery& query, size_t k) const;
 
 private:
     const Index& index_;

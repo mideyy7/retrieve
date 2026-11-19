@@ -2,9 +2,10 @@
 
 #include <algorithm>
 #include <cmath>
-#include <unordered_set>
 
 #include "index/tokenizer.h"
+#include "query/executor.h"
+#include "query/parser.h"
 
 namespace retrieve {
 namespace {
@@ -23,12 +24,6 @@ int64_t findDoc(const Index::PostingList& list, uint32_t doc) {
 }
 
 bool hasPosition(Index::Positions p, uint32_t value) { return std::binary_search(p.data, p.data + p.size, value); }
-
-std::vector<std::string> termsOf(std::string_view text) {
-    std::vector<std::string> out;
-    for (auto& t : tokenize(text)) out.push_back(std::move(t.term));
-    return out;
-}
 
 }  // namespace
 
@@ -61,73 +56,10 @@ bool containsPhrase(const Index& index, uint32_t doc, const std::vector<std::str
     return false;
 }
 
-SimpleQuery parseSimpleQuery(std::string_view query) {
-    SimpleQuery q;
-    size_t i = 0;
-    while (i < query.size()) {
-        const size_t quote = query.find('"', i);
-        const size_t close = quote == std::string_view::npos ? quote : query.find('"', quote + 1);
-        if (quote == std::string_view::npos || close == std::string_view::npos) {
-            // No (complete) phrase left: everything else is free terms. An unmatched quote is ignored.
-            for (auto& t : termsOf(query.substr(i))) q.terms.push_back(std::move(t));
-            break;
-        }
-        for (auto& t : termsOf(query.substr(i, quote - i))) q.terms.push_back(std::move(t));
-        auto phrase = termsOf(query.substr(quote + 1, close - quote - 1));
-        if (!phrase.empty()) q.phrases.push_back(std::move(phrase));
-        i = close + 1;
-    }
-    return q;
-}
-
-std::vector<Hit> Searcher::search(std::string_view query, size_t k) const { return search(parseSimpleQuery(query), k); }
-
-std::vector<Hit> Searcher::search(const SimpleQuery& query, size_t k) const {
-    const uint32_t n = index_.numDocs();
-    if (n == 0 || k == 0) return {};
-
-    // Distinct scoring terms, in first-seen order (a repeated query term counts once).
-    std::vector<std::string> scoring;
-    std::unordered_set<std::string> seen;
-    auto addTerm = [&](const std::string& t) {
-        if (seen.insert(t).second) scoring.push_back(t);
-    };
-    for (const auto& t : query.terms) addTerm(t);
-    for (const auto& p : query.phrases) for (const auto& t : p) addTerm(t);
-    if (scoring.empty()) return {};
-
-    // Accumulate BM25 over postings (term-at-a-time).
-    std::vector<double> score(n, 0.0);
-    std::vector<uint8_t> matched(n, 0);
-    for (const auto& term : scoring) {
-        auto list = index_.postings(term);
-        if (list.size() == 0) continue;
-        const double idf = bm25Idf(list.size(), n);
-        for (uint32_t i = 0; i < list.size(); ++i) {
-            const auto p = list[i];
-            score[p.doc] += bm25TermScore(idf, p.tf, index_.doc(p.doc).length, index_.avgDocLength(), params_);
-            matched[p.doc] = 1;
-        }
-    }
-
-    std::vector<Hit> hits;
-    for (uint32_t d = 0; d < n; ++d) {
-        if (!matched[d]) continue;
-        bool ok = true;
-        for (const auto& phrase : query.phrases) {
-            if (!containsPhrase(index_, d, phrase)) {
-                ok = false;
-                break;
-            }
-        }
-        if (ok) hits.push_back({d, score[d]});
-    }
-
-    auto better = [](const Hit& a, const Hit& b) { return a.score != b.score ? a.score > b.score : a.doc < b.doc; };
-    const size_t top = std::min(k, hits.size());
-    std::partial_sort(hits.begin(), hits.begin() + static_cast<std::ptrdiff_t>(top), hits.end(), better);
-    hits.resize(top);
-    return hits;
+std::vector<Hit> Searcher::search(std::string_view query, size_t k) const {
+    const auto root = query::parse(query);
+    if (!root) return {};
+    return query::executePlanned(index_, *root, k, params_);
 }
 
 }  // namespace retrieve

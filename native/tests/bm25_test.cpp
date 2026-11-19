@@ -83,7 +83,6 @@ TEST_F(Bm25, CommonWordStillAddsPositiveScore) {
 TEST_F(Bm25, TopKAndDeterministicTieBreak) {
     EXPECT_EQ(search("raft log", 1).size(), 1u);
     EXPECT_TRUE(search("raft", 0).empty());
-    // "matching" and "leader" each occur once in one doc of the same... different lengths; use an exact tie:
     IndexBuilder b;
     b.add({"z", "M", 1, 0, 1, -1, "same words"});
     b.add({"a", "M", 1, 0, 2, -1, "same words"});
@@ -94,7 +93,7 @@ TEST_F(Bm25, TopKAndDeterministicTieBreak) {
     auto hits = Searcher(*idx).search("same", 10);
     ASSERT_EQ(hits.size(), 2u);
     EXPECT_DOUBLE_EQ(hits[0].score, hits[1].score);
-    EXPECT_EQ(hits[0].doc, 0u);  // equal scores -> lower doc id ("a") first
+    EXPECT_EQ(hits[0].doc, 1u);  // equal scores -> course order: same module and week, so page 1 ("z") first
     fs::remove(p);
 }
 
@@ -124,13 +123,6 @@ TEST_F(Bm25, QuotedPhraseFiltersCandidates) {
     EXPECT_EQ(mixed[0].doc, 1u);
 
     EXPECT_TRUE(search("\"log raft\"").empty());
-}
-
-TEST_F(Bm25, ParseSimpleQuery) {
-    auto q = parseSimpleQuery("Raft \"log matching\" leader \"\" \"unclosed term");
-    EXPECT_EQ(q.terms, (std::vector<std::string>{"raft", "leader", "unclosed", "term"}));
-    ASSERT_EQ(q.phrases.size(), 1u);
-    EXPECT_EQ(q.phrases[0], (std::vector<std::string>{"log", "matching"}));
 }
 
 TEST(Bm25Formula, TermScoreSaturatesAndNormalisesLength) {
