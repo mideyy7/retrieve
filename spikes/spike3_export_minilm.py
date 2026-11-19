@@ -1,7 +1,7 @@
 """Spike 3: can a stock MiniLM sentence-embedding model be exported to LiteRT?
 
 Answers three questions before Phase 4/5 depend on them:
-  1. Where do the teacher's parameters live? (IMPLEMENTATION_PLAN problem 7)
+  1. Where do the teacher's parameters live? (docs/IMPLEMENTATION_PLAN.md, problem 7)
   2. Does litert-torch convert BERT + mean pooling?
   3. Does the .tflite output match PyTorch on a few sentences?
 

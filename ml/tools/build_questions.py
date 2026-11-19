@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds ml/data/questions.json from question draft files (IMPLEMENTATION_PLAN Phase 4).
+"""Builds ml/data/questions.json from question draft files (docs/IMPLEMENTATION_PLAN.md, Phase 4).
 
 - Answers are locations, not chunk ids: {doc_sha256, page} (plan problem 2), so labels survive
   any change to chunking or overlay collapsing.
@@ -12,7 +12,7 @@
 - Fails if any answer location has no chunk in ml/data/chunks.json.
 
     python3 ml/tools/build_questions.py
-Prints the sha256 of the canonical test split, to record in NOTES.md when freezing it.
+Prints the sha256 of the canonical test split, to record in docs/NOTES.md when freezing it.
 """
 import hashlib
 import json

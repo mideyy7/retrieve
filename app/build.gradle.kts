@@ -41,7 +41,7 @@ android {
         }
     }
 
-    // Upload key for Play (see IMPLEMENTATION_PLAN.md R1). keystore.properties is gitignored and
+    // Upload key for Play (see docs/IMPLEMENTATION_PLAN.md R1). keystore.properties is gitignored and
     // holds storeFile, storePassword, keyAlias, keyPassword. Without it, release builds are unsigned.
     val keystoreFile = rootProject.file("keystore.properties")
     if (keystoreFile.exists()) {

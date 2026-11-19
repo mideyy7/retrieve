@@ -9,7 +9,7 @@ You are helping Ayo, a second-year CS student at Manchester, build this app for 
 - Build in small, tested steps. Explain Android concepts (lifecycle, Room, WorkManager, JNI) the first time they appear, and walk through code line by line when asked.
 - Every number on the CV must come from a measurement this project actually produces. Never estimate, round up or invent results.
 - Each feature exists to make a CV bullet true or to support the interview story. If a feature doesn't, keep it minimal (section 10).
-- Commit small and often with descriptive messages; Ayo keeps a daily NOTES.md dev log.
+- Commit small and often with descriptive messages; Ayo keeps a daily dev log in docs/NOTES.md.
 
 ## 1. One-line summary
 
@@ -72,8 +72,8 @@ ml/ (Python, PyTorch)
   quantize.py    int8 post-training quantisation
   export_litert.py, export_executorch_vulkan.py
   eval.py        one harness for BM25, semantic, hybrid
-docs/            architecture diagram, query-language.md, results.md, vulkan-inference.md
-NOTES.md
+docs/            plan.md (this spec), IMPLEMENTATION_PLAN.md, NOTES.md (daily log),
+                 architecture diagram, query-language.md, results.md, vulkan-inference.md
 ```
 
 ### Query flow
@@ -186,7 +186,7 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 - [ ] Vulkan inference profiled and documented
 - [ ] README: problem, architecture diagram, results with phone model, how to build, demo video
 - [ ] Every CV bracket filled from `docs/results/`
-- [ ] Commit history spread over the days worked; NOTES.md daily
+- [ ] Commit history spread over the days worked; docs/NOTES.md daily
 
 ## 10. Keep minimal (needed, but not worth polish)
 

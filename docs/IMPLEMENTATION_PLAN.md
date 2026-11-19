@@ -41,7 +41,7 @@ These are gaps in the spec that would cause rework or invalid numbers if they we
 **Goal:** by Thursday there should be no unknowns about toolchains or runtimes, and the test-set questions should be written.
 
 Build / do:
-- `git init`, `.gitignore` (Android + Python + CMake + model files), NOTES.md, add plan.md and this file. Decide whether to use Git LFS for model files, or to keep them out of git and download them with a script. Either works, but record which.
+- `git init`, `.gitignore` (Android + Python + CMake + model files), docs/NOTES.md, add docs/plan.md and this file. Decide whether to use Git LFS for model files, or to keep them out of git and download them with a script. Either works, but record which.
 - Install Android Studio, the NDK, CMake, a Python 3.11 venv with PyTorch, and GoogleTest (via CMake `FetchContent`).
 - **Choose the test phone.** It needs Vulkan 1.1+, must be able to run a debuggable build, and needs enough RAM for a ~1B LLM. Record its model, Android version and chipset in NOTES.md.
 - **Spike 1 (runtime check, spec §5.7):** find out which on-device LLM runtime Google currently recommends (e.g. LiteRT-LM / MediaPipe LLM Inference) and which Gemma-class model fits the phone. Run its sample app on the phone.

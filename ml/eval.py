@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The one evaluation harness for every retrieval method (IMPLEMENTATION_PLAN Phase 4).
+"""The one evaluation harness for every retrieval method (docs/IMPLEMENTATION_PLAN.md, Phase 4).
 
     python ml/eval.py --method bm25 --split test
     python ml/eval.py --method semantic --model teacher --split test

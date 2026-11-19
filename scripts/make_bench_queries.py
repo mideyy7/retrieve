@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generates bench/queries.txt, the latency workload (IMPLEMENTATION_PLAN problem 1): >= 200
+"""Generates bench/queries.txt, the latency workload (docs/IMPLEMENTATION_PLAN.md, problem 1): >= 200
 *distinct* queries, so timings measure search rather than a cache.
 
 Deterministic (fixed seed) from ml/data/chunks.json:

@@ -15,7 +15,7 @@ captures/
 *.aab
 *.apks
 
-# --- Signing (never commit; back up separately, see IMPLEMENTATION_PLAN R1)
+# --- Signing (never commit; back up separately, see docs/IMPLEMENTATION_PLAN.md R1)
 keystore.properties
 *.jks
 *.keystore

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Planner vs naive benchmark (IMPLEMENTATION_PLAN Phase 3) -> docs/results/planner.csv.
+"""Planner vs naive benchmark (docs/IMPLEMENTATION_PLAN.md, Phase 3) -> docs/results/planner.csv.
 
 Builds a Release retrieve_cli, indexes ml/data/chunks.json, checks planned == naive for every
 query in bench/queries.txt, then times both executors (top-10, median of --runs alternating runs
