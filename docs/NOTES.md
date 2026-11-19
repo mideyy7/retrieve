@@ -204,3 +204,11 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - [x] All C++ tests pass, including ≥ 500-query equivalence (synthetic) and 1,000 on the real corpus vocabulary
 - [x] `planner.csv` committed with commit hash and machine
 - [x] On the tablet, a real module + week range + phrase + NOT query returns the correct pages (hand-checked)
+
+---
+
+## 2026-11-19 (Thu): Scope change, Vulkan profiling removed
+- **Dropped entirely** at Ayo's request: the ExecuTorch Vulkan export, running under `VK_LAYER_stage_profiler`, `docs/vulkan-inference.md`, and the link to the GPU profiler project. No code had been written for it.
+- Spec: removed the CV supporting fact, its evidence row, §5.8 (old §5.9 Battery is now §5.8), its build-order day and its acceptance item (§9 now has 7 items).
+- Plan: Phase 10 removed, so old Phase 11 (final measurements and release) is now **Phase 10**. Sun 6 Dec becomes a buffer day, most likely needed for the Phase 9 LLM fallback on the 3 GB tablet. The test device no longer needs Vulkan.
+- Earlier entries that mention Vulkan are left as they were written (this is a log).

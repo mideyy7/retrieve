@@ -30,7 +30,6 @@ Strong supporting facts that may replace or extend a bullet if they measure well
 - Hybrid keyword + semantic ranking improves recall@5 from **[a]%** (BM25 only) to **[b]%**
 - On-device Whisper transcription at **[r]×** real time, with results linking to exact timestamps
 - On-device question answering with citations, **[f] of 30** answers judged faithful
-- Model profiled on the phone GPU with Ayo's own Vulkan layer (links to the GPU profiler project)
 
 ### Evidence each claim needs
 
@@ -46,7 +45,6 @@ Strong supporting facts that may replace or extend a bullet if they measure well
 | Hybrid improves recall | Same eval script run for BM25, semantic, hybrid |
 | Transcription [r]× real time | Benchmark on a fixed 30-minute recording, tiny vs base model |
 | QA faithfulness | 30 hand-judged answers in a CSV with categories |
-| Vulkan link | ExecuTorch Vulkan export, run under `VK_LAYER_stage_profiler`, `docs/vulkan-inference.md` |
 
 ## 4. Architecture
 
@@ -70,10 +68,10 @@ ml/ (Python, PyTorch)
   baseline.py    teacher model embeddings + recall@5
   distill.py     student model + distillation training
   quantize.py    int8 post-training quantisation
-  export_litert.py, export_executorch_vulkan.py
+  export_litert.py
   eval.py        one harness for BM25, semantic, hybrid
 docs/            plan.md (this spec), IMPLEMENTATION_PLAN.md, NOTES.md (daily log),
-                 architecture diagram, query-language.md, results.md, vulkan-inference.md
+                 architecture diagram, query-language.md, results.md
 ```
 
 ### Query flow
@@ -125,7 +123,7 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 - **Student:** fewer layers and/or smaller hidden size. Train by distillation on lecture-text chunks (not the test questions): minimise MSE or cosine loss between student and teacher embeddings. Log loss curves.
 - **Quantisation:** int8 post-training quantisation; record size on disk.
 - **Results table (required):** model, params, size MB, laptop latency, on-device CPU latency, on-device GPU latency, recall@5. Rows: BM25, teacher, student, student int8, hybrid.
-- **Export:** LiteRT for the app (with a numerical parity check vs PyTorch on 50 inputs); ExecuTorch Vulkan backend as the second export for the profiler link.
+- **Export:** LiteRT for the app (with a numerical parity check vs PyTorch on 50 inputs).
 
 ### 5.5 Hybrid ranking
 - Reciprocal rank fusion: score = Σ 1/(60 + rank) across keyword and semantic lists. Report recall@5 for keyword, semantic, hybrid using the same eval harness.
@@ -140,11 +138,7 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 - Prompt includes the top hybrid chunks with ids; the model must cite `[module wk N slide P]` or `[module wk N mm:ss]`; if retrieval scores are below a threshold, reply that it isn't in the user's materials.
 - Evaluate 30 questions by hand: correct / partly correct / wrong / unsupported claim. Record time to first token and tokens per second.
 
-### 5.8 Profiling link to the GPU project
-- Run the ExecuTorch Vulkan export on the phone with `VK_LAYER_stage_profiler` enabled.
-- Compare where inference time goes vs the LiteRT path. Write `docs/vulkan-inference.md` and link it from both repos.
-
-### 5.9 Battery and resources
+### 5.8 Battery and resources
 - Measure battery per indexing run (100 slides) and per hour of transcription using `dumpsys batterystats` on the test phone. Record index size vs raw text size and peak memory.
 
 ## 6. Measurement methodology
@@ -167,7 +161,7 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 | Wed 2 Dec | Full measurement pass, README, demo video, CV numbers |
 | Thu 3 Dec | WorkManager background indexing, battery |
 | Fri 4 to Sat 5 Dec | Question answering with citations + evaluation |
-| Sun 6 Dec | ExecuTorch Vulkan export under the profiling layer |
+| Sun 6 Dec | Buffer: catch-up, or the QA fallback if the 3 GB tablet can't run the LLM |
 | Mon 7 to Tue 8 Dec | Final measurements, README, new demo |
 | Stretch | Play Store closed test with 12+ classmates, then production |
 
@@ -183,7 +177,6 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 - [ ] Results table complete for BM25, teacher, student, student int8, hybrid
 - [ ] Transcribed recording searchable, tap plays at timestamp
 - [ ] QA answers cite sources; faithfulness CSV committed
-- [ ] Vulkan inference profiled and documented
 - [ ] README: problem, architecture diagram, results with phone model, how to build, demo video
 - [ ] Every CV bracket filled from `docs/results/`
 - [ ] Commit history spread over the days worked; docs/NOTES.md daily

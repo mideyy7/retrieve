@@ -43,7 +43,7 @@ These are gaps in the spec that would cause rework or invalid numbers if they we
 Build / do:
 - `git init`, `.gitignore` (Android + Python + CMake + model files), docs/NOTES.md, add docs/plan.md and this file. Decide whether to use Git LFS for model files, or to keep them out of git and download them with a script. Either works, but record which.
 - Install Android Studio, the NDK, CMake, a Python 3.11 venv with PyTorch, and GoogleTest (via CMake `FetchContent`).
-- **Choose the test phone.** It needs Vulkan 1.1+, must be able to run a debuggable build, and needs enough RAM for a ~1B LLM. Record its model, Android version and chipset in NOTES.md.
+- **Choose the test phone.** It must be able to run a debuggable build and needs enough RAM for a ~1B LLM. Record its model, Android version and chipset in NOTES.md.
 - **Spike 1 (runtime check, spec §5.7):** find out which on-device LLM runtime Google currently recommends (e.g. LiteRT-LM / MediaPipe LLM Inference) and which Gemma-class model fits the phone. Run its sample app on the phone.
 - **Spike 2:** build whisper.cpp's Android example for the phone and transcribe 1 minute of audio.
 - **Spike 3:** check that the current PyTorch → LiteRT converter (e.g. `ai-edge-torch`) can export a stock MiniLM and run it on the phone.
@@ -253,20 +253,9 @@ Evaluation:
 
 ---
 
-## Phase 10: Vulkan inference under the profiling layer (Sun 6 Dec)
+## Phase 10: Final measurements and release (Mon 7 to Tue 8 Dec)
 
-Build:
-- `export_executorch_vulkan.py` for the student. Run it on the phone through ExecuTorch.
-- Enable the layer on a debuggable build: `adb shell settings put global enable_gpu_debug_layers 1`, `gpu_debug_app com.mideyy7.retrieve`, `gpu_debug_layers VK_LAYER_stage_profiler`, with the layer `.so` packaged or pushed so the app can load it. Check the current Android GPU debug-layer docs for the exact steps on your Android version.
-- `docs/vulkan-inference.md`: where the time goes (per stage/dispatch) vs the LiteRT GPU path, with screenshots/CSV. Link it from both repos.
-
-**Exit gate**
-- [ ] ExecuTorch Vulkan output matches PyTorch within the parity threshold on the 50 inputs.
-- [ ] The profiler layer captured a real inference run, and the doc explains at least one finding with numbers taken from the capture.
-
----
-
-## Phase 11: Final measurements and release (Mon 7 to Tue 8 Dec)
+Sun 6 Dec is now a buffer day (Vulkan profiling was dropped from scope): use it to catch up, or for the Phase 9 fallback if the tablet can't run the LLM.
 
 Do:
 - From a fresh install, re-run every benchmark and eval on the final commit. Regenerate all CSVs and tag the commit `v1.0`.
@@ -274,7 +263,7 @@ Do:
 - Fill in the CV brackets using only `docs/results/README.md`.
 
 **Exit gate (= spec §9 acceptance checklist)**
-- [ ] All 8 items in spec §9 are ticked.
+- [ ] All 7 items in spec §9 are ticked.
 - [ ] `git log` shows small commits spread across the days, and NOTES.md has an entry for each day.
 
 ---
@@ -346,14 +335,14 @@ Fill in the minimum the Console needs to accept a closed-test release:
 
 ### R4: Closed test runs (Thu 3 Dec until the 14 days are complete)
 
-- Ship Phases 8–11 to the closed track as updates (bump the versionCode each time). The 14-day count isn't reset by new releases. Confirm this in the Help page from R0.
+- Ship Phases 8–10 to the closed track as updates (bump the versionCode each time). The 14-day count isn't reset by new releases. Confirm this in the Help page from R0.
 - Check the opted-in tester count every 2–3 days. If it gets close to 12, recruit from your spare testers before it drops below.
 - Collect feedback with a short form linked in the test description. Fix crashes and ANRs reported in Play Console → Android vitals.
-- Phase 10's Vulkan setup stays in debug builds only. Never upload a debuggable build or the profiler layer.
+- Never upload a debuggable build.
 
 **Exit gate**
 - [ ] The 14 days are complete with at least 12 testers opted in the whole time (screenshot the Console).
-- [ ] v1.0 (the Phase 11 tag) is on the closed track with no open crash clusters in Android vitals.
+- [ ] v1.0 (the Phase 10 tag) is on the closed track with no open crash clusters in Android vitals.
 - [ ] Gemma's licence notice and use restrictions are shown in the app and the listing before the QA feature ships to testers.
 
 ### R5: Production
@@ -370,6 +359,6 @@ Fill in the minimum the Console needs to accept a closed-test release:
 
 ## Cutting scope if a day slips
 
-Cut in this order: spec §10 polish → Phase 10 (Vulkan) → Phase 9 evaluation size (keep QA, judge fewer, and say so) → Phase 8 battery. **Never cut:** the Phase 2 and 3 tests, the frozen test split, the parity tests, or the Phase 7 checkpoint. The CV bullets depend on them.
+Cut in this order: spec §10 polish → Phase 9 evaluation size (keep QA, judge fewer, and say so) → Phase 8 battery. **Never cut:** the Phase 2 and 3 tests, the frozen test split, the parity tests, or the Phase 7 checkpoint. The CV bullets depend on them.
 
 **Don't let R3 slip.** Every day the closed test starts late pushes production back by a day. If Phase 7 isn't complete on Wed 2 Dec, start the closed test anyway with whatever passes Phases 1–3 and the R1/R2 gates (keyword search over slides is a usable app). Ship the rest as updates.
