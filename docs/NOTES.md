@@ -379,3 +379,8 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - Media3 playback from `startMs` on tap.
 - Real-time-factor benchmark on a fixed 30-min recording, tiny vs base, **on the measurement phone**.
 - Bonus once audio exists: word error rate of Whisper vs the portal captions.
+
+### Decision (2026-11-19): recordings via transcripts only
+- Students already have caption files from the video portal; they're tiny, import instantly and need no battery-heavy processing. **Audio/video import and on-device transcription (whisper.cpp) are out of scope.**
+- All three core CV bullets are unaffected. The supporting fact "on-device Whisper transcription at [r]× real time" becomes "lecture recordings searchable through their portal captions, with results pointing to the exact timestamp". The Whisper spike (RTF 0.42 tiny / 0.79 base on the dev tablet) stays above as evaluated, not shipped.
+- Spec §5.6, the evidence table, acceptance §9, Phase 6, Phase 8 (no transcription chain or battery-per-hour-of-transcription) and R2/R3 (no Whisper models, no Whisper licence) are updated. Phase 6 is complete.

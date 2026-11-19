@@ -180,25 +180,20 @@ Build:
 
 ---
 
-## Phase 6: Transcription and timestamp playback (Tue 1 Dec)
+## Phase 6: Lecture recordings via captions (Tue 1 Dec, done early on 19 Nov)
 
-**New concepts:** MediaCodec/MediaExtractor audio decoding, Media3 ExoPlayer, long-running work.
+**Scope decision (2026-11-19): transcripts only, no audio.** Students already have caption files from the video portal, so on-device transcription (whisper.cpp, audio decoding, playback, the real-time-factor benchmark) is out of scope. The Whisper spike results stay in NOTES.
 
 Build:
-- whisper.cpp built into `native/whisper/` through the same CMake, plus JNI. The audio path is: decode → 16 kHz mono float PCM (resample if needed) → whisper → segments `(t0, t1, text)`.
-- Merge segments into ~30-second chunks with `startMs`. Add them to Room, the C++ index and the embeddings using the existing pipeline.
-- Audio results show the module, week and `mm:ss`. Tapping a result opens the player at `startMs`.
-- `TranscribeWorker` (basic; hardened in Phase 8).
-- Benchmark: the fixed 30-minute recording with tiny and with base → `docs/results/transcription.csv` (real-time factor, wall time, model size). Choose a default and justify it in `docs/` (accuracy spot-check on 10 segments vs speed).
+- WebVTT parser and a merger into ~30-second chunks keyed by `startMs`; `.vtt` import as a recording; the same Room → C++ index → embeddings pipeline.
+- Results show the module, week and `mm:ss`.
+- `eval.py` locations by time range; ~20 recording-only questions labelled by time range.
 
-Tests:
-- Segment-merge unit tests (boundaries, a very long segment, gaps).
-- Decode test: a known WAV yields the expected sample count at 16 kHz.
+Tests: caption parsing (identifiers, hours, settings, NOTE/STYLE blocks, tags, entities), merging, indexer caption path, time-range hit checks.
 
 **Exit gate**
-- [ ] Recording-only dev questions are answered by an audio chunk, and tapping one plays within a few seconds of the labelled moment.
-- [ ] `eval.py` now covers the recording-only questions (this re-runs every row of `recall.csv`, because the corpus changed. Commit the new rows and keep the old ones with their commit hash).
-- [ ] `transcription.csv` committed with tiny and base rows.
+- [x] Both COMP23311 week 3 lectures imported on the tablet (86 + 77 chunks), searchable with timestamps.
+- [x] `eval.py` covers the 20 recording-only test questions; every `recall.csv` row re-run on the new corpus (old rows kept).
 
 ---
 
@@ -225,11 +220,11 @@ Do:
 **New concepts:** foreground workers (`setForeground`), foreground service types (check which type fits long media processing on your targetSdk), work chaining, constraints.
 
 Build:
-- Chain Import → Index → Embed, and Transcribe → Index → Embed. Show progress in the UI and a notification. Make the chains resumable: a worker killed mid-run restarts without duplicating chunks (enforced by the stableKey uniqueness constraint).
-- Battery: `adb shell dumpsys batterystats --reset` → index 100 slides → `dumpsys batterystats <pkg>`. Then do the same for 1 hour of transcription. Record the method and the raw output alongside → `docs/results/battery.csv`. Also record index size vs raw text size, and peak memory (from the profiler or `dumpsys meminfo`).
+- Chain Import → Index → Embed. Show progress in the UI and a notification. Make the chains resumable: a worker killed mid-run restarts without duplicating chunks (enforced by the stableKey uniqueness constraint).
+- Battery: `adb shell dumpsys batterystats --reset` → index 100 slides → `dumpsys batterystats <pkg>`. Then do the same for embedding the whole library. Record the method and the raw output alongside → `docs/results/battery.csv`. Also record index size vs raw text size, and peak memory (from the profiler or `dumpsys meminfo`).
 
 **Exit gate**
-- [ ] Force-stopping the app during a transcription, then reopening it, resumes the transcription and ends with no duplicate chunks (check row counts).
+- [ ] Force-stopping the app during indexing/embedding, then reopening it, resumes the work and ends with no duplicate chunks (check row counts).
 - [ ] `battery.csv` committed, following the §6 conditions (charger unplugged, screen on, airplane mode).
 
 ---
@@ -259,7 +254,7 @@ Sun 6 Dec is now a buffer day (Vulkan profiling was dropped from scope): use it 
 
 Do:
 - From a fresh install, re-run every benchmark and eval on the final commit. Regenerate all CSVs and tag the commit `v1.0`.
-- README final, demo video v2 (search with the query language, audio jump, Ask with citations).
+- README final, demo video v2 (search with the query language, a recording result at its timestamp, Ask with citations).
 - Fill in the CV brackets using only `docs/results/README.md`.
 
 **Exit gate (= spec §9 acceptance checklist)**
@@ -309,7 +304,7 @@ Each step R0–R5 below has its own exit gate, just like the build phases.
 
 ### R2: Model delivery (Phases 5–6)
 
-- Bundle the small models (embedding model, Whisper tiny) in the base module only if they fit the size budget. Deliver the large ones (Whisper base, the QA model in Phase 9) using the R0 method, and fetch them only when the user first transcribes or opens Ask.
+- Bundle the embedding model (11.2 MB) in the base module. Deliver the QA model (Gemma 3 1B, 584 MB) as an on-demand AI pack, fetched when the user first opens Ask.
 - Add a "model not yet available" state to the UI, with download progress. Search must still work without the large models.
 - Check every model file's SHA-256 before loading it.
 
@@ -323,9 +318,9 @@ Fill in the minimum the Console needs to accept a closed-test release:
 - **Privacy policy:** a one-page "nothing leaves your device" policy, hosted on GitHub Pages.
 - **Data safety form:** no data collected or shared. This must match the manifest: with Play-delivered models there's no internet permission.
 - **Content rating questionnaire**, **target audience** (18+ is simplest), and **ads: none**.
-- **Foreground service declaration:** declare the service type used for transcription and indexing, with a written reason. Record the short demo video now if the type requires one.
+- **Foreground service declaration:** declare the service type used for indexing and embedding (if a foreground service is used), with a written reason. Record the short demo video now if the type requires one.
 - **Store listing:** app name, short and full description, icon, feature graphic, at least 2 phone screenshots. Default quality is fine (spec §10).
-- **Licences screen in the app:** notices for Whisper (MIT), the embedding model (check its licence) and whisper.cpp. The Gemma notice is added in Phase 9.
+- **Licences screen in the app:** notices for the embedding model (all-MiniLM-L6-v2, Apache 2.0), PdfBox (Apache 2.0) and ML Kit. The Gemma notice is added in Phase 9.
 - Upload the v0.7 AAB (the Phase 7 build) to the **closed testing** track, add the tester Google Group, and submit it for review.
 
 **Exit gate**

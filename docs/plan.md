@@ -13,7 +13,7 @@ You are helping Ayo, a second-year CS student at Manchester, build this app for 
 
 ## 1. One-line summary
 
-An Android app that makes a student's lecture slides, PDFs and recordings searchable entirely on the phone: a C++ search engine with a custom query language, a PyTorch-distilled embedding model for semantic search, on-device transcription so results jump to the exact moment in a recording, and a small on-device language model that answers questions with citations to slide numbers and timestamps.
+An Android app that makes a student's lecture slides, PDFs and recordings searchable entirely on the phone: a C++ search engine with a custom query language, a PyTorch-distilled embedding model for semantic search, lecture-recording captions indexed by timestamp so results jump to the exact moment in a recording, and a small on-device language model that answers questions with citations to slide numbers and timestamps.
 
 ## 2. Why it exists (the use case)
 
@@ -28,7 +28,7 @@ Lecture recordings are hours of unsearchable audio and many slide decks are imag
 
 Strong supporting facts that may replace or extend a bullet if they measure well (all in scope):
 - Hybrid keyword + semantic ranking improves recall@5 from **[a]%** (BM25 only) to **[b]%**
-- On-device Whisper transcription at **[r]×** real time, with results linking to exact timestamps
+- Lecture recordings searchable through their portal captions, with results pointing to the exact timestamp
 - On-device question answering with citations, **[f] of 30** answers judged faithful
 
 ### Evidence each claim needs
@@ -43,7 +43,7 @@ Strong supporting facts that may replace or extend a bullet if they measure well
 | recall@5 [Z]% on [N] questions | Labelled JSON test set in repo; one evaluation script used for every method |
 | Latency [A] → [B] ms | On-device timing of baseline vs distilled+quantised model, same input set, CPU and GPU delegate |
 | Hybrid improves recall | Same eval script run for BM25, semantic, hybrid |
-| Transcription [r]× real time | Benchmark on a fixed 30-minute recording, tiny vs base model |
+| Recordings searchable by timestamp | Caption (.vtt) import, ~30 s timed chunks, recording-only questions in the test set |
 | QA faithfulness | 30 hand-judged answers in a CSV with categories |
 
 ## 4. Architecture
@@ -52,15 +52,14 @@ Strong supporting facts that may replace or extend a bullet if they measure well
 app/ (Kotlin)
   ui/            Jetpack Compose screens: Library, Import, Search, Result detail, Ask, Settings
   data/          Room DB: Document, Chunk(id, docId, module, week, page|null, startMs|null, text, embedding blob)
-  ingest/        PDF text extraction, ML Kit OCR fallback, chunker, audio import
-  work/          WorkManager jobs: IndexDocumentWorker, TranscribeWorker, EmbedWorker
+  ingest/        PDF text extraction, ML Kit OCR fallback, chunker, caption (.vtt) import
+  work/          WorkManager jobs: IndexDocumentWorker, EmbedWorker
   ml/            LiteRT embedding runner, LLM runner (QA)
   search/        SearchRepository: query -> native plan -> keyword hits; embedding hits; RRF fusion
   nativebridge/  JNI declarations
 native/ (C++17, CMake, built by the NDK and also on desktop for tests)
   index/         tokenizer, inverted index, postings, BM25
   query/         lexer, parser, AST, planner, executor
-  whisper/       whisper.cpp integration
   jni/           JNI glue
   tests/         GoogleTest, runs on the laptop
 ml/ (Python, PyTorch)
@@ -79,7 +78,7 @@ docs/            plan.md (this spec), IMPLEMENTATION_PLAN.md, NOTES.md (daily lo
 ```
 user query -> Kotlin -> JNI -> lexer -> parser -> AST -> planner -> executor (postings, BM25) -> top-k keyword hits
 user query -> embedding model (LiteRT) -> cosine top-k over chunk embeddings -> semantic hits
-keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or audio timestamp)
+keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or recording timestamp)
 "Ask" -> top hybrid chunks as context -> on-device LLM -> answer with [slide/timestamp] citations
 ```
 
@@ -89,7 +88,7 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 - Import PDFs (and PDF exports of slide decks) via the Storage Access Framework. User tags module and week at import (pre-filled from filename where possible).
 - Extract text per page. If a page has under ~20 characters of text, render it and run ML Kit text recognition.
 - Chunk: one chunk per slide/page; split long pages into ~200-token chunks with overlap.
-- Audio: import an audio file, transcribe with whisper.cpp into segments; merge segments into ~30-second chunks with `startMs`.
+- Recordings: import the lecture's caption file (WebVTT, as exported by the university video portal); merge cues into ~30-second chunks with `startMs`. No audio is processed on the device (scope decision 2026-11-19, see below).
 - All heavy work runs in WorkManager workers with progress and survives the app being closed.
 
 ### 5.2 Keyword engine (C++)
@@ -128,10 +127,10 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 ### 5.5 Hybrid ranking
 - Reciprocal rank fusion: score = Σ 1/(60 + rank) across keyword and semantic lists. Report recall@5 for keyword, semantic, hybrid using the same eval harness.
 
-### 5.6 Transcription
-- whisper.cpp compiled with the NDK, called over JNI; tiny and base models compared.
-- Measure real-time factor on a fixed 30-minute lecture on the test phone; choose a default and justify it in docs.
-- Search results from audio show the module, week and timestamp; tapping plays from `startMs`.
+### 5.6 Lecture recordings (captions)
+- **Scope decision (2026-11-19): transcripts only.** Students already have caption files from the video portal (Panopto/Echo360), which are tiny and import in seconds; on-device speech recognition (whisper.cpp) is out of scope. The Whisper spike (real-time factor 0.42 tiny / 0.79 base on the dev tablet) stays in docs/NOTES.md as evaluated-and-not-shipped.
+- Import `.vtt` captions as recordings; ~30 s chunks keyed by start time.
+- Search results from recordings show the module, week and timestamp (`COMP23311 › Week 3 › 43:53`).
 
 ### 5.7 Question answering
 - Use the currently recommended on-device LLM runtime for Android (check before starting; e.g. Gemma via Google's on-device LLM inference).
@@ -139,7 +138,7 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 - Evaluate 30 questions by hand: correct / partly correct / wrong / unsupported claim. Record time to first token and tokens per second.
 
 ### 5.8 Battery and resources
-- Measure battery per indexing run (100 slides) and per hour of transcription using `dumpsys batterystats` on the test phone. Record index size vs raw text size and peak memory.
+- Measure battery per indexing run (100 slides) and per embedding run using `dumpsys batterystats` on the test phone. Record index size vs raw text size and peak memory.
 
 ## 6. Measurement methodology
 
@@ -157,7 +156,7 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 | Sat 28 Nov | Query language: lexer, parser, planner, tests, planner benchmark |
 | Sun 29 Nov | Test set, teacher baseline, distillation, int8 |
 | Mon 30 Nov | LiteRT export + parity, on-device embeddings, hybrid RRF, latency CPU vs GPU |
-| Tue 1 Dec | whisper.cpp via NDK, transcripts, timestamp playback, transcription benchmarks |
+| Tue 1 Dec | Lecture captions: .vtt import, timed chunks, recording questions (done early, 19 Nov) |
 | Wed 2 Dec | Full measurement pass, README, demo video, CV numbers |
 | Thu 3 Dec | WorkManager background indexing, battery |
 | Fri 4 to Sat 5 Dec | Question answering with citations + evaluation |
@@ -175,7 +174,7 @@ keyword hits + semantic hits -> reciprocal rank fusion -> results (slide page or
 
 - [ ] Searching a real module's slides on the phone returns correct pages, with the query language working
 - [ ] Results table complete for BM25, teacher, student, student int8, hybrid
-- [ ] Transcribed recording searchable, tap plays at timestamp
+- [ ] Lecture recordings searchable via captions, results show the timestamp
 - [ ] QA answers cite sources; faithfulness CSV committed
 - [ ] README: problem, architecture diagram, results with phone model, how to build, demo video
 - [ ] Every CV bracket filled from `docs/results/`
@@ -188,5 +187,5 @@ These exist only to make the pipeline usable; build the simplest version that wo
 - Settings screen (model choice, thresholds)
 - Library management (rename, delete documents)
 - Account, sync, cloud backup: **none**; everything is on-device by design
-- Supporting formats beyond PDF and common audio files
+- Supporting formats beyond PDF and WebVTT captions (audio/video files are out of scope)
 - Multiple languages, tablets, landscape layouts
