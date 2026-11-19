@@ -33,7 +33,24 @@ TEST(Tokenizer, DigitsAreWordCharacters) {
 
 TEST(Tokenizer, CurlyApostropheSplitsLikeAsciiApostrophe) {
     EXPECT_EQ(terms("Moore’s law"), terms("Moore's law"));
-    EXPECT_EQ(terms("Moore’s law"), (V{"moore", "s", "law"}));
+    EXPECT_EQ(terms("rock’n’roll"), (V{"rock", "n", "roll"}));
+}
+
+TEST(Tokenizer, PossessiveSIsDropped) {
+    EXPECT_EQ(terms("Moore’s law"), (V{"moore", "law"}));
+    EXPECT_EQ(terms("Dijkstra's algorithm, Ohm's."), (V{"dijkstra", "algorithm", "ohm"}));
+    EXPECT_EQ(terms("it's"), (V{"it"}));
+    EXPECT_EQ(terms("CHARLES'S"), (V{"charles"}));
+    EXPECT_EQ(terms("'s alone"), (V{"s", "alone"}));          // no word before: an ordinary "s"
+    EXPECT_EQ(terms("x'sy"), (V{"x", "sy"}));                  // "s" starts a longer word: not a possessive
+    EXPECT_EQ(terms("students' work"), (V{"students", "work"}));
+}
+
+TEST(Tokenizer, PossessiveDoesNotShiftPositions) {
+    auto toks = tokenize("Moore's law holds");
+    ASSERT_EQ(toks.size(), 3u);
+    EXPECT_EQ(toks[1].term, "law");
+    EXPECT_EQ(toks[1].position, 1u);  // so the phrase "moore's law" matches "moore law" adjacency
 }
 
 TEST(Tokenizer, UnicodeDashesBulletsAndQuotesSeparate) {
@@ -45,7 +62,7 @@ TEST(Tokenizer, LogicAndArrowSymbolsSeparate) {
 }
 
 TEST(Tokenizer, NonAsciiLettersStayInsideTerms) {
-    EXPECT_EQ(terms("Gödel’s naïve café"), (V{"gödel", "s", "naïve", "café"}));
+    EXPECT_EQ(terms("Gödel’s naïve café"), (V{"gödel", "naïve", "café"}));
 }
 
 TEST(Tokenizer, MalformedUtf8IsASeparator) {

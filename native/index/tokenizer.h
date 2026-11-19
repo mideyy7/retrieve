@@ -23,6 +23,8 @@ struct Token {
 //  - Separators include all ASCII punctuation and the Unicode punctuation and symbol blocks that
 //    slides actually use: curly quotes, dashes, bullets, arrows and logic/math operators
 //    (¬ ∧ ∨ → ↔ ≤). Without this, "Moore’s" (curly apostrophe) would never match "Moore's".
+//  - A possessive "'s" or "’s" directly after a word is dropped: "Moore's" -> "moore". Otherwise
+//    a stray "s" term would match every possessive ("Ohm’s law" for a query about Moore's law).
 //  - No stemming and no stopword removal. Exact terms keep phrase queries and BM25 predictable;
 //    BM25's IDF already makes common words cheap, and semantic search (Phase 5) handles
 //    morphological variants.

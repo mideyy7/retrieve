@@ -70,6 +70,22 @@ std::vector<Token> tokenize(std::string_view text) {
     for (size_t i = 0; i < text.size();) {
         uint32_t cp;
         const size_t len = decode(text, i, cp);
+
+        // English possessive: drop "'s" / "’s" after a word, so "Moore's" -> "moore" rather than
+        // "moore" + "s" (a stray "s" would match every possessive in the corpus).
+        if ((cp == '\'' || cp == 0x2019) && !current.empty()) {
+            const size_t sAt = i + len;
+            if (sAt < text.size() && (text[sAt] == 's' || text[sAt] == 'S')) {
+                uint32_t after = 0xFFFFFFFF;
+                if (sAt + 1 < text.size()) decode(text, sAt + 1, after);
+                if (sAt + 1 >= text.size() || !isWordCodePoint(after)) {
+                    flush();
+                    i = sAt + 1;
+                    continue;
+                }
+            }
+        }
+
         if (isWordCodePoint(cp)) {
             if (cp < 0x80) {
                 current.push_back(static_cast<char>(cp >= 'A' && cp <= 'Z' ? cp + ('a' - 'A') : cp));
