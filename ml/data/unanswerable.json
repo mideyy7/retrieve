@@ -1,0 +1,106 @@
+{
+ "_about": "Questions whose answers are NOT in the corpus (none of their key terms occur in chunks.json, checked when written). Used to tune and check the Q&A refusal threshold: dev to tune, test never tuned on. Written by Claude, 2026-11-19.",
+ "author": "claude-draft",
+ "questions": [
+  {
+   "id": "n01",
+   "split": "dev",
+   "question": "how does the raft consensus algorithm elect a leader"
+  },
+  {
+   "id": "n02",
+   "split": "dev",
+   "question": "what is backpropagation in a neural network"
+  },
+  {
+   "id": "n03",
+   "split": "dev",
+   "question": "how does tcp congestion control react to packet loss"
+  },
+  {
+   "id": "n04",
+   "split": "dev",
+   "question": "what is the difference between mitosis and meiosis"
+  },
+  {
+   "id": "n05",
+   "split": "dev",
+   "question": "how does dijkstra's algorithm find shortest paths"
+  },
+  {
+   "id": "n06",
+   "split": "dev",
+   "question": "what causes inflation in an economy"
+  },
+  {
+   "id": "n07",
+   "split": "dev",
+   "question": "how does public key encryption with rsa work"
+  },
+  {
+   "id": "n08",
+   "split": "dev",
+   "question": "what is a kubernetes pod"
+  },
+  {
+   "id": "n09",
+   "split": "dev",
+   "question": "what did the treaty of versailles decide"
+  },
+  {
+   "id": "n10",
+   "split": "dev",
+   "question": "how does a bloom filter answer membership queries"
+  },
+  {
+   "id": "n11",
+   "split": "dev",
+   "question": "what is the fourier transform used for"
+  },
+  {
+   "id": "n12",
+   "split": "dev",
+   "question": "how do vaccines train the immune system"
+  },
+  {
+   "id": "n13",
+   "split": "test",
+   "question": "how does gradient descent choose its step size"
+  },
+  {
+   "id": "n14",
+   "split": "test",
+   "question": "what is photosynthesis"
+  },
+  {
+   "id": "n15",
+   "split": "test",
+   "question": "how does the bitcoin blockchain agree on the next block"
+  },
+  {
+   "id": "n16",
+   "split": "test",
+   "question": "how does a red black tree stay balanced"
+  },
+  {
+   "id": "n17",
+   "split": "test",
+   "question": "who wrote pride and prejudice"
+  },
+  {
+   "id": "n18",
+   "split": "test",
+   "question": "how does http caching with etags work"
+  },
+  {
+   "id": "n19",
+   "split": "test",
+   "question": "what does a convolutional layer do in deep learning"
+  },
+  {
+   "id": "n20",
+   "split": "test",
+   "question": "how do tectonic plates cause earthquakes"
+  }
+ ]
+}
