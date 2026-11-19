@@ -59,6 +59,14 @@ interface ChunkDao {
     @Query("SELECT * FROM chunks WHERE module = :module AND week BETWEEN :weekFrom AND :weekTo ORDER BY id")
     suspend fun byModuleWeeks(module: String, weekFrom: Int, weekTo: Int): List<Chunk>
 
+    @Query(
+        """
+        SELECT c.*, d.name AS docName, d.type AS docType FROM chunks c JOIN documents d ON d.id = c.docId
+        WHERE c.stableKey IN (:keys)
+        """,
+    )
+    suspend fun withDocByStableKeys(keys: List<String>): List<ChunkWithDoc>
+
     /** Only chunks of READY documents, so exports never contain a half-finished import. */
     @Query(
         """

@@ -1,6 +1,7 @@
 package com.mideyy7.retrieve.data
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -75,6 +76,13 @@ data class Chunk(
 
     override fun hashCode(): Int = stableKey.hashCode()
 }
+
+/** A chunk with the name and type of its document, for displaying search results. */
+data class ChunkWithDoc(
+    @Embedded val chunk: Chunk,
+    val docName: String,
+    val docType: DocType,
+)
 
 /** Row type for the library screen. */
 data class DocumentSummary(

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,7 +39,7 @@ import com.mideyy7.retrieve.nativebridge.NativeBridge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(vm: LibraryViewModel = viewModel()) {
+fun LibraryScreen(modifier: Modifier = Modifier, vm: LibraryViewModel = viewModel()) {
     val documents by vm.documents.collectAsStateWithLifecycle()
     val pending by vm.pending.collectAsStateWithLifecycle()
     val message by vm.message.collectAsStateWithLifecycle()
@@ -57,9 +58,13 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel()) {
         }
     }
 
+    // Nested inside the tab Scaffold, which already handles system-bar insets.
     Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0),
         topBar = {
             TopAppBar(
+                windowInsets = WindowInsets(0),
                 title = { Text("Library") },
                 actions = {
                     TextButton(onClick = vm::reindexAll) { Text("Re-index all") }
