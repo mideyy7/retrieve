@@ -16,3 +16,7 @@
 -keep class * implements com.google.firebase.components.ComponentRegistrar {
     public <init>();
 }
+
+# LiteRT-LM: its native library calls back into these Kotlin classes (callbacks, configs, messages)
+# by name over JNI and builds some of them from JSON with Gson.
+-keep class com.google.ai.edge.litertlm.** { *; }
