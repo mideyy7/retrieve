@@ -17,7 +17,11 @@ data class SearchResult(
 )
 
 sealed interface SearchOutcome {
-    data class Results(val results: List<SearchResult>, val hybrid: Boolean = false) : SearchOutcome
+    /**
+     * [topSimilarity] is the best cosine similarity between the query and any chunk (hybrid only).
+     * Q&A uses it to decide whether the library can answer at all (ml/refusal.py).
+     */
+    data class Results(val results: List<SearchResult>, val hybrid: Boolean = false, val topSimilarity: Float? = null) : SearchOutcome
     data class SyntaxError(val message: String) : SearchOutcome
 }
 
@@ -80,7 +84,7 @@ class SearchRepository(
             }
             SearchResult(row, score.toFloat(), by, fused = true)
         }
-        return SearchOutcome.Results(results, hybrid = true)
+        return SearchOutcome.Results(results, hybrid = true, topSimilarity = sem.firstOrNull()?.score)
     }
 
     private suspend fun rows(keys: List<String>) =
