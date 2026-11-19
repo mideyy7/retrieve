@@ -71,6 +71,8 @@ def main():
     ap.add_argument("--split", choices=["dev", "test", "all"], default="dev")
     ap.add_argument("--cli", default=common.path("native/build-release/retrieve_cli"))
     ap.add_argument("--label", default="", help="name for the method row, e.g. 'student int8'")
+    ap.add_argument("--only", choices=["all", "slides", "recordings"], default="all",
+                    help="evaluate only questions answered by slides/PDFs or by recordings")
     ap.add_argument("--no-record", action="store_true")
     ap.add_argument("--show-misses", action="store_true")
     ap.add_argument("--max-len", type=int, default=common.MAX_LEN, help="tokens per input (default matches the device export)")
@@ -79,6 +81,9 @@ def main():
     common.seed_everything()
 
     chunks, questions = common.load_chunks(), common.load_questions(args.split)
+    if args.only != "all":
+        recording = lambda q: "start_ms" in q["answers"][0]
+        questions = [q for q in questions if recording(q) == (args.only == "recordings")]
     if args.method == "bm25":
         ranked = bm25_rankings(questions, chunks, args.cli)
     elif args.method == "semantic":
@@ -100,7 +105,7 @@ def main():
                 print(f"  miss@5 {q['id']} (rank {r}): {q['question']}")
     if not args.no_record:
         common.append_result("recall.csv", {
-            "method": name, "split": args.split, "n": m["n"],
+            "method": name, "split": args.split if args.only == "all" else f"{args.split}:{args.only}", "n": m["n"],
             "recall@1": f"{m['recall@1']:.4f}", "recall@5": f"{m['recall@5']:.4f}",
             "recall@10": f"{m['recall@10']:.4f}", "mrr@10": f"{m['mrr@10']:.4f}",
             "max_len": common.MAX_LEN, "seed": common.SEED, "script": "ml/eval.py",

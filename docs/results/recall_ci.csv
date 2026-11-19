@@ -8,3 +8,12 @@ date,git_commit,machine,comparison,recall@5_or_diff,ci95_low,ci95_high,split,n,r
 2026-11-19,9ba9119,Apple M1 8GB macOS 15.6,student-l3 fp32 minus teacher MiniLM-L6 fp32,-0.0396,-0.0990,+0.0198,test,101,10000,1234,ml/significance.py
 2026-11-19,9ba9119,Apple M1 8GB macOS 15.6,student-l3 int8 (LiteRT) minus student-l3 fp32,+0.0000,+0.0000,+0.0000,test,101,10000,1234,ml/significance.py
 2026-11-19,9ba9119,Apple M1 8GB macOS 15.6,hybrid BM25 + student-l3 int8 minus student-l3 int8 (LiteRT),+0.0495,-0.0099,+0.1089,test,101,10000,1234,ml/significance.py
+2026-11-19,3f0300c-dirty,Apple M1 8GB macOS 15.6,BM25 (retrieve_cli),0.8347,0.7686,0.9008,test,121,10000,1234,ml/significance.py
+2026-11-19,3f0300c-dirty,Apple M1 8GB macOS 15.6,teacher MiniLM-L6 fp32,0.8678,0.8099,0.9256,test,121,10000,1234,ml/significance.py
+2026-11-19,3f0300c-dirty,Apple M1 8GB macOS 15.6,student-l3 fp32,0.8264,0.7603,0.8926,test,121,10000,1234,ml/significance.py
+2026-11-19,3f0300c-dirty,Apple M1 8GB macOS 15.6,student-l3 int8 (LiteRT),0.8264,0.7603,0.8926,test,121,10000,1234,ml/significance.py
+2026-11-19,3f0300c-dirty,Apple M1 8GB macOS 15.6,hybrid BM25 + student-l3 int8,0.8678,0.8099,0.9256,test,121,10000,1234,ml/significance.py
+2026-11-19,3f0300c-dirty,Apple M1 8GB macOS 15.6,hybrid BM25 + student-l3 int8 minus BM25 (retrieve_cli),+0.0331,-0.0165,+0.0826,test,121,10000,1234,ml/significance.py
+2026-11-19,3f0300c-dirty,Apple M1 8GB macOS 15.6,student-l3 fp32 minus teacher MiniLM-L6 fp32,-0.0413,-0.0992,+0.0083,test,121,10000,1234,ml/significance.py
+2026-11-19,3f0300c-dirty,Apple M1 8GB macOS 15.6,student-l3 int8 (LiteRT) minus student-l3 fp32,+0.0000,+0.0000,+0.0000,test,121,10000,1234,ml/significance.py
+2026-11-19,3f0300c-dirty,Apple M1 8GB macOS 15.6,hybrid BM25 + student-l3 int8 minus student-l3 int8 (LiteRT),+0.0413,-0.0083,+0.0992,test,121,10000,1234,ml/significance.py
