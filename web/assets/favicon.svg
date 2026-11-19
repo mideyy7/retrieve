@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+  <!-- The app's launcher icon (app/src/main/res/drawable/ic_launcher_foreground.xml) on the brand indigo. -->
+  <rect width="108" height="108" rx="24" fill="#3A47D5"/>
+  <g transform="translate(-4 -4) scale(1.08)">
+    <path fill="#FFFFFF" fill-opacity=".35" d="M33,31h38a3,3 0,0 1,3 3v26a3,3 0,0 1,-3 3h-38a3,3 0,0 1,-3 -3v-26a3,3 0,0 1,3 -3z"/>
+    <path fill="#FFFFFF" d="M29,36h38a3,3 0,0 1,3 3v26a3,3 0,0 1,-3 3h-38a3,3 0,0 1,-3 -3v-26a3,3 0,0 1,3 -3z"/>
+    <path fill="#C5C9F5" d="M33,42h22a1.5,1.5 0,0 1,0 3h-22a1.5,1.5 0,0 1,0 -3z"/>
+    <path fill="#FFE24D" d="M31.5,48.5h28a2,2 0,0 1,2 2v2a2,2 0,0 1,-2 2h-28a2,2 0,0 1,-2 -2v-2a2,2 0,0 1,2 -2z"/>
+    <path fill="#2A33B0" d="M33,50.25h20a1.25,1.25 0,0 1,0 2.5h-20a1.25,1.25 0,0 1,0 -2.5z"/>
+    <path fill="#C5C9F5" d="M33,58h14a1.5,1.5 0,0 1,0 3h-14a1.5,1.5 0,0 1,0 -3z"/>
+    <path fill="#2A33B0" d="M66,53m-12.5,0a12.5,12.5 0,1 1,25 0a12.5,12.5 0,1 1,-25 0"/>
+    <path fill="#FFFFFF" d="M66,53m-10,0a10,10 0,1 1,20 0a10,10 0,1 1,-20 0"/>
+    <path fill="#4A57E8" d="M66,53m-6.5,0a6.5,6.5 0,1 1,13 0a6.5,6.5 0,1 1,-13 0"/>
+    <path fill="#FFFFFF" d="M73.2,62.4l2.8,-2.8l7.6,7.6a2,2 0,0 1,0 2.8l0,0a2,2 0,0 1,-2.8 0z"/>
+  </g>
+</svg>
