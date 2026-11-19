@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- Source for web/assets/og.png (1200x630 link preview). Rendered by scripts/web/build_assets.sh. -->
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../web/assets/styles.css">
+<style>
+  html { font-size: 16px; }
+  body { width: 1200px; height: 630px; overflow: hidden; margin: 0; background: var(--bg); position: relative; }
+  body::after { content: ""; position: absolute; width: 900px; height: 900px; right: -380px; top: -420px; border-radius: 50%; background: radial-gradient(closest-side, rgba(58,71,213,.16), transparent 70%); }
+  .og { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: center; padding: 0 80px; z-index: 1; }
+  .brand { display: flex; align-items: center; gap: 14px; font: 700 34px/1 var(--display); color: var(--ink); letter-spacing: -0.03em; }
+  .brand img { width: 52px; height: 52px; border-radius: 14px; }
+  h1 { margin-top: 34px; font-size: 76px; line-height: .98; letter-spacing: -0.055em; }
+  h1 em { font-style: normal; color: var(--brand); }
+  .sub { margin-top: 26px; font-size: 24px; color: var(--muted); max-width: 30ch; }
+  .card { background: #fff; border-radius: 26px; padding: 22px; box-shadow: 0 40px 80px -40px rgba(42,51,176,.5); display: grid; gap: 14px; font-size: 16px; }
+  .q { font-family: var(--mono); background: #EFEDF6; border-radius: 999px; padding: 12px 16px; color: var(--ink); }
+  .card .slide { font-size: 15px; }
+  .meta { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 15px; }
+  .rowr { display: flex; gap: 12px; align-items: center; border-top: 1px solid var(--line); padding-top: 14px; color: var(--ink); font-size: 15px; }
+</style>
+</head>
+<body>
+  <div class="og">
+    <div>
+      <div class="brand"><img src="../../web/assets/favicon.svg" alt="">Retrieve</div>
+      <h1>Find the slide, <em>not the folder.</em></h1>
+      <p class="sub">Search your lecture slides and recordings on your phone. Free on Android.</p>
+    </div>
+    <div class="card">
+      <div class="q">raft log matching</div>
+      <div class="slide">
+        <div class="t">Raft: log matching</div>
+        <div class="ln" style="width:80%"></div>
+        <div class="ln m" style="width:94%"></div>
+        <div class="ln" style="width:62%"></div>
+      </div>
+      <div class="meta"><span class="badge">COMP26120</span>Week 6 · slide 14</div>
+      <div class="rowr"><span class="ts">32:10</span>In the recording</div>
+    </div>
+  </div>
+</body>
+</html>
