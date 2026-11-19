@@ -1,0 +1,5 @@
+date,git_commit,device,android,soc,model,accelerator,model_file,init_ms,runs,warmup,median_ms,p95_ms,p99_ms,mean_ms,tokenize_us_per_query,parity_inputs,parity_min_cos,parity_max_abs,error,script
+2026-11-19,6c78075,SM-T505N,12,SM6115,student-l3-int8,CPU,student-l3/model_int8.tflite,195,100,20,88.61151,88.851458,88.990365,88.64023124999999,1036.79584,50,0.9999437432826704,0.0015418417751789093,,scripts/device_embed_bench.sh
+2026-11-19,6c78075,SM-T505N,12,SM6115,student-l3-int8,GPU,,,,,,,,,,,,,init failed: Failed to compile model,scripts/device_embed_bench.sh
+2026-11-19,6c78075,SM-T505N,12,SM6115,teacher-fp32,CPU,teacher/model_fp32.tflite,217,100,20,269.943281,270.989219,271.37875,270.05155455,733.96719,50,0.9999992596191114,5.066394805908203e-07,,scripts/device_embed_bench.sh
+2026-11-19,6c78075,SM-T505N,12,SM6115,teacher-fp32,GPU,,,,,,,,,,,,,init failed: Failed to compile model,scripts/device_embed_bench.sh
