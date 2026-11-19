@@ -25,6 +25,9 @@ interface DocumentDao {
     @Query("SELECT * FROM documents WHERE status = 'READY'")
     suspend fun allReady(): List<Document>
 
+    @Query("SELECT id FROM documents ORDER BY id")
+    suspend fun allIds(): List<Long>
+
     @Query("DELETE FROM documents WHERE id = :id")
     suspend fun delete(id: Long)
 

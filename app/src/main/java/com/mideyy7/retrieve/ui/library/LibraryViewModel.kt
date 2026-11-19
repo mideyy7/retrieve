@@ -97,6 +97,15 @@ class LibraryViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Re-runs indexing for every document, e.g. after a change to extraction or chunking. */
+    fun reindexAll() {
+        viewModelScope.launch {
+            val ids = db.documents().allIds()
+            ids.forEach(repo::enqueueIndexing)
+            _message.value = "Re-indexing ${ids.size} documents"
+        }
+    }
+
     /** Debug hand-off to ml/: writes chunks.json to the app's external files dir for `adb pull`. */
     fun exportChunks() {
         viewModelScope.launch {

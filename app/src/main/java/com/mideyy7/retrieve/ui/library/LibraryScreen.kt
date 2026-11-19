@@ -61,7 +61,10 @@ fun LibraryScreen(vm: LibraryViewModel = viewModel()) {
         topBar = {
             TopAppBar(
                 title = { Text("Library") },
-                actions = { TextButton(onClick = vm::exportChunks) { Text("Export chunks") } },
+                actions = {
+                    TextButton(onClick = vm::reindexAll) { Text("Re-index all") }
+                    TextButton(onClick = vm::exportChunks) { Text("Export chunks") }
+                },
             )
         },
         floatingActionButton = {
