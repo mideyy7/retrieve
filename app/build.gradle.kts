@@ -78,6 +78,11 @@ android {
         compose = true
     }
 
+    // The embedding model is memory-mapped from the APK, which needs it stored uncompressed.
+    androidResources {
+        noCompress += "tflite"
+    }
+
     testOptions {
         unitTests.isIncludeAndroidResources = true
     }
@@ -111,6 +116,8 @@ dependencies {
     implementation(libs.mlkit.text.recognition)
     implementation(libs.work.runtime.ktx)
     implementation(libs.serialization.json)
+    implementation(libs.litert)
+    implementation(libs.litert.gpu)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

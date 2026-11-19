@@ -42,6 +42,7 @@ class IndexDocumentWorker(context: Context, params: WorkerParameters) : Coroutin
                     // Chunks are committed; make them searchable. A failed rebuild doesn't fail the
                     // document (its chunks are safe in Room) and is repaired at the next app start.
                     applicationContext.retrieveApp.keywordIndex.rebuild()
+                    EmbedWorker.enqueue(applicationContext) // new chunks have no embeddings yet
                     Result.success(
                         workDataOf(KEY_PAGES to outcome.pages, KEY_OCR_PAGES to outcome.ocrPages, KEY_CHUNKS to outcome.chunks),
                     )

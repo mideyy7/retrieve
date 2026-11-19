@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
             // Fresh launch (not a rotation): open the last index for instant search, then rebuild
             // from the database in the background in case the file is stale.
             lifecycleScope.launch { retrieveApp.keywordIndex.openThenRebuild() }
+            lifecycleScope.launch { retrieveApp.prepareSemanticSearch() }
         }
         setContent {
             RetrieveTheme {

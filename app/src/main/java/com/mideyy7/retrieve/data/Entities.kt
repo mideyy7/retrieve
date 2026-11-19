@@ -82,7 +82,17 @@ data class ChunkWithDoc(
     @Embedded val chunk: Chunk,
     val docName: String,
     val docType: DocType,
+    val docSha: String,
 )
+
+/** A chunk that still needs an embedding. */
+data class ChunkText(val id: Long, val text: String)
+
+/** One stored embedding, for loading the semantic index. */
+data class ChunkEmbedding(val stableKey: String, val embedding: ByteArray) {
+    override fun equals(other: Any?) = other is ChunkEmbedding && stableKey == other.stableKey && embedding.contentEquals(other.embedding)
+    override fun hashCode() = stableKey.hashCode()
+}
 
 /** Row type for the library screen. */
 data class DocumentSummary(

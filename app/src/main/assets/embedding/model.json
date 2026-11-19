@@ -1,0 +1,8 @@
+{
+  "name": "student-l3/model_int8.tflite",
+  "sha256": "f539085537a67dba5fe292dd82b3dffa8441a416ee75aec35f3434963065e58d",
+  "dim": 384,
+  "max_len": 128,
+  "vocab_size": 13164,
+  "size_bytes": 11224448
+}

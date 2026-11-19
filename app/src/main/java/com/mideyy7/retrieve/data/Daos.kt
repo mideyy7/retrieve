@@ -61,11 +61,39 @@ interface ChunkDao {
 
     @Query(
         """
-        SELECT c.*, d.name AS docName, d.type AS docType FROM chunks c JOIN documents d ON d.id = c.docId
+        SELECT c.*, d.name AS docName, d.type AS docType, d.sha256 AS docSha FROM chunks c JOIN documents d ON d.id = c.docId
         WHERE c.stableKey IN (:keys)
         """,
     )
     suspend fun withDocByStableKeys(keys: List<String>): List<ChunkWithDoc>
+
+    // ---- Embeddings (Phase 5) ----
+
+    @Query(
+        """
+        SELECT c.id, c.text FROM chunks c JOIN documents d ON d.id = c.docId
+        WHERE d.status = 'READY' AND c.embedding IS NULL ORDER BY c.id LIMIT :limit
+        """,
+    )
+    suspend fun missingEmbeddings(limit: Int): List<ChunkText>
+
+    @Query("SELECT COUNT(*) FROM chunks c JOIN documents d ON d.id = c.docId WHERE d.status = 'READY' AND c.embedding IS NULL")
+    suspend fun countMissingEmbeddings(): Int
+
+    @Query("UPDATE chunks SET embedding = :embedding WHERE id = :id")
+    suspend fun setEmbedding(id: Long, embedding: ByteArray)
+
+    @Query("UPDATE chunks SET embedding = NULL")
+    suspend fun clearEmbeddings()
+
+    /** Ordered by stableKey, the same order as chunks.json, so tie-breaking matches ml/eval.py. */
+    @Query(
+        """
+        SELECT c.stableKey, c.embedding FROM chunks c JOIN documents d ON d.id = c.docId
+        WHERE d.status = 'READY' AND c.embedding IS NOT NULL ORDER BY c.stableKey
+        """,
+    )
+    suspend fun allEmbeddings(): List<ChunkEmbedding>
 
     /** Only chunks of READY documents, so exports never contain a half-finished import. */
     @Query(
