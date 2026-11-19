@@ -10,9 +10,10 @@ import kotlinx.coroutines.flow.flow
  * How passages are labelled in the prompt and how the model is told to cite them.
  * [TAGS] asks it to copy `[COMP21111 wk4 slide 22]`; [NUMBERED] labels passages [1]..[n] and asks for
  * the number, which the app maps back to the passage (a small model copies "[2]" far more reliably
- * than a long tag). Either way every citation goes through [CitationChecker].
+ * than a long tag). [LETTERS] does the same with [A]..[D], which the model can't mistake for
+ * numbering its own sentences. Either way every citation goes through [CitationChecker].
  */
-enum class PromptStyle { TAGS, NUMBERED }
+enum class PromptStyle { TAGS, NUMBERED, LETTERS }
 
 /** What the model is told, once per conversation ([PromptStyle.TAGS]). */
 const val SYSTEM_PROMPT = """You help a student revise from their own lecture materials.
@@ -24,6 +25,12 @@ Never cite a tag that is not in the excerpts. If the excerpts do not answer the 
 const val SYSTEM_PROMPT_NUMBERED = """You help a student revise from their own lecture materials.
 Answer the question using only the numbered excerpts. Write two to four short sentences.
 End every sentence with the number of the excerpt it comes from in square brackets, like [1] or [2].
+If the excerpts do not answer the question, reply only: Not in your materials."""
+
+/** What the model is told, once per conversation ([PromptStyle.LETTERS]). */
+const val SYSTEM_PROMPT_LETTERS = """You help a student revise from their own lecture materials.
+Answer the question using only the excerpts, which are labelled with letters like [A] and [B]. Write two to four short sentences.
+End every sentence with the letter of the excerpt that supports it, like [A] or [C].
 If the excerpts do not answer the question, reply only: Not in your materials."""
 
 /** The phrase the model is told to use when it can't answer from the excerpts. */
@@ -62,7 +69,8 @@ sealed interface AskEvent {
     /** The passages chosen, before the model starts. */
     data class Sources(val sources: List<Source>) : AskEvent
 
-    data class Answer(val checked: CheckedAnswer, val sources: List<Source>, val done: Boolean, val stats: GenerationStats?) : AskEvent {
+    /** [raw] is exactly what the model wrote; [checked] is what's shown, citations moved to sentence ends. */
+    data class Answer(val checked: CheckedAnswer, val sources: List<Source>, val done: Boolean, val stats: GenerationStats?, val raw: String = checked.text) : AskEvent {
         /** The model itself said the excerpts don't answer it. */
         val modelDeclined: Boolean get() = checked.text.trim().startsWith(NOT_IN_MATERIALS, ignoreCase = true)
     }
@@ -76,7 +84,7 @@ class AskPipeline(
     private val search: suspend (String) -> SearchOutcome,
     private val generator: Generator,
     private val maxSources: Int = MAX_SOURCES,
-    private val style: PromptStyle = PromptStyle.NUMBERED,
+    private val style: PromptStyle = PromptStyle.LETTERS,
 ) {
     fun ask(question: String): Flow<AskEvent> = flow {
         val outcome = search(question)
@@ -95,9 +103,11 @@ class AskPipeline(
         val (system, user) = when (style) {
             PromptStyle.TAGS -> SYSTEM_PROMPT to userPrompt(question, sources)
             PromptStyle.NUMBERED -> SYSTEM_PROMPT_NUMBERED to numberedPrompt(question, sources)
+            PromptStyle.LETTERS -> SYSTEM_PROMPT_LETTERS to letteredPrompt(question, sources)
         }
         generator.generate(system, user).collect { g ->
-            emit(AskEvent.Answer(CitationChecker.check(g.text, sources), sources, g.done, g.stats))
+            val text = if (style == PromptStyle.LETTERS) moveLeadingCitations(g.text) else g.text
+            emit(AskEvent.Answer(CitationChecker.check(text, sources), sources, g.done, g.stats, raw = g.text))
         }
     }
 
@@ -128,6 +138,16 @@ class AskPipeline(
             }
             return "Excerpts:\n\n$excerpts\n\nQuestion: ${question.trim()}\n" +
                 "Answer in two to four sentences, ending each sentence with its excerpt number like [1]."
+        }
+
+        fun letteredPrompt(question: String, sources: List<Source>): String {
+            val terms = Snippets.queryTerms(question)
+            val excerpts = sources.withIndex().joinToString("\n\n") { (i, s) ->
+                val text = Snippets.make(s.hit.chunk.text, terms, maxChars = EXCERPT_CHARS).text
+                "[${'A' + i}] (${s.tag.trim('[', ']')})\n$text"
+            }
+            return "Excerpts:\n\n$excerpts\n\nQuestion: ${question.trim()}\n" +
+                "Answer in two to four sentences. End each sentence with the letter of the excerpt that supports it, like [B]."
         }
     }
 }

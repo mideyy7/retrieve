@@ -22,7 +22,7 @@ import java.io.File
  * skipped unless given a question file, and the output is judged by hand (scripts/qa_eval.sh).
  *
  *   -e questions qa/<file>.json   pushed to the app's external files dir: [{"id", "question"}, ...]
- *   -e style NUMBERED|TAGS        prompt style (default NUMBERED)
+ *   -e style LETTERS|NUMBERED|TAGS prompt style (default LETTERS)
  *   -e out qa/<file>.jsonl        output, appended one line per question
  */
 @RunWith(AndroidJUnit4::class)
@@ -35,7 +35,7 @@ class QaEvalTest {
         val input = args.getString("questions")?.let { File(base, it) }
         assumeTrue("pass -e questions <file> (see scripts/qa_eval.sh)", input?.isFile == true)
         assumeTrue("the answering model isn't installed", LlmModel.isInstalled(app))
-        val style = PromptStyle.valueOf(args.getString("style", "NUMBERED"))
+        val style = PromptStyle.valueOf(args.getString("style", "LETTERS"))
         val out = File(base, args.getString("out", "qa/output.jsonl")).also { it.parentFile?.mkdirs() }
 
         app.keywordIndex.openThenRebuild()
@@ -67,7 +67,7 @@ class QaEvalTest {
         val rendered = render(answer.checked, sources)
         o.put("outcome", if (answer.modelDeclined) "declined_by_model" else "answered")
             .put("sources", JSONArray(sources.map { it.tag }))
-            .put("raw_answer", answer.checked.text)
+            .put("raw_answer", answer.raw)
             .put("answer", rendered.text)
             .put("cited", JSONArray(answer.checked.citedSources.map { it.tag }))
             .put("citations_valid", answer.checked.valid)

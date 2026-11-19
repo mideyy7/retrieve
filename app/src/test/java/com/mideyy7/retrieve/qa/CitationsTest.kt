@@ -78,4 +78,22 @@ class CitationsTest {
         assertEquals(listOf(slide22, rec, slide4), a.citedSources)
         assertEquals(listOf(CitationStatus.VALID, CitationStatus.VALID, CitationStatus.VALID, CitationStatus.VALID, CitationStatus.UNSUPPORTED), a.citations.map { it.status })
     }
+
+    @Test
+    fun lettersReferToPassagesInTheOrderGiven() {
+        val a = CitationChecker.check("Removes clauses [A]. Units call units [C]. Both [A, B]. Nope [H]. Not a citation [x].", sources)
+        assertEquals(listOf(slide22, rec, slide4), a.citedSources)
+        assertEquals(5, a.citations.size)
+        assertEquals(CitationStatus.UNSUPPORTED, a.citations.last().status)
+    }
+
+    @Test
+    fun leadingLettersMoveToTheEndOfTheirSentence() {
+        assertEquals(
+            "An AND gate is true when both inputs are 1 [B]. It is rolled back [A, C]. Already fine [D].\nNext line here [B].",
+            moveLeadingCitations("[B] An AND gate is true when both inputs are 1. [A, C] It is rolled back. Already fine [D].\n[B] Next line here."),
+        )
+        // Nothing to move: unchanged.
+        assertEquals("Plain answer [A].", moveLeadingCitations("Plain answer [A]."))
+    }
 }

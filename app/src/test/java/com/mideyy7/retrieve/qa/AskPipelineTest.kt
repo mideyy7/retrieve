@@ -76,12 +76,24 @@ class AskPipelineTest {
     @Test
     fun numberedStyleLabelsPassagesAndMapsNumbersBack() = runTest {
         val gen = FakeGenerator("It removes satisfied clauses [1]. DPLL relies on it [2].")
-        val events = AskPipeline({ SearchOutcome.Results(results, hybrid = true, topSimilarity = 0.70f) }, gen).ask("what is unit propagation").toList()
+        val events = AskPipeline({ SearchOutcome.Results(results, hybrid = true, topSimilarity = 0.70f) }, gen, style = PromptStyle.NUMBERED)
+            .ask("what is unit propagation").toList()
         val prompt = gen.prompt!!
         assertTrue(prompt.startsWith("Excerpts:\n\n[1] (COMP21111 wk4 slide 22)\nUnit propagation."))
         assertTrue("\n\n[2] (COMP21111 wk4 slide 4)\n" in prompt)
         val answer = (events.last() as AskEvent.Answer).checked
         assertEquals(listOf("[COMP21111 wk4 slide 22]", "[COMP21111 wk4 slide 4]"), answer.citedSources.map { it.tag })
         assertEquals(2, answer.valid)
+    }
+
+    @Test
+    fun lettersAreTheDefaultAndLeadingOnesAreMoved() = runTest {
+        val gen = FakeGenerator("[A] It removes satisfied clauses. [B] DPLL relies on it.")
+        val events = AskPipeline({ SearchOutcome.Results(results, hybrid = true, topSimilarity = 0.70f) }, gen).ask("what is unit propagation").toList()
+        assertTrue(gen.prompt!!.startsWith("Excerpts:\n\n[A] (COMP21111 wk4 slide 22)\n"))
+        val last = events.last() as AskEvent.Answer
+        assertEquals("It removes satisfied clauses [A]. DPLL relies on it [B].", last.checked.text)
+        assertEquals("[A] It removes satisfied clauses. [B] DPLL relies on it.", last.raw)
+        assertEquals(2, last.checked.valid)
     }
 }

@@ -59,14 +59,16 @@ object CitationChecker {
     /** Bracketed text that looks like a citation: has a digit and is short. Plain "[sic]" isn't one. */
     private val BRACKET = Regex("\\[([^\\[\\]\\n]{1,60})]")
     private const val MAX_EDITS = 3
+    private val LETTER = Regex("(?:Excerpt\\s+)?([A-H])")
+    private val LETTERS = Regex("\\s*[A-H](\\s*[,;]\\s*[A-H])*\\s*")
     private val NUMBER = Regex("(?i)(?:excerpt|source)?\\s*(\\d{1,2})")
 
     fun check(answer: String, sources: List<Source>): CheckedAnswer {
         val byNorm = sources.associateBy { normalise(it.tag) }
-        val citations = BRACKET.findAll(answer).filter { m -> m.groupValues[1].any { it.isDigit() } }.flatMap { m ->
+        val citations = BRACKET.findAll(answer).filter { m -> m.groupValues[1].any { it.isDigit() } || LETTERS.matches(m.groupValues[1]) }.flatMap { m ->
             // "[COMP21111 wk4 slide 22; COMP21111 wk4 slide 23]" or "[1, 2]" cite two passages in one bracket.
             val parts = m.groupValues[1].split(';')
-            parts.flatMap { it.split(',').takeIf { p -> p.all { x -> NUMBER.matches(x.trim()) } } ?: listOf(it) }
+            parts.flatMap { it.split(',').takeIf { p -> p.all { x -> NUMBER.matches(x.trim()) || LETTER.matches(x.trim()) } } ?: listOf(it) }
                 .map { part -> resolve(m.range, part.trim(), byNorm, sources) }
         }.toList()
         return CheckedAnswer(answer, citations)
@@ -76,6 +78,12 @@ object CitationChecker {
         // "[2]" (or "excerpt 2"): the numbered-prompt style refers to the second passage given.
         NUMBER.matchEntire(written.trim())?.let { m ->
             val i = m.groupValues[1].toInt() - 1
+            return if (i in sources.indices) Citation(range, written, CitationStatus.VALID, sources[i])
+            else Citation(range, written, CitationStatus.UNSUPPORTED, null)
+        }
+        // "[B]": the lettered-prompt style refers to the second passage given.
+        LETTER.matchEntire(written.trim())?.let { m ->
+            val i = m.groupValues[1][0] - 'A'
             return if (i in sources.indices) Citation(range, written, CitationStatus.VALID, sources[i])
             else Citation(range, written, CitationStatus.UNSUPPORTED, null)
         }
@@ -116,3 +124,18 @@ object CitationChecker {
         return prev[b.length]
     }
 }
+
+/**
+ * Gemma 3 1B tends to put the letter before the sentence it supports ("[B] An AND gate's output is
+ * true when…") even when told to put it after. Readers expect it at the end, so a citation that
+ * opens a sentence is moved to just before that sentence's full stop. Citations already at the end
+ * are left alone, and nothing is added or removed.
+ */
+fun moveLeadingCitations(answer: String): String =
+    LEADING.replace(answer) { m ->
+        val (lead, cite, sentence, stop) = m.destructured
+        "$lead${sentence.trimEnd()} $cite$stop"
+    }
+
+/** A bracketed letter citation at the start of the text, a line or a sentence, then that sentence. */
+private val LEADING = Regex("(^|\\n|(?<=[.!?])[ \\t]+)(\\[[A-H](?:\\s*[,;]\\s*[A-H])*])[ \\t]*([^\\[\\n.!?]+)([.!?])")
