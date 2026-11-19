@@ -3,6 +3,7 @@ package com.mideyy7.retrieve.ui.search
 import android.app.Application
 import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.mideyy7.retrieve.retrieveApp
 import com.mideyy7.retrieve.search.IndexState
@@ -10,13 +11,13 @@ import com.mideyy7.retrieve.search.SearchOutcome
 import com.mideyy7.retrieve.search.SearchRepository
 import com.mideyy7.retrieve.search.SearchResult
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 
@@ -32,16 +33,23 @@ data class SearchUiState(
 )
 
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-class SearchViewModel(app: Application) : AndroidViewModel(app) {
+class SearchViewModel(app: Application, private val saved: SavedStateHandle) : AndroidViewModel(app) {
     private val store = app.retrieveApp.keywordIndex
     private val repo = SearchRepository(
         app.retrieveApp.database, store, app.retrieveApp.semanticIndex, { app.retrieveApp.embedder.embed(it) },
     )
 
-    private val _query = MutableStateFlow("")
+    /** Kept in SavedStateHandle so the query survives the process being killed in the background. */
+    private val _query = saved.getMutableStateFlow(KEY_QUERY, "")
     val query: StateFlow<String> = _query.asStateFlow()
 
     val indexState: StateFlow<IndexState> = store.state
+
+    /** Most recently imported modules, offered as one-tap scopes while the query is empty. */
+    val recentModules: StateFlow<List<String>> =
+        app.retrieveApp.database.documents().observeModules()
+            .map { modules -> modules.take(6).map { it.module } }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val ui: StateFlow<SearchUiState> =
         combine(_query.debounce(150).distinctUntilChanged(), store.state) { q, _ -> q }
@@ -61,5 +69,14 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
 
     fun onQueryChange(q: String) {
         _query.value = q
+    }
+
+    /** Narrows the current query, e.g. after tapping a module or week on a result. */
+    fun addFilter(key: String, value: String) {
+        _query.value = withFilter(_query.value, key, value)
+    }
+
+    private companion object {
+        const val KEY_QUERY = "query"
     }
 }

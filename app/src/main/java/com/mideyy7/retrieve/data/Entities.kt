@@ -17,7 +17,7 @@ enum class DocStatus { PENDING, INDEXING, READY, FAILED }
 
 @Entity(
     tableName = "documents",
-    indices = [Index(value = ["sha256"], unique = true)],
+    indices = [Index(value = ["sha256"], unique = true), Index(value = ["module", "week"])],
 )
 data class Document(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -25,6 +25,7 @@ data class Document(
     val sha256: String,
     val name: String,
     val module: String,
+    /** 1 to 52, or 0 for material that covers the whole module (e.g. a textbook); see [Weeks]. */
     val week: Int,
     val type: DocType,
     val status: DocStatus = DocStatus.PENDING,
@@ -105,6 +106,32 @@ data class DocumentSummary(
     val error: String?,
     val chunkCount: Int,
 )
+
+/**
+ * Optional human title for a module code ("COMP26120" -> "Algorithms and Data Structures").
+ * A module itself exists only through its documents; this table just names it (schema v3).
+ */
+@Entity(tableName = "modules")
+data class ModuleInfo(
+    @PrimaryKey val code: String,
+    val title: String,
+)
+
+/** One module as listed in the library: a GROUP BY over its documents. */
+data class ModuleSummary(
+    val module: String,
+    val title: String?,
+    val docCount: Int,
+    val chunkCount: Int,
+    val readyCount: Int,
+    val failedCount: Int,
+    /** PENDING or INDEXING. */
+    val busyCount: Int,
+    val lastImportedAt: Long,
+)
+
+/** How many documents of one module and week are in one status; grouped further in Kotlin. */
+data class WeekStatusCount(val module: String, val week: Int, val status: DocStatus, val count: Int)
 
 object StableKeys {
     private fun prefix(sha256: String) = sha256.take(12)

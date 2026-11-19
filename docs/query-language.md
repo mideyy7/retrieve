@@ -17,6 +17,7 @@ primary  := WORD | PHRASE | FILTER | "(" orExpr ")"
 FILTER   := ("module" | "week" | "type") ":" value
               module:COMP21111   module:21111 (digits match a code ending in them)
               week:4             week:4..6 (inclusive)
+              week:0             material for the whole module (e.g. a textbook); week:1..12 leaves it out
               type:slides        type:pdf      type:audio
 PHRASE   := '"' text '"'   (curly quotes “ ” work too: phone keyboards insert them)
 WORD     := any run of characters other than whitespace, ( ) and quotes

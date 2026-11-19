@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.navigation.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
@@ -107,6 +108,8 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
     // On-device LLM: debug-only while it's a spike (Phase 0, Spike 1); moves to implementation in Phase 9.
     debugImplementation(libs.litertlm.android)
+    // Hosts composables in an empty Activity for Compose UI tests (Robolectric, on the JVM).
+    debugImplementation(libs.compose.ui.test.manifest)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
@@ -124,6 +127,8 @@ dependencies {
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.room.testing)
+    testImplementation(platform(libs.compose.bom))
+    testImplementation(libs.compose.ui.test.junit4)
 
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.runner)
