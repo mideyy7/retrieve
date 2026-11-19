@@ -23,7 +23,8 @@ import sys
 from collections import defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DRAFTS = ["ml/data/question_drafts.json"]  # add ml/data/question_drafts_ayo.json etc. here
+DRAFTS = ["ml/data/question_drafts.json"]  # slide questions: [stable_key, question, extra_pages]
+AUDIO_DRAFTS = ["ml/data/question_drafts_audio.json"]  # recording questions: [file name, "mm:ss", "mm:ss", question]
 OUT = "ml/data/questions.json"
 DEV_FRACTION = 0.16
 SEED = 26120
@@ -64,6 +65,29 @@ def main():
                 "answers": [{"doc_sha256": d, "page": p} for d, p in locs],
             })
 
+    # Recording questions: answers are time ranges in a recording, resolved by file name. They come
+    # after the slide questions, so existing ids (and their split assignment) never change.
+    def ms(t):
+        m, sec = t.split(":")
+        return (int(m) * 60 + int(sec)) * 1000
+    by_name = {}
+    for c in chunks:
+        if c["page"] is None:
+            by_name.setdefault(c["doc_name"], c)
+    for path in AUDIO_DRAFTS:
+        if not os.path.exists(os.path.join(ROOT, path)):
+            continue
+        draft = json.load(open(os.path.join(ROOT, path)))
+        for name, start, end, text in draft["questions"]:
+            if name not in by_name:
+                sys.exit(f"{path}: no recording named {name} in chunks.json")
+            rec = by_name[name]
+            a = {"doc_sha256": rec["doc_sha256"], "start_ms": ms(start), "end_ms": ms(end)}
+            if a["end_ms"] <= a["start_ms"]:
+                sys.exit(f"{path}: empty time range {start}-{end} for: {text}")
+            questions.append({"question": text.strip(), "author": draft["author"], "module": rec["module"],
+                              "source_key": f"{name} {start}-{end}", "answers": [a]})
+
     # Stable ids and a stratified dev split.
     rnd = random.Random(SEED)
     by_module = defaultdict(list)
@@ -76,12 +100,17 @@ def main():
         for q in qs:
             q["split"] = "dev" if q["id"] in dev_ids else "test"
 
-    # Every answer must point at real chunks.
-    locations = {(c["doc_sha256"], c["page"]) for c in chunks}
+    # Every answer must point at real chunks: a page that exists, or a time range some chunk overlaps.
+    sys.path.insert(0, os.path.join(ROOT, "ml"))
+    import common
+    locations = {(c["doc_sha256"], c["page"]) for c in chunks if c["page"] is not None}
+    spans = common.chunk_spans(chunks)
     for q in questions:
         for a in q["answers"]:
-            if (a["doc_sha256"], a["page"]) not in locations:
+            if "page" in a and (a["doc_sha256"], a["page"]) not in locations:
                 sys.exit(f"{q['id']}: answer {a} has no chunk in chunks.json")
+            if "start_ms" in a and not any(common.is_hit(loc, a, spans) for loc in spans):
+                sys.exit(f"{q['id']}: time range {a} overlaps no recording chunk")
 
     ordered = [{k: q[k] for k in ("id", "split", "author", "module", "question", "answers", "source_key")} for q in questions]
     with open(os.path.join(ROOT, OUT), "w") as f:

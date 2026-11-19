@@ -1741,6 +1741,366 @@
         }
       ],
       "source_key": "090f5ea6aaeb:p15:0"
+    },
+    {
+      "id": "q121",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "what does doctest do with the examples in a docstring",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 510000,
+          "end_ms": 545000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 08:30-09:05"
+    },
+    {
+      "id": "q122",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "how does pytest decide which files and functions are tests",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 576000,
+          "end_ms": 648000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 09:36-10:48"
+    },
+    {
+      "id": "q123",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "why did pytest fail with an error about reading from standard input when importing fizzbuzz",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 781000,
+          "end_ms": 850000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 13:01-14:10"
+    },
+    {
+      "id": "q124",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "what is the if name equals main guard for in python",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 850000,
+          "end_ms": 924000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 14:10-15:24"
+    },
+    {
+      "id": "q125",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "how can a test capture what a function prints using functools partial and monkeypatch",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 1026000,
+          "end_ms": 1093000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 17:06-18:13"
+    },
+    {
+      "id": "q126",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "why is replacing print inside a test risky",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 1093000,
+          "end_ms": 1191000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 18:13-19:51"
+    },
+    {
+      "id": "q127",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "what are the internal qualities of software and why do they matter to developers",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 1554000,
+          "end_ms": 1618000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 25:54-26:58"
+    },
+    {
+      "id": "q128",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "which external qualities of software matter to the user",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 1821000,
+          "end_ms": 1919000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 30:21-31:59"
+    },
+    {
+      "id": "q129",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "what do the real user and sys times from the unix time command mean",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 2122000,
+          "end_ms": 2191000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 35:22-36:31"
+    },
+    {
+      "id": "q130",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "why does building a long string with plus equals use so much memory in python",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 2332000,
+          "end_ms": 2442000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 38:52-40:42"
+    },
+    {
+      "id": "q131",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "does the choice between the fizzbuzz versions really change memory use given the python runtime",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 2442000,
+          "end_ms": 2475000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 40:42-41:15"
+    },
+    {
+      "id": "q132",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "what properties should a good unit have when designing software",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 2575000,
+          "end_ms": 2639000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 42:55-43:59"
+    },
+    {
+      "id": "q133",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "what does it mean to write the tests before the code",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 2769000,
+          "end_ms": 2804000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 46:09-46:44"
+    },
+    {
+      "id": "q134",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "what was the bug Margaret Hamilton's daughter found in the Apollo simulator",
+      "answers": [
+        {
+          "doc_sha256": "b30dfdfc87d171a83555f001424f3871f5f4329ef97072ee0871b97c96bd75f1",
+          "start_ms": 2871000,
+          "end_ms": 2905000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L1 - Unit Testing.vtt 47:51-48:25"
+    },
+    {
+      "id": "q135",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "why could OpenOffice not print on Tuesdays",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 110000,
+          "end_ms": 343000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 01:50-05:43"
+    },
+    {
+      "id": "q136",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "what went wrong in Apple's goto fail certificate bug",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 343000,
+          "end_ms": 586000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 05:43-09:46"
+    },
+    {
+      "id": "q137",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "why might Apple not have written a test that would catch goto fail",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 800000,
+          "end_ms": 868000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 13:20-14:28"
+    },
+    {
+      "id": "q138",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "how is a unit's input space different from the whole program's input space",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 868000,
+          "end_ms": 932000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 14:28-15:32"
+    },
+    {
+      "id": "q139",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "which python module shows every line and function a program runs",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 1382000,
+          "end_ms": 1449000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 23:02-24:09"
+    },
+    {
+      "id": "q140",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "how does the regular expression that accepts yes answers work",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 1488000,
+          "end_ms": 1561000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 24:48-26:01"
+    },
+    {
+      "id": "q141",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "why is one test that exercises two functions not a proper unit test",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 1703000,
+          "end_ms": 1765000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 28:23-29:25"
+    },
+    {
+      "id": "q142",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "how many test inputs are enough for the yes or no prompt",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 2084000,
+          "end_ms": 2191000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 34:44-36:31"
+    },
+    {
+      "id": "q143",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "does high line coverage mean a program is well tested",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 2228000,
+          "end_ms": 2302000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 37:08-38:22"
+    },
+    {
+      "id": "q144",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23311",
+      "question": "what does it suggest if the arrange step of a test is very complicated",
+      "answers": [
+        {
+          "doc_sha256": "56245e0c1e5d0cf3aaacd63efa7765b90ea3288f2bd4e98a8c8037e885e95c9f",
+          "start_ms": 2598000,
+          "end_ms": 2663000
+        }
+      ],
+      "source_key": "COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt 43:18-44:23"
     }
   ]
 }

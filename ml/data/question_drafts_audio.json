@@ -1,0 +1,30 @@
+{
+  "_about": "Recording-only questions, drafted by Claude from the COMP23311 week 3 lecture captions (W3 L1 Unit Testing, W3 L2 From Tests To Test Suites), paraphrased as a revising student would ask. COMP23311 has no slides in the corpus, so only the recordings can answer these. Each entry: recording file name, answer start mm:ss, answer end mm:ss (chunk boundaries of the passage that answers it), question. Ayo to review.",
+  "author": "claude-draft",
+  "questions": [
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "08:30", "09:05", "what does doctest do with the examples in a docstring"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "09:36", "10:48", "how does pytest decide which files and functions are tests"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "13:01", "14:10", "why did pytest fail with an error about reading from standard input when importing fizzbuzz"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "14:10", "15:24", "what is the if name equals main guard for in python"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "17:06", "18:13", "how can a test capture what a function prints using functools partial and monkeypatch"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "18:13", "19:51", "why is replacing print inside a test risky"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "25:54", "26:58", "what are the internal qualities of software and why do they matter to developers"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "30:21", "31:59", "which external qualities of software matter to the user"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "35:22", "36:31", "what do the real user and sys times from the unix time command mean"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "38:52", "40:42", "why does building a long string with plus equals use so much memory in python"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "40:42", "41:15", "does the choice between the fizzbuzz versions really change memory use given the python runtime"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "42:55", "43:59", "what properties should a good unit have when designing software"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "46:09", "46:44", "what does it mean to write the tests before the code"],
+    ["COMP23311 202627 - W3 L1 - Unit Testing.vtt", "47:51", "48:25", "what was the bug Margaret Hamilton's daughter found in the Apollo simulator"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "01:50", "05:43", "why could OpenOffice not print on Tuesdays"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "05:43", "09:46", "what went wrong in Apple's goto fail certificate bug"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "13:20", "14:28", "why might Apple not have written a test that would catch goto fail"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "14:28", "15:32", "how is a unit's input space different from the whole program's input space"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "23:02", "24:09", "which python module shows every line and function a program runs"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "24:48", "26:01", "how does the regular expression that accepts yes answers work"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "28:23", "29:25", "why is one test that exercises two functions not a proper unit test"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "34:44", "36:31", "how many test inputs are enough for the yes or no prompt"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "37:08", "38:22", "does high line coverage mean a program is well tested"],
+    ["COMP23311 202627 - W3 L2- From Tests To Test Suites.vtt", "43:18", "44:23", "what does it suggest if the arrange step of a test is very complicated"]
+  ]
+}

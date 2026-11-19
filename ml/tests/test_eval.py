@@ -47,11 +47,18 @@ def test_rrf_fuses_and_breaks_ties_deterministically():
 
 
 def test_every_answer_location_exists_in_the_corpus():
-    locations = {(c["doc_sha256"], c["page"]) for c in common.load_chunks()}
+    """Slide answers name a page that has chunks; recording answers name a time range that overlaps
+    at least one chunk of that recording."""
+    chunks = common.load_chunks()
+    pages = {(c["doc_sha256"], c["page"]) for c in chunks if c["page"] is not None}
+    spans = common.chunk_spans(chunks)
     for q in common.load_questions("all"):
         assert q["answers"], q["id"]
         for a in q["answers"]:
-            assert (a["doc_sha256"], a["page"]) in locations, (q["id"], a)
+            if "page" in a:
+                assert (a["doc_sha256"], a["page"]) in pages, (q["id"], a)
+            else:
+                assert any(common.is_hit(loc, a, spans) for loc in spans), (q["id"], a)
 
 
 def test_dev_and_test_splits_are_disjoint():
