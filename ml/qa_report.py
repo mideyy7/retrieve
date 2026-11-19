@@ -17,6 +17,7 @@ Judgments (one per row, filled in by hand):
 "Faithful" = correct, partly correct or correct refusal: the answer stays within the materials.
 """
 import csv
+import statistics
 import json
 import sys
 
@@ -79,9 +80,9 @@ def score(path=OUT):
             print(f"  {kind:<14} faithful {sum(r['judgment'] in FAITHFUL for r in sub)} of {len(sub)}")
     answered = [r for r in rows if r["outcome"] in ("answered", "declined_by_model") and r["ttft_ms"]]
     if answered:
-        ttft = sorted(int(r["ttft_ms"]) for r in answered)
-        tps = sorted(float(r["decode_tok_s"]) for r in answered)
-        print(f"  TTFT median {ttft[len(ttft) // 2] / 1000:.1f} s, decode median {tps[len(tps) // 2]:.2f} tok/s "
+        ttft = statistics.median(int(r["ttft_ms"]) for r in answered)
+        tps = statistics.median(float(r["decode_tok_s"]) for r in answered)
+        print(f"  TTFT median {ttft / 1000:.1f} s, decode median {tps:.2f} tok/s "
               f"(n={len(answered)}, {answered[0]['device']}, {answered[0]['soc']})")
 
 

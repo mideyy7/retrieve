@@ -39,6 +39,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.mideyy7.retrieve.ui.about.AboutScreen
 import com.mideyy7.retrieve.ui.ask.AskScreen
 import com.mideyy7.retrieve.ui.document.DocumentScreen
 import com.mideyy7.retrieve.ui.importer.ImportCallbacks
@@ -61,6 +62,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object AskRoute
 @Serializable data object LibraryRoute
 @Serializable data class ModuleRoute(val code: String)
+@Serializable data object AboutRoute
 @Serializable data class DocumentRoute(val id: Long)
 
 /** A place in a file, full screen: [page] for PDFs, [startMs] (>= 0) for recordings; [query] is highlighted. */
@@ -174,7 +176,11 @@ fun RetrieveApp() {
                 }
                 navigation<LibraryTab>(startDestination = LibraryRoute) {
                     composable<LibraryRoute> {
-                        LibraryScreen(onOpenModule = { nav.navigate(ModuleRoute(it)) }, onImport = { startImport(null, null) })
+                        LibraryScreen(
+                            onOpenModule = { nav.navigate(ModuleRoute(it)) },
+                            onImport = { startImport(null, null) },
+                            onAbout = { nav.navigate(AboutRoute) },
+                        )
                     }
                     composable<ModuleRoute> { entry ->
                         val code = entry.toRoute<ModuleRoute>().code
@@ -189,6 +195,7 @@ fun RetrieveApp() {
                             },
                         )
                     }
+                    composable<AboutRoute> { AboutScreen(onBack = { nav.popBackStack() }) }
                     composable<DocumentRoute> {
                         DocumentScreen(
                             onBack = { nav.popBackStack() },

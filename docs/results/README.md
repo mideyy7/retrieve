@@ -53,7 +53,7 @@ The same run also records the app's whole search path (hybrid for plain question
 | Recordings searchable by timestamp | 20 recording-only test questions, recall@5 0.90 (hybrid) | `recall.csv` (`--only recordings`) | `python ml/eval.py --only recordings` |
 | Off-topic questions refused | 8 / 8 test, 96% of answerable answered; threshold 0.4768 tuned on dev | `refusal.csv` | `python ml/refusal.py` |
 | Q&A faithfulness, **[f] of 30** | **16 / 30** (v2); first run 11 / 30 (v1) | `qa_eval_v2.csv`, `qa_eval.csv` (judgment per row) | `scripts/qa_eval.sh` then `python ml/qa_report.py score docs/results/qa_eval_v2.csv` |
-| Ask speed | TTFT 20.5 s, 4.5 tok/s (tablet, v2); **re-measure on the phone** | `qa_eval_v2.csv` (`ttft_ms`, `decode_tok_s`) | same |
+| Ask speed | TTFT 20.3 s, 4.51 tok/s (tablet, v2; v1 32.5 s, 4.42); **re-measure on the phone** | `qa_eval_v2.csv` (`ttft_ms`, `decode_tok_s`) | same |
 | LLM choice | Gemma 3 1B vs Qwen3-0.6B vs Gemma 270M | `llm_spike.csv` | `spikes/spike1_llm_device.sh` |
 | Device ↔ laptop parity | keyword 40/40 identical; semantic top-1 100/100, top-5 96/100 | `parity.csv` | `scripts/parity_check.py`, `scripts/semantic_parity.py` |
 | Battery per indexing / embedding run | **to measure on the phone** | `battery.csv` (+ raw in `raw/`) | `scripts/battery_run.sh index <ids>` / `embed` |

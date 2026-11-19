@@ -55,6 +55,7 @@ fun LibraryScreen(
     onOpenModule: (String) -> Unit,
     onImport: () -> Unit,
     modifier: Modifier = Modifier,
+    onAbout: () -> Unit = {},
     vm: LibraryViewModel = viewModel(),
 ) {
     val modules by vm.modules.collectAsStateWithLifecycle()
@@ -76,7 +77,7 @@ fun LibraryScreen(
             TopAppBar(
                 windowInsets = WindowInsets(0),
                 title = { Text("Library") },
-                actions = { LibraryMenu(onReindexAll = vm::reindexAll, onExportChunks = vm::exportChunks) },
+                actions = { LibraryMenu(onReindexAll = vm::reindexAll, onExportChunks = vm::exportChunks, onAbout = onAbout) },
             )
         },
         floatingActionButton = {
@@ -96,12 +97,13 @@ fun LibraryScreen(
 }
 
 @Composable
-private fun LibraryMenu(onReindexAll: () -> Unit, onExportChunks: () -> Unit) {
+private fun LibraryMenu(onReindexAll: () -> Unit, onExportChunks: () -> Unit, onAbout: () -> Unit) {
     var open by remember { mutableStateOf(false) }
     IconButton(onClick = { open = true }) { Icon(Icons.Filled.MoreVert, contentDescription = "More") }
     DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
         DropdownMenuItem(text = { Text("Re-index all") }, onClick = { open = false; onReindexAll() })
         DropdownMenuItem(text = { Text("Export chunks") }, onClick = { open = false; onExportChunks() })
+        DropdownMenuItem(text = { Text("About & licences") }, onClick = { open = false; onAbout() })
     }
 }
 
