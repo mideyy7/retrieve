@@ -76,6 +76,7 @@ import com.mideyy7.retrieve.search.SearchResult
 import com.mideyy7.retrieve.search.Snippets
 import com.mideyy7.retrieve.ui.components.citation
 import com.mideyy7.retrieve.ui.components.copyText
+import com.mideyy7.retrieve.ui.theme.LocalModuleHues
 import com.mideyy7.retrieve.ui.theme.Mono
 import com.mideyy7.retrieve.ui.theme.moduleColor
 import kotlinx.coroutines.launch
@@ -284,7 +285,9 @@ private fun StartContent(
                 Button(onClick = onImport) { Text("Import files") }
             }
         }
-        if (modules.isNotEmpty()) {
+        // Wait for the library's colour map so two modules never flash up in the same colour.
+        val hues = LocalModuleHues.current
+        if (modules.isNotEmpty() && modules.all { it.uppercase() in hues }) {
             // Module shortcuts, like a browser's new-tab tiles: tap one to search inside it.
             FlowRow(
                 Modifier.fillMaxWidth(),

@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -62,6 +65,7 @@ import com.mideyy7.retrieve.qa.render
 import com.mideyy7.retrieve.search.Snippets
 import com.mideyy7.retrieve.ui.components.ModuleBadge
 import com.mideyy7.retrieve.ui.components.displayName
+import com.mideyy7.retrieve.ui.components.highlighted
 import com.mideyy7.retrieve.ui.components.locationLabel
 import com.mideyy7.retrieve.ui.components.timestamp
 import com.mideyy7.retrieve.ui.slides.SlideImage
@@ -163,9 +167,14 @@ private fun AnswerCard(state: AskUiState, onOpenSource: (Source) -> Unit, onSear
                 AskPhase.REFUSED -> Refused(state, onSearchInstead)
                 AskPhase.FAILED -> Text(state.message ?: "Something went wrong.", color = MaterialTheme.colorScheme.error)
                 else -> {
-                    Progress(state.phase)
                     val rendered = remember(state.answer, state.sources) { state.answer?.let { render(it, state.sources) } }
+                    val numbered = rendered?.numbered ?: state.sources
+                    if (state.keySentences.isNotEmpty()) KeySentenceBlock(state, numbered, onOpenSource)
+                    Progress(state.phase)
                     if (rendered != null && rendered.text.isNotBlank()) {
+                        if (state.keySentences.isNotEmpty()) {
+                            Text("In short · written on this device", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                         Text(answerText(rendered, onOpenSource), style = MaterialTheme.typography.bodyLarge)
                         if (state.phase == AskPhase.DONE) CitationNotes(state)
                     }
@@ -179,6 +188,36 @@ private fun AnswerCard(state: AskUiState, onOpenSource: (Source) -> Unit, onSear
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+/**
+ * The sentences from the passages that best match the question, copied word for word: the part of
+ * the answer that can't be made up. Each links to its source with the same number as below.
+ */
+@Composable
+private fun KeySentenceBlock(state: AskUiState, numbered: List<Source>, onOpenSource: (Source) -> Unit) {
+    val terms = remember(state.question) { Snippets.queryTerms(state.question) }
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text("From your slides", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+        state.keySentences.forEach { k ->
+            val n = numbered.indexOf(k.source) + 1
+            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Box(Modifier.width(3.dp).fillMaxHeight().background(MaterialTheme.colorScheme.primary, RoundedCornerShape(2.dp)))
+                val snippet = remember(k.text, terms) { Snippets.make(k.text, terms, maxChars = k.text.length) }
+                val link = TextLinkStyles(SpanStyle(color = Color.White, background = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold, fontSize = 0.75.em, baselineShift = BaselineShift(0.25f)))
+                Text(
+                    buildAnnotatedString {
+                        append("“")
+                        append(highlighted(snippet.text, snippet.highlights))
+                        append("” ")
+                        if (n > 0) withLink(LinkAnnotation.Clickable("source", link) { onOpenSource(k.source) }) { append("\u2009$n\u2009") }
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
     }

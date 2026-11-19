@@ -48,7 +48,7 @@ class LiteRtGenerator(private val context: Context) : Generator, AutoCloseable {
 
     val isLoaded: Boolean get() = engine != null
 
-    override fun generate(system: String, user: String): Flow<Generation> = flow {
+    override fun generate(system: String, user: String, maxOutputTokens: Int): Flow<Generation> = flow {
         lock.withLock {
             val e = engine ?: load().also { engine = it }
             val config = ConversationConfig(
@@ -56,7 +56,7 @@ class LiteRtGenerator(private val context: Context) : Generator, AutoCloseable {
                 // Greedy decoding (top-k 1): the same question gives the same answer, which the
                 // evaluation relies on, and small models drift less from the excerpts.
                 samplerConfig = SamplerConfig(topK = 1, topP = 1.0, temperature = 1.0, seed = 1234),
-                maxOutputToken = MAX_OUTPUT_TOKENS,
+                maxOutputToken = maxOutputTokens,
             )
             e.createConversation(config).use { conversation ->
                 val start = SystemClock.elapsedRealtime()
@@ -129,6 +129,5 @@ class LiteRtGenerator(private val context: Context) : Generator, AutoCloseable {
 
     private companion object {
         const val TAG = "LiteRtGenerator"
-        const val MAX_OUTPUT_TOKENS = 256
     }
 }

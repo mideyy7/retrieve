@@ -27,11 +27,33 @@ Answer the question using only the numbered excerpts. Write two to four short se
 End every sentence with the number of the excerpt it comes from in square brackets, like [1] or [2].
 If the excerpts do not answer the question, reply only: Not in your materials."""
 
-/** What the model is told, once per conversation ([PromptStyle.LETTERS]). */
-const val SYSTEM_PROMPT_LETTERS = """You help a student revise from their own lecture materials.
-Answer the question using only the excerpts, which are labelled with letters like [A] and [B]. Write two to four short sentences.
+/** What the model is told, once per conversation ([PromptStyle.LETTERS]); [length] e.g. "two to four short sentences". */
+fun systemPromptLetters(length: String) = """You help a student revise from their own lecture materials.
+Answer the question using only the excerpts, which are labelled with letters like [A] and [B]. Write $length.
 End every sentence with the letter of the excerpt that supports it, like [A] or [C].
 If the excerpts do not answer the question, reply only: Not in your materials."""
+
+/**
+ * One version of the answering pipeline. [V1] is what the first 30-question evaluation ran
+ * (docs/results/qa_eval.csv); [V2] adds what that evaluation pointed to, tried on dev first:
+ * key sentences copied from the passages shown before the model's answer, at most two sentences
+ * from the model, and two passages instead of four, each cut around its best sentence.
+ */
+data class AskConfig(
+    val name: String,
+    val maxSources: Int,
+    val maxOutputTokens: Int,
+    val answerLength: String,
+    val keySentences: Int,
+    val excerptAroundKeySentence: Boolean,
+    val style: PromptStyle = PromptStyle.LETTERS,
+) {
+    companion object {
+        val V1 = AskConfig("v1", maxSources = 4, maxOutputTokens = 256, answerLength = "two to four short sentences", keySentences = 0, excerptAroundKeySentence = false)
+        val V2 = AskConfig("v2", maxSources = 2, maxOutputTokens = 96, answerLength = "one or two short sentences", keySentences = 2, excerptAroundKeySentence = true)
+        fun named(name: String) = listOf(V1, V2).first { it.name == name }
+    }
+}
 
 /** The phrase the model is told to use when it can't answer from the excerpts. */
 const val NOT_IN_MATERIALS = "Not in your materials"
@@ -59,15 +81,15 @@ data class GenerationStats(
 
 /** An on-device model. Separate from the pipeline so the pipeline is tested without one. */
 interface Generator {
-    fun generate(system: String, user: String): Flow<Generation>
+    fun generate(system: String, user: String, maxOutputTokens: Int = 256): Flow<Generation>
 }
 
 sealed interface AskEvent {
     /** The library doesn't cover the question; the model isn't asked. */
     data class Refused(val topSimilarity: Float?, val reason: String) : AskEvent
 
-    /** The passages chosen, before the model starts. */
-    data class Sources(val sources: List<Source>) : AskEvent
+    /** The passages chosen and the sentences copied from them, before the model starts. */
+    data class Sources(val sources: List<Source>, val keySentences: List<KeySentence> = emptyList()) : AskEvent
 
     /** [raw] is exactly what the model wrote; [checked] is what's shown, citations moved to sentence ends. */
     data class Answer(val checked: CheckedAnswer, val sources: List<Source>, val done: Boolean, val stats: GenerationStats?, val raw: String = checked.text) : AskEvent {
@@ -83,9 +105,12 @@ sealed interface AskEvent {
 class AskPipeline(
     private val search: suspend (String) -> SearchOutcome,
     private val generator: Generator,
-    private val maxSources: Int = MAX_SOURCES,
-    private val style: PromptStyle = PromptStyle.LETTERS,
+    /** The app's sentence embedder, for picking key sentences (needed when [config] uses them). */
+    private val embed: ((String) -> FloatArray)? = null,
+    private val config: AskConfig = AskConfig.V2,
 ) {
+    private val style get() = config.style
+
     fun ask(question: String): Flow<AskEvent> = flow {
         val outcome = search(question)
         val results = (outcome as? SearchOutcome.Results)?.results.orEmpty()
@@ -98,22 +123,23 @@ class AskPipeline(
             emit(AskEvent.Refused(top, "This doesn't seem to be covered in your materials."))
             return@flow
         }
-        val sources = sourcesFor(results, maxSources)
-        emit(AskEvent.Sources(sources))
+        val sources = sourcesFor(results, config.maxSources)
+        val key = if (config.keySentences > 0 && embed != null) KeySentences.pick(question, sources, embed, config.keySentences) else emptyList()
+        emit(AskEvent.Sources(sources, key))
+        val around = if (config.excerptAroundKeySentence) key else emptyList()
         val (system, user) = when (style) {
             PromptStyle.TAGS -> SYSTEM_PROMPT to userPrompt(question, sources)
             PromptStyle.NUMBERED -> SYSTEM_PROMPT_NUMBERED to numberedPrompt(question, sources)
-            PromptStyle.LETTERS -> SYSTEM_PROMPT_LETTERS to letteredPrompt(question, sources)
+            PromptStyle.LETTERS -> systemPromptLetters(config.answerLength) to letteredPrompt(question, sources, config.answerLength, around)
         }
-        generator.generate(system, user).collect { g ->
+        generator.generate(system, user, config.maxOutputTokens).collect { g ->
             val text = if (style == PromptStyle.LETTERS) moveLeadingCitations(g.text) else g.text
             emit(AskEvent.Answer(CitationChecker.check(text, sources), sources, g.done, g.stats, raw = g.text))
         }
     }
 
     companion object {
-        /** Four passages of ~600 characters keep the prompt near 900 tokens: prefill is the slow part on a phone CPU. */
-        const val MAX_SOURCES = 4
+        /** ~600 characters per passage: prefill is the slow part on a phone CPU. */
         const val EXCERPT_CHARS = 600
 
         /** The top results, one passage per place (hybrid results are already one per slide/moment). */
@@ -140,14 +166,25 @@ class AskPipeline(
                 "Answer in two to four sentences, ending each sentence with its excerpt number like [1]."
         }
 
-        fun letteredPrompt(question: String, sources: List<Source>): String {
+        /**
+         * Passages labelled [A].. with where they're from. Each is cut to [EXCERPT_CHARS] around its key
+         * sentence when one was picked for it, otherwise around the first query word.
+         */
+        fun letteredPrompt(
+            question: String,
+            sources: List<Source>,
+            length: String = AskConfig.V1.answerLength,
+            keySentences: List<KeySentence> = emptyList(),
+        ): String {
             val terms = Snippets.queryTerms(question)
             val excerpts = sources.withIndex().joinToString("\n\n") { (i, s) ->
-                val text = Snippets.make(s.hit.chunk.text, terms, maxChars = EXCERPT_CHARS).text
+                val best = keySentences.firstOrNull { it.source == s }?.text
+                val text = if (best != null) KeySentences.excerptAround(s.hit.chunk.text, best, EXCERPT_CHARS)
+                else Snippets.make(s.hit.chunk.text, terms, maxChars = EXCERPT_CHARS).text
                 "[${'A' + i}] (${s.tag.trim('[', ']')})\n$text"
             }
             return "Excerpts:\n\n$excerpts\n\nQuestion: ${question.trim()}\n" +
-                "Answer in two to four sentences. End each sentence with the letter of the excerpt that supports it, like [B]."
+                "Answer in ${length.removeSuffix(" short sentences")} sentences. End each sentence with the letter of the excerpt that supports it, like [B]."
         }
     }
 }

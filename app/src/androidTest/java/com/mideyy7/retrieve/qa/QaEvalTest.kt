@@ -22,6 +22,7 @@ import java.io.File
  * skipped unless given a question file, and the output is judged by hand (scripts/qa_eval.sh).
  *
  *   -e questions qa/<file>.json   pushed to the app's external files dir: [{"id", "question"}, ...]
+ *   -e config v1|v2               pipeline version (AskConfig, default v2)
  *   -e style LETTERS|NUMBERED|TAGS prompt style (default LETTERS)
  *   -e out qa/<file>.jsonl        output, appended one line per question
  */
@@ -45,11 +46,12 @@ class QaEvalTest {
         val questions = JSONArray(input!!.readText())
         LiteRtGenerator(app).use { generator ->
             val search = SearchRepository(app.database, app.keywordIndex, app.semanticIndex, { app.embedder.embed(it) })
-            val pipeline = AskPipeline(search::search, generator, style = style)
+            val config = AskConfig.named(args.getString("config", "v2")).copy(style = style)
+            val pipeline = AskPipeline(search::search, generator, { app.embedder.embed(it) }, config)
             for (i in 0 until questions.length()) {
                 val q = questions.getJSONObject(i)
                 val events = pipeline.ask(q.getString("question")).toList()
-                out.appendText(record(app, q, style, events).toString() + "\n")
+                out.appendText(record(app, q, style, events).put("config", config.name).toString() + "\n")
             }
         }
     }
@@ -62,7 +64,9 @@ class QaEvalTest {
         if (refused != null) {
             return o.put("outcome", "refused_retrieval").put("top_similarity", refused.topSimilarity?.toDouble())
         }
-        val sources = events.filterIsInstance<AskEvent.Sources>().first().sources
+        val chosen = events.filterIsInstance<AskEvent.Sources>().first()
+        val sources = chosen.sources
+        o.put("key_sentences", JSONArray(chosen.keySentences.map { JSONObject().put("text", it.text).put("source", it.source.tag).put("score", it.score.toDouble()) }))
         val answer = events.filterIsInstance<AskEvent.Answer>().last()
         val rendered = render(answer.checked, sources)
         o.put("outcome", if (answer.modelDeclined) "declined_by_model" else "answered")

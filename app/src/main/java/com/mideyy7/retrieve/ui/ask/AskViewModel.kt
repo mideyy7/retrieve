@@ -8,6 +8,7 @@ import com.mideyy7.retrieve.qa.AskEvent
 import com.mideyy7.retrieve.qa.AskPipeline
 import com.mideyy7.retrieve.qa.CheckedAnswer
 import com.mideyy7.retrieve.qa.GenerationStats
+import com.mideyy7.retrieve.qa.KeySentence
 import com.mideyy7.retrieve.qa.LiteRtGenerator
 import com.mideyy7.retrieve.qa.LlmModel
 import com.mideyy7.retrieve.qa.Source
@@ -27,6 +28,8 @@ data class AskUiState(
     val question: String = "",
     val phase: AskPhase = AskPhase.IDLE,
     val sources: List<Source> = emptyList(),
+    /** Sentences copied from the passages, shown before the model's answer. */
+    val keySentences: List<KeySentence> = emptyList(),
     val answer: CheckedAnswer? = null,
     val stats: GenerationStats? = null,
     /** Why there's no answer (refused or failed). */
@@ -43,6 +46,7 @@ class AskViewModel(app: Application, private val saved: SavedStateHandle) : Andr
     private val pipeline = AskPipeline(
         search = SearchRepository(app.retrieveApp.database, app.retrieveApp.keywordIndex, app.retrieveApp.semanticIndex, { app.retrieveApp.embedder.embed(it) })::search,
         generator = generator,
+        embed = { app.retrieveApp.embedder.embed(it) },
     )
 
     private val _state = MutableStateFlow(
@@ -73,7 +77,7 @@ class AskViewModel(app: Application, private val saved: SavedStateHandle) : Andr
                     when (e) {
                         is AskEvent.Refused -> _state.update { it.copy(phase = AskPhase.REFUSED, message = e.reason) }
                         is AskEvent.Sources -> _state.update {
-                            it.copy(sources = e.sources, phase = if (generator.isLoaded) AskPhase.WRITING else AskPhase.LOADING_MODEL)
+                            it.copy(sources = e.sources, keySentences = e.keySentences, phase = if (generator.isLoaded) AskPhase.WRITING else AskPhase.LOADING_MODEL)
                         }
                         is AskEvent.Answer -> _state.update {
                             it.copy(

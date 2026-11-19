@@ -29,7 +29,9 @@ class AskPipelineTest {
 
     private class FakeGenerator(val answer: String) : Generator {
         var prompt: String? = null
-        override fun generate(system: String, user: String): Flow<Generation> {
+        var maxTokens = -1
+        override fun generate(system: String, user: String, maxOutputTokens: Int): Flow<Generation> {
+            maxTokens = maxOutputTokens
             prompt = user
             return flowOf(Generation(answer.take(10), done = false), Generation(answer, done = true))
         }
@@ -52,7 +54,7 @@ class AskPipelineTest {
     @Test
     fun promptCarriesTaggedExcerptsAndAnswerIsChecked() = runTest {
         val gen = FakeGenerator("It removes satisfied clauses [COMP2111 wk4 slide 22].")
-        val events = AskPipeline({ SearchOutcome.Results(results, hybrid = true, topSimilarity = 0.70f) }, gen, style = PromptStyle.TAGS)
+        val events = AskPipeline({ SearchOutcome.Results(results, hybrid = true, topSimilarity = 0.70f) }, gen, config = AskConfig.V1.copy(style = PromptStyle.TAGS))
             .ask("what is unit propagation").toList()
 
         val prompt = gen.prompt!!
@@ -76,7 +78,7 @@ class AskPipelineTest {
     @Test
     fun numberedStyleLabelsPassagesAndMapsNumbersBack() = runTest {
         val gen = FakeGenerator("It removes satisfied clauses [1]. DPLL relies on it [2].")
-        val events = AskPipeline({ SearchOutcome.Results(results, hybrid = true, topSimilarity = 0.70f) }, gen, style = PromptStyle.NUMBERED)
+        val events = AskPipeline({ SearchOutcome.Results(results, hybrid = true, topSimilarity = 0.70f) }, gen, config = AskConfig.V1.copy(style = PromptStyle.NUMBERED))
             .ask("what is unit propagation").toList()
         val prompt = gen.prompt!!
         assertTrue(prompt.startsWith("Excerpts:\n\n[1] (COMP21111 wk4 slide 22)\nUnit propagation."))
@@ -95,5 +97,27 @@ class AskPipelineTest {
         assertEquals("It removes satisfied clauses [A]. DPLL relies on it [B].", last.checked.text)
         assertEquals("[A] It removes satisfied clauses. [B] DPLL relies on it.", last.raw)
         assertEquals(2, last.checked.valid)
+    }
+
+    @Test
+    fun v2UsesTwoPassagesKeySentencesAndShortAnswers() = runTest {
+        val three = results + result(9, "Splitting picks a variable and tries both values.")
+        val gen = FakeGenerator("It removes satisfied clauses [A].")
+        val embed = { s: String -> floatArrayOf(if ("unit" in s.lowercase()) 1f else 0f, 1f) }
+        val events = AskPipeline({ SearchOutcome.Results(three, hybrid = true, topSimilarity = 0.7f) }, gen, embed).ask("what is unit propagation").toList()
+        val chosen = events.filterIsInstance<AskEvent.Sources>().single()
+        assertEquals(2, chosen.sources.size)
+        assertTrue(chosen.keySentences.isNotEmpty())
+        assertEquals(96, gen.maxTokens)
+        assertTrue("Answer in one or two sentences." in gen.prompt!!)
+    }
+
+    @Test
+    fun v1PromptIsExactlyWhatTheFirstEvaluationUsed() = runTest {
+        val gen = FakeGenerator("x [A].")
+        AskPipeline({ SearchOutcome.Results(results, hybrid = true, topSimilarity = 0.7f) }, gen, config = AskConfig.V1).ask("q").toList()
+        assertTrue(gen.prompt!!.endsWith("Question: q\nAnswer in two to four sentences. End each sentence with the letter of the excerpt that supports it, like [B]."))
+        assertEquals(256, gen.maxTokens)
+        assertTrue("Write two to four short sentences." in systemPromptLetters(AskConfig.V1.answerLength))
     }
 }
