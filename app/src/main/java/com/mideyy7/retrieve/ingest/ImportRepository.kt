@@ -77,6 +77,7 @@ class ImportRepository(
             .setInputData(workDataOf(IndexDocumentWorker.KEY_DOC_ID to docId))
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
             .addTag(TAG_INDEXING)
+            .addTag(docTag(docId)) // WorkInfo doesn't expose input data, so the UI finds the doc by tag
             .build()
         // KEEP: if this document is already queued or running, don't start a second copy.
         workManager.enqueueUniqueWork(IndexDocumentWorker.uniqueName(docId), ExistingWorkPolicy.KEEP, request)
@@ -84,6 +85,12 @@ class ImportRepository(
 
     companion object {
         const val TAG_INDEXING = "indexing"
+        private const val DOC_TAG_PREFIX = "doc-"
+
+        fun docTag(docId: Long) = "$DOC_TAG_PREFIX$docId"
+
+        fun docIdFromTags(tags: Set<String>): Long? =
+            tags.firstOrNull { it.startsWith(DOC_TAG_PREFIX) }?.removePrefix(DOC_TAG_PREFIX)?.toLongOrNull()
     }
 }
 

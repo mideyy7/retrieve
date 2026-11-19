@@ -22,6 +22,9 @@ interface DocumentDao {
     @Query("UPDATE documents SET status = :status, error = :error WHERE id = :id")
     suspend fun setStatus(id: Long, status: DocStatus, error: String? = null)
 
+    @Query("SELECT * FROM documents WHERE status = 'READY'")
+    suspend fun allReady(): List<Document>
+
     @Query("DELETE FROM documents WHERE id = :id")
     suspend fun delete(id: Long)
 
