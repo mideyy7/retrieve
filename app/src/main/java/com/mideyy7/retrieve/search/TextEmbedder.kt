@@ -26,16 +26,21 @@ data class EmbeddingModelInfo(
  * Same tokenizer, padding and model file as ml/eval.py measured, so on-device vectors match the
  * evaluated ones. Not thread-safe internally (one set of tensor buffers), hence the lock.
  */
-class TextEmbedder(context: Context, val accelerator: Accelerator = Accelerator.CPU) : Closeable {
-    val info: EmbeddingModelInfo = Json.decodeFromString(
-        EmbeddingModelInfo.serializer(),
-        context.assets.open("$DIR/model.json").bufferedReader().readText(),
-    )
-    private val tokenizer = WordPieceTokenizer(
+class TextEmbedder private constructor(
+    val info: EmbeddingModelInfo,
+    vocab: List<String>,
+    private val model: CompiledModel,
+    val accelerator: Accelerator,
+) : Closeable {
+    /** The model bundled in the app's assets (the deployed int8 student). */
+    constructor(context: Context, accelerator: Accelerator = Accelerator.CPU) : this(
+        Json.decodeFromString(EmbeddingModelInfo.serializer(), context.assets.open("$DIR/model.json").bufferedReader().readText()),
         context.assets.open("$DIR/vocab.txt").bufferedReader().readLines(),
-        maxLen = info.max_len,
+        CompiledModel.create(context.assets, "$DIR/model.tflite", CompiledModel.Options(accelerator)),
+        accelerator,
     )
-    private val model = CompiledModel.create(context.assets, "$DIR/model.tflite", CompiledModel.Options(accelerator))
+
+    private val tokenizer = WordPieceTokenizer(vocab, maxLen = info.max_len)
     private val inputs: List<TensorBuffer> = model.createInputBuffers()
     private val outputs: List<TensorBuffer> = model.createOutputBuffers()
     private val lock = Any()
@@ -67,6 +72,14 @@ class TextEmbedder(context: Context, val accelerator: Accelerator = Accelerator.
 
     companion object {
         const val DIR = "embedding"
+
+        /** A model directory on disk with model.tflite, vocab.txt and model.json (used by benchmarks). */
+        fun fromDirectory(dir: java.io.File, accelerator: Accelerator = Accelerator.CPU) = TextEmbedder(
+            Json.decodeFromString(EmbeddingModelInfo.serializer(), java.io.File(dir, "model.json").readText()),
+            java.io.File(dir, "vocab.txt").readLines(),
+            CompiledModel.create(java.io.File(dir, "model.tflite").absolutePath, CompiledModel.Options(accelerator)),
+            accelerator,
+        )
 
         fun toBytes(v: FloatArray): ByteArray =
             ByteBuffer.allocate(v.size * 4).order(ByteOrder.LITTLE_ENDIAN).apply { asFloatBuffer().put(v) }.array()
