@@ -12,6 +12,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.mideyy7.retrieve.nativebridge.NativeBridge
 
 @Composable
 fun RetrieveTheme(content: @Composable () -> Unit) {
@@ -25,7 +26,7 @@ fun RetrieveTheme(content: @Composable () -> Unit) {
 fun RetrieveApp() {
     Scaffold { padding ->
         Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-            Text("Retrieve")
+            Text("Retrieve · native ${NativeBridge.nativeVersion()}")
         }
     }
 }

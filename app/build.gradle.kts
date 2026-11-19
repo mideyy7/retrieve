@@ -17,6 +17,19 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            // arm64 covers the test phone, almost all Play devices and the Apple-silicon emulator.
+            abiFilters += "arm64-v8a"
+        }
+    }
+
+    ndkVersion = "30.0.16248370"
+    externalNativeBuild {
+        cmake {
+            path = file("../native/CMakeLists.txt")
+            version = "4.1.2"
+        }
     }
 
     buildTypes {
