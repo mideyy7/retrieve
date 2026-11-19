@@ -350,3 +350,32 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - UI worktree merged (`9a84580`), `main` fast-forwarded, `ui-modules`/`ui-design` branches and the `retrieve-ui` worktree removed, `docs/ui.md` committed as the design record.
 - Lecture captions found: COMP23311 W3 L1 "Unit Testing" (48:54, 591 cues, 7,102 words) and W3 L2 "From Tests To Test Suites" (44:42, 510 cues, 5,964 words), as `.vtt` + `.txt` automated transcripts. No audio yet.
 - **File permissions restored (item 5).** First attempt failed: re-picking granted access to *new* URIs, but documents kept their old `sourceUri`, so "Re-index all" marked 18/19 FAILED ("permission revoked"); the one that worked had a matching URI. Fix: re-importing an existing file now repoints the document to the newly granted URI (commit after 3eddb88). After re-importing all 19 (driven through the picker with adb + uiautomator), every document re-indexed: **READY 19, 673 chunks, 673 embeddings**, keyword index rebuilt.
+
+---
+
+## 2026-11-19 (Thu, continued): Phase 6 part 1, lecture captions
+
+### Built
+- `WebVtt` parser + `TimedChunker` (≥ 30 s chunks, short tail folded in). Real captions: L1 591 cues → 86 chunks, L2 510 → 77, median ~80 words (fits 128 tokens; slides are 52% truncated).
+- Import accepts `.vtt` as a **recording** (DocType.AUDIO), with module/week from the name ("COMP23311 … W3 …" → COMP23311 · Week 3). The indexer stores chunks keyed `sha:t<ms>`, page null. Search shows `COMP23311 › Week 3 › 43:53`.
+- Gotcha: Android's media index types `.vtt` as `application/octet-stream`, so the picker also accepts that type (the sheet decides by extension).
+- `eval.py`: chunk locations are `(doc, page)` or `(doc, "t", start_ms)`; recording answers are `{doc, start_ms, end_ms}`, hit = overlap with a chunk's span. Slide-only numbers verified unchanged before adding recordings.
+
+### Question set v2: **test split sha256 `4bf9b74362433fb0eb415627122a42a817aec634ac177aa08d96957d767d6c56`**
+- +24 recording-only questions (COMP23311 W3, drafted by Claude from the captions, time-range labels). 144 total = 23 dev + 121 test (101 slide + 20 recording). The 120 earlier questions are unchanged (same ids, splits, labels).
+
+### Recall (laptop, corpus 836 chunks), `recall.csv` / `recall_ci.csv`
+| method | test R@5 [95% CI] (n=121) | slides only (n=101) | recordings only (n=20) |
+|---|---|---|---|
+| BM25 | 0.835 [0.769, 0.901] | 0.812 | 0.95 |
+| teacher fp32 | 0.868 [0.810, 0.926] | 0.842 | 1.00 |
+| student int8 | 0.826 [0.760, 0.893] | 0.802 | 0.95 |
+| **hybrid** | **0.868** [0.810, 0.926] | **0.861** | 0.90 (R@1 0.70, best) |
+- No pairwise difference is significant (hybrid − BM25 +0.033 [−0.017, +0.083]).
+- Recording questions are easy: COMP23311 is the only unit-testing material in the corpus, and the questions were written from the transcripts. Treat 0.90–1.00 as "works", not as a benchmark.
+
+### Phase 6: what's left (needs the lecture **audio/video**)
+- whisper.cpp in the app (JNI) + audio decoding (MediaCodec → 16 kHz mono), transcribe → same TimedChunker path.
+- Media3 playback from `startMs` on tap.
+- Real-time-factor benchmark on a fixed 30-min recording, tiny vs base, **on the measurement phone**.
+- Bonus once audio exists: word error rate of Whisper vs the portal captions.
