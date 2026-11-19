@@ -49,3 +49,32 @@ One entry per day worked. Record decisions, measurements (with the CSV they live
 - [ ] Corpus collected; 30-min benchmark recording SHA-256 recorded
 - [ ] ≥ 120 question texts in `ml/data/questions_draft.md`
 - [ ] R0: Play testing rule, targetSdk requirement, size limits recorded; ≥ 15 testers; model delivery method chosen
+
+---
+
+## 2026-11-19 (Thu, continued): Phase 1, app skeleton, ingestion and storage
+
+### Toolchain installed
+- arm64 JDK 21 (`brew install openjdk@21`). Build with `export JAVA_HOME=/opt/homebrew/opt/openjdk@21`.
+- SDK: platform android-36 and android-37.2, build-tools 36.1.0, NDK 30.0.16248370, CMake 4.1.2.
+- Gradle 9.9.1 wrapper, AGP 9.5.1 (built-in Kotlin), Kotlin 2.4.21, KSP 2.3.14.
+
+### Decisions
+- **minSdk 29, targetSdk 36, compileSdk 37.2.** compileSdk 37 is required by current AndroidX (core 1.19, Compose BOM 2026.09). targetSdk 36 is what Play currently needs: confirm in R0.
+- **arm64-v8a only** for native code (test phone + nearly all Play devices + the Apple-silicon emulator).
+- **PDF text: PdfBox-Android 2.0.27.0.** OCR: ML Kit text-recognition 16.0.1 (bundled Latin model, no Play services needed). This settles Spike 4's library choice, but it still has to be checked on 3 real lecture PDFs.
+- **DAO tests run with Robolectric on the JVM** instead of on the phone (`connectedAndroidTest`), so they run on every build without a device.
+- "Token" in the chunker = whitespace-separated word: max 200 per chunk, overlap 40, windows balanced in size.
+- Documents are unique by SHA-256 of the file. Chunks are committed with READY in one transaction, so a crash can't leave a half-imported document.
+
+### Verified on laptop
+- `./gradlew testDebugUnitTest`: 33 tests pass (DAO 7, chunker 8, PDF extraction 6, indexer 6, filename parser 3, export 3).
+- `ctest --test-dir native/build`: passes.
+- `./gradlew assembleRelease bundleRelease`: R8 build succeeds and `NativeBridge` keeps its name (mapping.txt).
+
+### Phase 1 exit gate
+- [x] Unit tests pass (Robolectric replaces connected DAO tests)
+- [ ] **Phone:** import a real module's PDFs, including an image-only deck; spot-check 5 OCR'd pages by eye
+- [ ] **Phone:** kill the app mid-import (`adb shell am kill com.mideyy7.retrieve` while indexing, then force stop), reopen it, check there are no half-imported documents
+- [ ] **Phone:** Export chunks twice → `adb pull /sdcard/Android/data/com.mideyy7.retrieve/files/chunks.json ml/data/chunks.json`, and confirm the two exports are identical (`cmp`)
+- [ ] **R1:** create the upload key and keystore.properties, back up and restore-test the key; release build installed via bundletool imports and searches on the phone
