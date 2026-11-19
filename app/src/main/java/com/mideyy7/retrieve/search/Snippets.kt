@@ -11,13 +11,25 @@ object Snippets {
     private val OPERATOR = Regex("\\b(AND|OR|NOT)\\b")
 
     /**
+     * Question and filler words. Marking every "is" and "what" in a passage hides the words that
+     * matter, so they aren't highlighted (they still count for ranking, which is native).
+     */
+    private val STOPWORDS = setOf(
+        "an", "the", "is", "are", "was", "were", "be", "been", "am", "do", "does", "did", "what", "which", "who",
+        "whom", "how", "why", "when", "where", "of", "in", "on", "to", "for", "and", "or", "not", "it", "its",
+        "this", "that", "these", "those", "with", "by", "from", "as", "at", "can", "there", "about", "into",
+        "my", "me", "we", "you", "your", "if", "so", "than", "then",
+    )
+
+    /**
      * Lowercased query words, ignoring quotes and punctuation (display only; ranking is native).
      * Filters (`module:COMP21111`, `week:4..6`), the operators AND/OR/NOT and words the query
-     * excludes (`NOT example`) aren't words to look for in the text, so they're left out.
+     * excludes (`NOT example`) aren't words to look for in the text, so they're left out, as are
+     * [STOPWORDS].
      */
     fun queryTerms(query: String): Set<String> =
         WORD.findAll(query.replace(FILTER, " ").replace(NEGATED, " ").replace(OPERATOR, " ").lowercase())
-            .map { it.value }.filter { it.length > 1 || it.first().isDigit() }.toSet()
+            .map { it.value }.filter { (it.length > 1 || it.first().isDigit()) && it !in STOPWORDS }.toSet()
 
     fun make(text: String, terms: Set<String>, maxChars: Int = 220): Snippet {
         val words = WORD.findAll(text).toList()

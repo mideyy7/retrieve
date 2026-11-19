@@ -19,6 +19,11 @@ class SnippetsTest {
     }
 
     @Test
+    fun questionWordsAreNotHighlighted() {
+        assertEquals(setOf("unit", "propagation"), Snippets.queryTerms("what is unit propagation"))
+    }
+
+    @Test
     fun highlightsMatchedWordsCaseInsensitively() {
         val s = Snippets.make("Unit propagation removes the unit.", setOf("unit"))
         assertEquals("Unit propagation removes the unit.", s.text)

@@ -81,7 +81,7 @@ fun LibraryScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(onClick = onImport) {
-                Text("Import PDFs")
+                Text("Import files")
             }
         },
         snackbarHost = { SnackbarHost(snackbar) },
