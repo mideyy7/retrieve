@@ -1,14 +1,9 @@
 package com.mideyy7.retrieve.ui.library
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mideyy7.retrieve.data.ChunkExporter
-import com.mideyy7.retrieve.data.DocType
-import com.mideyy7.retrieve.ingest.FilenameTagParser
-import com.mideyy7.retrieve.ingest.FilenameTags
-import com.mideyy7.retrieve.ingest.ImportResult
 import com.mideyy7.retrieve.retrieveApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,13 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-
-/** A picked file waiting for the user to confirm its module/week/type. */
-data class PendingImport(val uri: Uri, val name: String, val guess: FilenameTags)
 
 /**
  * Screen state lives here rather than in the composables: a ViewModel survives configuration
@@ -38,36 +29,8 @@ class LibraryViewModel(app: Application) : AndroidViewModel(app) {
         combine(db.documents().observeModules(), db.documents().observeWeekStatus(), ::modulesWithSegments)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
-    private val _pending = MutableStateFlow<List<PendingImport>>(emptyList())
-    val pending: StateFlow<List<PendingImport>> = _pending.asStateFlow()
-
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message.asStateFlow()
-
-    fun onFilesPicked(uris: List<Uri>) {
-        viewModelScope.launch {
-            val picked = withContext(Dispatchers.IO) {
-                uris.map { uri -> repo.displayName(uri).let { PendingImport(uri, it, FilenameTagParser.parse(it)) } }
-            }
-            _pending.update { it + picked }
-        }
-    }
-
-    fun confirmImport(item: PendingImport, module: String, week: Int, type: DocType) {
-        _pending.update { it - item }
-        viewModelScope.launch {
-            _message.value = try {
-                when (val r = repo.import(item.uri, item.name, module, week, type)) {
-                    is ImportResult.Queued -> "Importing ${item.name}"
-                    is ImportResult.AlreadyImported -> "Already imported as ${r.name}"
-                }
-            } catch (e: Exception) {
-                "Couldn't import ${item.name}: ${e.message}"
-            }
-        }
-    }
-
-    fun skipImport(item: PendingImport) = _pending.update { it - item }
 
     /** Re-runs indexing for every document, e.g. after a change to extraction or chunking. */
     fun reindexAll() {

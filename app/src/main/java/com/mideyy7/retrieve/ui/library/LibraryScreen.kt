@@ -1,7 +1,5 @@
 package com.mideyy7.retrieve.ui.library
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,17 +48,15 @@ import com.mideyy7.retrieve.ui.components.SegmentedBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(onOpenModule: (String) -> Unit, modifier: Modifier = Modifier, vm: LibraryViewModel = viewModel()) {
+fun LibraryScreen(
+    onOpenModule: (String) -> Unit,
+    onImport: () -> Unit,
+    modifier: Modifier = Modifier,
+    vm: LibraryViewModel = viewModel(),
+) {
     val modules by vm.modules.collectAsStateWithLifecycle()
-    val pending by vm.pending.collectAsStateWithLifecycle()
     val message by vm.message.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
-
-    // Storage Access Framework: the system file picker. We get content:// URIs, not file paths,
-    // and no storage permission is needed.
-    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
-        if (uris.isNotEmpty()) vm.onFilesPicked(uris)
-    }
 
     LaunchedEffect(message) {
         message?.let {
@@ -81,7 +77,7 @@ fun LibraryScreen(onOpenModule: (String) -> Unit, modifier: Modifier = Modifier,
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = { picker.launch(arrayOf("application/pdf")) }) {
+            ExtendedFloatingActionButton(onClick = onImport) {
                 Text("Import PDFs")
             }
         },
@@ -92,14 +88,6 @@ fun LibraryScreen(onOpenModule: (String) -> Unit, modifier: Modifier = Modifier,
             onOpenModule = onOpenModule,
             emptyFooter = "Native engine ${NativeBridge.nativeVersion()}",
             modifier = Modifier.padding(padding),
-        )
-    }
-
-    pending.firstOrNull()?.let { item ->
-        ImportDialog(
-            item = item,
-            onConfirm = { module, week, type -> vm.confirmImport(item, module, week, type) },
-            onSkip = { vm.skipImport(item) },
         )
     }
 }

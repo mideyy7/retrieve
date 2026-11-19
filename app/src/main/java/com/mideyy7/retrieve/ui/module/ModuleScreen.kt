@@ -23,6 +23,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,6 +65,7 @@ enum class WeekAction { SEARCH, ADD_FILES }
 fun ModuleScreen(
     onBack: () -> Unit,
     onSearch: (String) -> Unit,
+    onImport: (week: Int?) -> Unit,
     modifier: Modifier = Modifier,
     vm: ModuleViewModel = viewModel(),
 ) {
@@ -101,6 +103,9 @@ fun ModuleScreen(
                 },
             )
         },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(onClick = { onImport(null) }) { Text("Add files") }
+        },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
         ModuleContent(
@@ -114,7 +119,7 @@ fun ModuleScreen(
             onWeekAction = { week, action ->
                 when (action) {
                     WeekAction.SEARCH -> onSearch(scopeQuery(vm.code, week))
-                    WeekAction.ADD_FILES -> Unit
+                    WeekAction.ADD_FILES -> onImport(week)
                 }
             },
             onRowAction = { row, action ->
@@ -235,6 +240,7 @@ private fun WeekHeader(group: WeekGroup, expanded: Boolean, onToggle: () -> Unit
                             text = { Text(if (group.week == Weeks.WHOLE_MODULE) "Search whole-module material" else "Search this week") },
                             onClick = { menu = false; onAction(WeekAction.SEARCH) },
                         )
+                        DropdownMenuItem(text = { Text("Add files here") }, onClick = { menu = false; onAction(WeekAction.ADD_FILES) })
                     }
                 }
             }
