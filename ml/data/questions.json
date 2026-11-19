@@ -1,0 +1,1746 @@
+{
+  "format_version": 1,
+  "label_unit": "page",
+  "questions": [
+    {
+      "id": "q001",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how much should one block of a hierarchical design contain before I split it into another level",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 109
+        }
+      ],
+      "source_key": "7e8b9688306e:p109:2"
+    },
+    {
+      "id": "q002",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how far does light travel in one nanosecond",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 17
+        },
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 8
+        }
+      ],
+      "source_key": "7e8b9688306e:p17:0"
+    },
+    {
+      "id": "q003",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what are setup time and hold time for a D flip-flop",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 134
+        }
+      ],
+      "source_key": "7e8b9688306e:p134:0"
+    },
+    {
+      "id": "q004",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what sequence of steps does a pedestrian crossing controller go through",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 113
+        }
+      ],
+      "source_key": "7e8b9688306e:p113:1"
+    },
+    {
+      "id": "q005",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what is a bus in a digital circuit",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 107
+        }
+      ],
+      "source_key": "7e8b9688306e:p107:0"
+    },
+    {
+      "id": "q006",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how do you choose the clock frequency for a synchronous circuit",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 128
+        }
+      ],
+      "source_key": "7e8b9688306e:p128:0"
+    },
+    {
+      "id": "q007",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what topics are covered in the introduction to logic lectures",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 26
+        }
+      ],
+      "source_key": "7e8b9688306e:p26:0"
+    },
+    {
+      "id": "q008",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "why does a computer store information using only two symbols",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 27
+        }
+      ],
+      "source_key": "7e8b9688306e:p27:0"
+    },
+    {
+      "id": "q009",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how are logic gates made from transistors",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 25
+        }
+      ],
+      "source_key": "7e8b9688306e:p25:1"
+    },
+    {
+      "id": "q010",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how many rows does a truth table need for a function with n inputs",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 44
+        }
+      ],
+      "source_key": "7e8b9688306e:p44:0"
+    },
+    {
+      "id": "q011",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what are Vdd and Vss on a schematic",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 63
+        }
+      ],
+      "source_key": "7e8b9688306e:p63:1"
+    },
+    {
+      "id": "q012",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "which is evaluated first in a Boolean expression, NOT, AND or OR",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 43
+        }
+      ],
+      "source_key": "7e8b9688306e:p43:0"
+    },
+    {
+      "id": "q013",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how do you add two binary numbers and deal with the carry",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 90
+        }
+      ],
+      "source_key": "7e8b9688306e:p90:0"
+    },
+    {
+      "id": "q014",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what is the weight of each bit position in a binary number",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 89
+        }
+      ],
+      "source_key": "7e8b9688306e:p89:1"
+    },
+    {
+      "id": "q015",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how many different characters can 7-bit ASCII encode",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 37
+        }
+      ],
+      "source_key": "7e8b9688306e:p37:0"
+    },
+    {
+      "id": "q016",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how many instructions does a processor execute while light crosses the lecture theatre",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 17
+        },
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 8
+        }
+      ],
+      "source_key": "7e8b9688306e:p17:1"
+    },
+    {
+      "id": "q017",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what does the value held in memory mean in a sequential circuit",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 122
+        }
+      ],
+      "source_key": "7e8b9688306e:p122:0"
+    },
+    {
+      "id": "q018",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "why can't a half adder be used on its own for multi-bit addition",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 101
+        }
+      ],
+      "source_key": "7e8b9688306e:p101:0"
+    },
+    {
+      "id": "q019",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what is the difference between active high and active low signals",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 29
+        }
+      ],
+      "source_key": "7e8b9688306e:p29:1"
+    },
+    {
+      "id": "q020",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "can a logic signal be in more than one state at the same time",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 29
+        }
+      ],
+      "source_key": "7e8b9688306e:p29:0"
+    },
+    {
+      "id": "q021",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "why do computers reuse the same hardware over many steps instead of building special logic for every function",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 117
+        }
+      ],
+      "source_key": "7e8b9688306e:p117:1"
+    },
+    {
+      "id": "q022",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what is De Morgan's theorem for three variables",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 45
+        }
+      ],
+      "source_key": "7e8b9688306e:p45:2"
+    },
+    {
+      "id": "q023",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what are the three basic Boolean functions",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 42
+        }
+      ],
+      "source_key": "7e8b9688306e:p42:0"
+    },
+    {
+      "id": "q024",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how often does the number of transistors on a chip double",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 17
+        },
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 8
+        }
+      ],
+      "source_key": "7e8b9688306e:p17:2"
+    },
+    {
+      "id": "q025",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how many select lines does a 32 to 1 multiplexer need",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 82
+        }
+      ],
+      "source_key": "7e8b9688306e:p82:0"
+    },
+    {
+      "id": "q026",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what do the outputs of a sequential logic circuit depend on",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 123
+        }
+      ],
+      "source_key": "7e8b9688306e:p123:2"
+    },
+    {
+      "id": "q027",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "do I need to buy a textbook for computer engineering",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 10
+        }
+      ],
+      "source_key": "7e8b9688306e:p10:2"
+    },
+    {
+      "id": "q028",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what everyday analogy explains abstraction in system design",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 10
+        }
+      ],
+      "source_key": "7e8b9688306e:p10:1"
+    },
+    {
+      "id": "q029",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what voltage ranges count as a 0 and a 1 in TTL",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 27
+        }
+      ],
+      "source_key": "7e8b9688306e:p27:2"
+    },
+    {
+      "id": "q030",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "why can't you design a computer without hierarchy and abstraction",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 109
+        }
+      ],
+      "source_key": "7e8b9688306e:p109:0"
+    },
+    {
+      "id": "q031",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what is actually inside a logic gate",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 61
+        }
+      ],
+      "source_key": "7e8b9688306e:p61:2"
+    },
+    {
+      "id": "q032",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how can one circuit do both addition and subtraction using XOR gates",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 105
+        }
+      ],
+      "source_key": "7e8b9688306e:p105:2"
+    },
+    {
+      "id": "q033",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "why is exclusive OR described as an odd parity function",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 49
+        }
+      ],
+      "source_key": "7e8b9688306e:p49:0"
+    },
+    {
+      "id": "q034",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what do NAND and NOR gates compute",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 47
+        }
+      ],
+      "source_key": "7e8b9688306e:p47:0"
+    },
+    {
+      "id": "q035",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how many values can a 32-bit Java integer hold",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 37
+        }
+      ],
+      "source_key": "7e8b9688306e:p37:2"
+    },
+    {
+      "id": "q036",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what is the difference between sum of products and product of sums form",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 74
+        },
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 73
+        }
+      ],
+      "source_key": "7e8b9688306e:p74:0"
+    },
+    {
+      "id": "q037",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how is inversion shown on a logic gate symbol",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 62
+        }
+      ],
+      "source_key": "7e8b9688306e:p62:0"
+    },
+    {
+      "id": "q038",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what is the main focus of the fundamentals of computer engineering unit",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 3
+        }
+      ],
+      "source_key": "7e8b9688306e:p3:0"
+    },
+    {
+      "id": "q039",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what does a bubble on a gate input mean",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 66
+        }
+      ],
+      "source_key": "7e8b9688306e:p66:0"
+    },
+    {
+      "id": "q040",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how much faster is a phone processor than the Apollo guidance computer",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 15
+        }
+      ],
+      "source_key": "7e8b9688306e:p15:0"
+    },
+    {
+      "id": "q041",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how do you build a circuit from a truth table using AND and OR gates",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 73
+        },
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 74
+        }
+      ],
+      "source_key": "7e8b9688306e:p73:0"
+    },
+    {
+      "id": "q042",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "when is the output of an AND gate true",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 38
+        },
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 42
+        }
+      ],
+      "source_key": "7e8b9688306e:p38:0"
+    },
+    {
+      "id": "q043",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "what do X and Z mean in a timing diagram",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 132
+        }
+      ],
+      "source_key": "7e8b9688306e:p132:0"
+    },
+    {
+      "id": "q044",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "how are negative numbers represented in two's complement",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 93
+        }
+      ],
+      "source_key": "7e8b9688306e:p93:0"
+    },
+    {
+      "id": "q045",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP12111",
+      "question": "why is a ripple carry parallel adder slow",
+      "answers": [
+        {
+          "doc_sha256": "7e8b9688306ec905e510b201ee41abb2dd8390e046f67738d840e82eed764bc5",
+          "page": 105
+        }
+      ],
+      "source_key": "7e8b9688306e:p105:0"
+    },
+    {
+      "id": "q046",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what makes an expression a valid propositional formula",
+      "answers": [
+        {
+          "doc_sha256": "f473743dad38e25b9e6ff45ae83d6e63af9600416fcb62b8dc707d36bfcf682e",
+          "page": 41
+        }
+      ],
+      "source_key": "f473743dad38:p41:0"
+    },
+    {
+      "id": "q047",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "where is computational logic used in computer science",
+      "answers": [
+        {
+          "doc_sha256": "f473743dad38e25b9e6ff45ae83d6e63af9600416fcb62b8dc707d36bfcf682e",
+          "page": 30
+        }
+      ],
+      "source_key": "f473743dad38:p30:0"
+    },
+    {
+      "id": "q048",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what topics does the logic and modelling course unit cover",
+      "answers": [
+        {
+          "doc_sha256": "f473743dad38e25b9e6ff45ae83d6e63af9600416fcb62b8dc707d36bfcf682e",
+          "page": 34
+        }
+      ],
+      "source_key": "f473743dad38:p34:0"
+    },
+    {
+      "id": "q049",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what is an interpretation of propositional variables",
+      "answers": [
+        {
+          "doc_sha256": "f473743dad38e25b9e6ff45ae83d6e63af9600416fcb62b8dc707d36bfcf682e",
+          "page": 58
+        }
+      ],
+      "source_key": "f473743dad38:p58:0"
+    },
+    {
+      "id": "q050",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "how can you evaluate a formula by replacing each variable with true or false",
+      "answers": [
+        {
+          "doc_sha256": "f473743dad38e25b9e6ff45ae83d6e63af9600416fcb62b8dc707d36bfcf682e",
+          "page": 152
+        }
+      ],
+      "source_key": "f473743dad38:p152:0"
+    },
+    {
+      "id": "q051",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "why is the C function that allocates an array not correct",
+      "answers": [
+        {
+          "doc_sha256": "f473743dad38e25b9e6ff45ae83d6e63af9600416fcb62b8dc707d36bfcf682e",
+          "page": 13
+        }
+      ],
+      "source_key": "f473743dad38:p13:0"
+    },
+    {
+      "id": "q052",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what are the steps of the rewrite rule procedure for evaluating a formula",
+      "answers": [
+        {
+          "doc_sha256": "f473743dad38e25b9e6ff45ae83d6e63af9600416fcb62b8dc707d36bfcf682e",
+          "page": 156
+        }
+      ],
+      "source_key": "f473743dad38:p156:0"
+    },
+    {
+      "id": "q053",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "which famous maths problems were proved by SAT solvers",
+      "answers": [
+        {
+          "doc_sha256": "f473743dad38e25b9e6ff45ae83d6e63af9600416fcb62b8dc707d36bfcf682e",
+          "page": 33
+        }
+      ],
+      "source_key": "f473743dad38:p33:0"
+    },
+    {
+      "id": "q054",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "why are truth tables not practical for checking satisfiability",
+      "answers": [
+        {
+          "doc_sha256": "f473743dad38e25b9e6ff45ae83d6e63af9600416fcb62b8dc707d36bfcf682e",
+          "page": 178
+        }
+      ],
+      "source_key": "f473743dad38:p178:0"
+    },
+    {
+      "id": "q055",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "how does the splitting procedure decide if a formula is satisfiable",
+      "answers": [
+        {
+          "doc_sha256": "8f2c3e10d56fe57cd84633202647cfc6ae92566ace1d0c36aec8b7356652b826",
+          "page": 50
+        }
+      ],
+      "source_key": "8f2c3e10d56f:p50:0"
+    },
+    {
+      "id": "q056",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what is the idea of case analysis on a variable when checking satisfiability",
+      "answers": [
+        {
+          "doc_sha256": "8f2c3e10d56fe57cd84633202647cfc6ae92566ace1d0c36aec8b7356652b826",
+          "page": 46
+        }
+      ],
+      "source_key": "8f2c3e10d56f:p46:0"
+    },
+    {
+      "id": "q057",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "how is the Stirlitz spy puzzle written in propositional logic",
+      "answers": [
+        {
+          "doc_sha256": "8f2c3e10d56fe57cd84633202647cfc6ae92566ace1d0c36aec8b7356652b826",
+          "page": 18
+        }
+      ],
+      "source_key": "8f2c3e10d56f:p18:0"
+    },
+    {
+      "id": "q058",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "how is implication related to comparing truth values with less than or equal",
+      "answers": [
+        {
+          "doc_sha256": "8f2c3e10d56fe57cd84633202647cfc6ae92566ace1d0c36aec8b7356652b826",
+          "page": 120
+        }
+      ],
+      "source_key": "8f2c3e10d56f:p120:0"
+    },
+    {
+      "id": "q059",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "why does the new variable have to be fresh in the definitional transformation proof",
+      "answers": [
+        {
+          "doc_sha256": "9a1422b8a08daed4e9c9d087b3f8db966309fb2b2adfc91fa466745698115a8e",
+          "page": 76
+        }
+      ],
+      "source_key": "9a1422b8a08d:p76:0"
+    },
+    {
+      "id": "q060",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "how many clauses does it take to encode sudoku for a SAT solver",
+      "answers": [
+        {
+          "doc_sha256": "9a1422b8a08daed4e9c9d087b3f8db966309fb2b2adfc91fa466745698115a8e",
+          "page": 119
+        }
+      ],
+      "source_key": "9a1422b8a08d:p119:0"
+    },
+    {
+      "id": "q061",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "how big is the clause set produced by the definitional clausal form transformation",
+      "answers": [
+        {
+          "doc_sha256": "9a1422b8a08daed4e9c9d087b3f8db966309fb2b2adfc91fa466745698115a8e",
+          "page": 82
+        }
+      ],
+      "source_key": "9a1422b8a08d:p82:0"
+    },
+    {
+      "id": "q062",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what does introducing a name for a subformula do when converting to clauses",
+      "answers": [
+        {
+          "doc_sha256": "9a1422b8a08daed4e9c9d087b3f8db966309fb2b2adfc91fa466745698115a8e",
+          "page": 56
+        }
+      ],
+      "source_key": "9a1422b8a08d:p56:0"
+    },
+    {
+      "id": "q063",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "should I bet that a random 3-SAT instance with many clauses is satisfiable",
+      "answers": [
+        {
+          "doc_sha256": "22f54df5ba94935c47743bb84f9aa2f9216475436fac7562d6f8de027b66a702",
+          "page": 137
+        }
+      ],
+      "source_key": "22f54df5ba94:p137:0"
+    },
+    {
+      "id": "q064",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what is a pure literal and how can it simplify a set of clauses",
+      "answers": [
+        {
+          "doc_sha256": "22f54df5ba94935c47743bb84f9aa2f9216475436fac7562d6f8de027b66a702",
+          "page": 60
+        }
+      ],
+      "source_key": "22f54df5ba94:p60:0"
+    },
+    {
+      "id": "q065",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "how do you read off a model from a DPLL search tree",
+      "answers": [
+        {
+          "doc_sha256": "22f54df5ba94935c47743bb84f9aa2f9216475436fac7562d6f8de027b66a702",
+          "page": 49
+        }
+      ],
+      "source_key": "22f54df5ba94:p49:0"
+    },
+    {
+      "id": "q066",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "who came up with the DPLL method",
+      "answers": [
+        {
+          "doc_sha256": "22f54df5ba94935c47743bb84f9aa2f9216475436fac7562d6f8de027b66a702",
+          "page": 3
+        }
+      ],
+      "source_key": "22f54df5ba94:p3:0"
+    },
+    {
+      "id": "q067",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what does DPLL do when a clause has only a single literal left",
+      "answers": [
+        {
+          "doc_sha256": "22f54df5ba94935c47743bb84f9aa2f9216475436fac7562d6f8de027b66a702",
+          "page": 22
+        }
+      ],
+      "source_key": "22f54df5ba94:p22:0"
+    },
+    {
+      "id": "q068",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "when is a branch in a semantic tableau closed",
+      "answers": [
+        {
+          "doc_sha256": "b18f0ad6c15852870cf1941a1c29de6aafb43f4bcc054c1ee86114de51cad35f",
+          "page": 19
+        }
+      ],
+      "source_key": "b18f0ad6c158:p19:0"
+    },
+    {
+      "id": "q069",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "why can GSAT get stuck without finding a solution",
+      "answers": [
+        {
+          "doc_sha256": "ce8c94f3991aee00c8d940a74601e3338453a220031ba3b39c96e15984cf3166",
+          "page": 25
+        },
+        {
+          "doc_sha256": "ce8c94f3991aee00c8d940a74601e3338453a220031ba3b39c96e15984cf3166",
+          "page": 28
+        },
+        {
+          "doc_sha256": "ce8c94f3991aee00c8d940a74601e3338453a220031ba3b39c96e15984cf3166",
+          "page": 31
+        },
+        {
+          "doc_sha256": "ce8c94f3991aee00c8d940a74601e3338453a220031ba3b39c96e15984cf3166",
+          "page": 34
+        }
+      ],
+      "source_key": "ce8c94f3991a:p25:0"
+    },
+    {
+      "id": "q070",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "at what ratio of clauses to variables are random SAT problems hardest",
+      "answers": [
+        {
+          "doc_sha256": "ce8c94f3991aee00c8d940a74601e3338453a220031ba3b39c96e15984cf3166",
+          "page": 52
+        }
+      ],
+      "source_key": "ce8c94f3991a:p52:0"
+    },
+    {
+      "id": "q071",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "why does unsatisfiability not have a short certificate the way satisfiability does",
+      "answers": [
+        {
+          "doc_sha256": "ce8c94f3991aee00c8d940a74601e3338453a220031ba3b39c96e15984cf3166",
+          "page": 7
+        }
+      ],
+      "source_key": "ce8c94f3991a:p7:0"
+    },
+    {
+      "id": "q072",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "how does GSAT with random walks choose which variable to flip",
+      "answers": [
+        {
+          "doc_sha256": "ce8c94f3991aee00c8d940a74601e3338453a220031ba3b39c96e15984cf3166",
+          "page": 38
+        }
+      ],
+      "source_key": "ce8c94f3991a:p38:0"
+    },
+    {
+      "id": "q073",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what do solid and dashed edges mean in a binary decision tree",
+      "answers": [
+        {
+          "doc_sha256": "903144ac3a20f14fec7366dff766aa7e342f3398eccfd8d2f1f86884f8a755cf",
+          "page": 14
+        }
+      ],
+      "source_key": "903144ac3a20:p14:0"
+    },
+    {
+      "id": "q074",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "how do you combine several ordered BDDs with a Boolean operation",
+      "answers": [
+        {
+          "doc_sha256": "903144ac3a20f14fec7366dff766aa7e342f3398eccfd8d2f1f86884f8a755cf",
+          "page": 104
+        },
+        {
+          "doc_sha256": "903144ac3a20f14fec7366dff766aa7e342f3398eccfd8d2f1f86884f8a755cf",
+          "page": 108
+        }
+      ],
+      "source_key": "903144ac3a20:p104:0"
+    },
+    {
+      "id": "q075",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "why is equivalence checking easy with ordered BDDs",
+      "answers": [
+        {
+          "doc_sha256": "903144ac3a20f14fec7366dff766aa7e342f3398eccfd8d2f1f86884f8a755cf",
+          "page": 73
+        }
+      ],
+      "source_key": "903144ac3a20:p73:0"
+    },
+    {
+      "id": "q076",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "what did Knuth say about ordered binary decision diagrams",
+      "answers": [
+        {
+          "doc_sha256": "903144ac3a20f14fec7366dff766aa7e342f3398eccfd8d2f1f86884f8a755cf",
+          "page": 65
+        }
+      ],
+      "source_key": "903144ac3a20:p65:0"
+    },
+    {
+      "id": "q077",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP21111",
+      "question": "which operations are hard on BDDs that are not ordered",
+      "answers": [
+        {
+          "doc_sha256": "903144ac3a20f14fec7366dff766aa7e342f3398eccfd8d2f1f86884f8a755cf",
+          "page": 64
+        }
+      ],
+      "source_key": "903144ac3a20:p64:0"
+    },
+    {
+      "id": "q078",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what do I have to do for the RISC-V control lab and when is it due",
+      "answers": [
+        {
+          "doc_sha256": "bb4f2807175e0f9fbad632120350def660e9afa67c5bf17a6bd530e65ea51cd3",
+          "page": 8
+        }
+      ],
+      "source_key": "bb4f2807175e:p8:0"
+    },
+    {
+      "id": "q079",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "how are the processor microarchitecture labs submitted and marked",
+      "answers": [
+        {
+          "doc_sha256": "bb4f2807175e0f9fbad632120350def660e9afa67c5bf17a6bd530e65ea51cd3",
+          "page": 6
+        }
+      ],
+      "source_key": "bb4f2807175e:p6:0"
+    },
+    {
+      "id": "q080",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what is the bug hunt lab exercise",
+      "answers": [
+        {
+          "doc_sha256": "bb4f2807175e0f9fbad632120350def660e9afa67c5bf17a6bd530e65ea51cd3",
+          "page": 7
+        }
+      ],
+      "source_key": "bb4f2807175e:p7:0"
+    },
+    {
+      "id": "q081",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "how do you use a task to test several functions in a SystemVerilog testbench",
+      "answers": [
+        {
+          "doc_sha256": "7fbfbf6ac41789094acc7f3a403a6c869eeb230c7dbf52fb1f37bb6691218aa2",
+          "page": 12
+        }
+      ],
+      "source_key": "7fbfbf6ac417:p12:0"
+    },
+    {
+      "id": "q082",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what are the three stages of running a simulation",
+      "answers": [
+        {
+          "doc_sha256": "7fbfbf6ac41789094acc7f3a403a6c869eeb230c7dbf52fb1f37bb6691218aa2",
+          "page": 3
+        }
+      ],
+      "source_key": "7fbfbf6ac417:p3:0"
+    },
+    {
+      "id": "q083",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what are the inputs and outputs of the Stump ALU module",
+      "answers": [
+        {
+          "doc_sha256": "7fbfbf6ac41789094acc7f3a403a6c869eeb230c7dbf52fb1f37bb6691218aa2",
+          "page": 8
+        }
+      ],
+      "source_key": "7fbfbf6ac417:p8:0"
+    },
+    {
+      "id": "q084",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "why do we need testbenches for the first lab",
+      "answers": [
+        {
+          "doc_sha256": "7fbfbf6ac41789094acc7f3a403a6c869eeb230c7dbf52fb1f37bb6691218aa2",
+          "page": 1
+        }
+      ],
+      "source_key": "7fbfbf6ac417:p1:0"
+    },
+    {
+      "id": "q085",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "how is the drinks machine datapath put together from a register, adder and comparator",
+      "answers": [
+        {
+          "doc_sha256": "c0a5637d0adb8a1eec78d83561617c3d56c8cd16a235960b1500055d844d8d53",
+          "page": 6
+        }
+      ],
+      "source_key": "c0a5637d0adb:p6:0"
+    },
+    {
+      "id": "q086",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what is an ASM or SM chart",
+      "answers": [
+        {
+          "doc_sha256": "c0a5637d0adb8a1eec78d83561617c3d56c8cd16a235960b1500055d844d8d53",
+          "page": 8
+        }
+      ],
+      "source_key": "c0a5637d0adb:p8:0"
+    },
+    {
+      "id": "q087",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what inputs and outputs does the drinks dispenser have",
+      "answers": [
+        {
+          "doc_sha256": "c0a5637d0adb8a1eec78d83561617c3d56c8cd16a235960b1500055d844d8d53",
+          "page": 3
+        }
+      ],
+      "source_key": "c0a5637d0adb:p3:0"
+    },
+    {
+      "id": "q088",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what states does the drinks dispenser state machine need",
+      "answers": [
+        {
+          "doc_sha256": "c0a5637d0adb8a1eec78d83561617c3d56c8cd16a235960b1500055d844d8d53",
+          "page": 7
+        }
+      ],
+      "source_key": "c0a5637d0adb:p7:0"
+    },
+    {
+      "id": "q089",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "which control signals are set in the execute state for a type 1 instruction that is not a load or store",
+      "answers": [
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 17
+        },
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 15
+        },
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 16
+        },
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 18
+        },
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 19
+        }
+      ],
+      "source_key": "b967448037fb:p17:1"
+    },
+    {
+      "id": "q090",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what kind of processor is Stump",
+      "answers": [
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 5
+        }
+      ],
+      "source_key": "b967448037fb:p5:0"
+    },
+    {
+      "id": "q091",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "how does Stump work out whether a conditional branch is taken",
+      "answers": [
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 24
+        }
+      ],
+      "source_key": "b967448037fb:p24:1"
+    },
+    {
+      "id": "q092",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what happens during the fetch state of the processor",
+      "answers": [
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 7
+        }
+      ],
+      "source_key": "b967448037fb:p7:0"
+    },
+    {
+      "id": "q093",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what extra states does the RISC-V design have compared with Stump",
+      "answers": [
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 28
+        }
+      ],
+      "source_key": "b967448037fb:p28:0"
+    },
+    {
+      "id": "q094",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "how is the control signal decode module implemented",
+      "answers": [
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 27
+        }
+      ],
+      "source_key": "b967448037fb:p27:0"
+    },
+    {
+      "id": "q095",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "how are the FSM and the datapath connected in the processor",
+      "answers": [
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 4
+        }
+      ],
+      "source_key": "b967448037fb:p4:0"
+    },
+    {
+      "id": "q096",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "what does the state machine set in each state of the Stump processor",
+      "answers": [
+        {
+          "doc_sha256": "b967448037fb1e6e1c8daef66c266f4924f11752648bda347c5fd2b5dc9b1878",
+          "page": 6
+        }
+      ],
+      "source_key": "b967448037fb:p6:0"
+    },
+    {
+      "id": "q097",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP22111",
+      "question": "how do you build an XNOR gate in CMOS with pull up and pull down networks",
+      "answers": [
+        {
+          "doc_sha256": "08ce0d86a7ebcaf218e8a34656a82ace80c68049d3d14ef348c1b06f02d75cc9",
+          "page": 16
+        }
+      ],
+      "source_key": "08ce0d86a7eb:p16:0"
+    },
+    {
+      "id": "q098",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "when would I use a BEFORE delete trigger rather than an AFTER delete trigger",
+      "answers": [
+        {
+          "doc_sha256": "664f6f79a9a32b82fbb2ef6701b1343734d59acafc67287cbc44b66d312be869",
+          "page": 12
+        }
+      ],
+      "source_key": "664f6f79a9a3:p12:0"
+    },
+    {
+      "id": "q099",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "how do you write a CASE statement inside a stored procedure",
+      "answers": [
+        {
+          "doc_sha256": "11db56fad67cb4a5f70096d002b57f508b275a7aba61e5e6cf6c79c5e16d1da4",
+          "page": 12
+        }
+      ],
+      "source_key": "11db56fad67c:p12:0"
+    },
+    {
+      "id": "q100",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "how do you run a stored procedure and what does a thread stack overrun error mean",
+      "answers": [
+        {
+          "doc_sha256": "741d0d9f6a8342a50c836881268dd03702d5d3d5a268ae9775f82e2f3e7ac3bf",
+          "page": 4
+        }
+      ],
+      "source_key": "741d0d9f6a83:p4:0"
+    },
+    {
+      "id": "q101",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "can I change the parameters of an existing stored procedure in MySQL",
+      "answers": [
+        {
+          "doc_sha256": "11db56fad67cb4a5f70096d002b57f508b275a7aba61e5e6cf6c79c5e16d1da4",
+          "page": 4
+        }
+      ],
+      "source_key": "11db56fad67c:p4:0"
+    },
+    {
+      "id": "q102",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "why bother putting complex SQL queries into procedures",
+      "answers": [
+        {
+          "doc_sha256": "181905ba53bab765cd28d01cb12f63e6cf6ff703edfa8f5db2aeb3412179bffd",
+          "page": 10
+        }
+      ],
+      "source_key": "181905ba53ba:p10:0"
+    },
+    {
+      "id": "q103",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "what is the command to remove a stored procedure",
+      "answers": [
+        {
+          "doc_sha256": "741d0d9f6a8342a50c836881268dd03702d5d3d5a268ae9775f82e2f3e7ac3bf",
+          "page": 7
+        }
+      ],
+      "source_key": "741d0d9f6a83:p7:0"
+    },
+    {
+      "id": "q104",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "how do I list all the stored procedures in a database",
+      "answers": [
+        {
+          "doc_sha256": "11db56fad67cb4a5f70096d002b57f508b275a7aba61e5e6cf6c79c5e16d1da4",
+          "page": 9
+        },
+        {
+          "doc_sha256": "11db56fad67cb4a5f70096d002b57f508b275a7aba61e5e6cf6c79c5e16d1da4",
+          "page": 7
+        }
+      ],
+      "source_key": "11db56fad67c:p9:0"
+    },
+    {
+      "id": "q105",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "how can a procedure return the total of all payments above an amount",
+      "answers": [
+        {
+          "doc_sha256": "11db56fad67cb4a5f70096d002b57f508b275a7aba61e5e6cf6c79c5e16d1da4",
+          "page": 2
+        }
+      ],
+      "source_key": "11db56fad67c:p2:0"
+    },
+    {
+      "id": "q106",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "how can a trigger keep an audit log of changes to customer records",
+      "answers": [
+        {
+          "doc_sha256": "664f6f79a9a32b82fbb2ef6701b1343734d59acafc67287cbc44b66d312be869",
+          "page": 7
+        }
+      ],
+      "source_key": "664f6f79a9a3:p7:0"
+    },
+    {
+      "id": "q107",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "how can a trigger remind new members who did not give a date of birth",
+      "answers": [
+        {
+          "doc_sha256": "664f6f79a9a32b82fbb2ef6701b1343734d59acafc67287cbc44b66d312be869",
+          "page": 10
+        }
+      ],
+      "source_key": "664f6f79a9a3:p10:0"
+    },
+    {
+      "id": "q108",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "how do you classify customers by credit limit with IF and ELSEIF in a procedure",
+      "answers": [
+        {
+          "doc_sha256": "11db56fad67cb4a5f70096d002b57f508b275a7aba61e5e6cf6c79c5e16d1da4",
+          "page": 11
+        }
+      ],
+      "source_key": "11db56fad67c:p11:0"
+    },
+    {
+      "id": "q109",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "is it a good idea to have triggers that call other triggers",
+      "answers": [
+        {
+          "doc_sha256": "664f6f79a9a32b82fbb2ef6701b1343734d59acafc67287cbc44b66d312be869",
+          "page": 15
+        }
+      ],
+      "source_key": "664f6f79a9a3:p15:0"
+    },
+    {
+      "id": "q110",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "when are two schedules conflict equivalent",
+      "answers": [
+        {
+          "doc_sha256": "090f5ea6aaebccd26672837916a4759dca6983d20eb5bb59998d81704a3164e0",
+          "page": 17
+        }
+      ],
+      "source_key": "090f5ea6aaeb:p17:0"
+    },
+    {
+      "id": "q111",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "what makes a schedule serializable",
+      "answers": [
+        {
+          "doc_sha256": "090f5ea6aaebccd26672837916a4759dca6983d20eb5bb59998d81704a3164e0",
+          "page": 18
+        }
+      ],
+      "source_key": "090f5ea6aaeb:p18:0"
+    },
+    {
+      "id": "q112",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "how do I decide if a schedule with three transactions is serializable",
+      "answers": [
+        {
+          "doc_sha256": "090f5ea6aaebccd26672837916a4759dca6983d20eb5bb59998d81704a3164e0",
+          "page": 24
+        }
+      ],
+      "source_key": "090f5ea6aaeb:p24:0"
+    },
+    {
+      "id": "q113",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "which concurrency problems did the transactions lecture cover",
+      "answers": [
+        {
+          "doc_sha256": "7ff349c2932da60d7317b403b64b6b7495a68c72f9e81fbb90c7fb81e20a01bc",
+          "page": 21
+        }
+      ],
+      "source_key": "7ff349c2932d:p21:0"
+    },
+    {
+      "id": "q114",
+      "split": "dev",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "what happens to a transaction's changes if it fails half way",
+      "answers": [
+        {
+          "doc_sha256": "7ff349c2932da60d7317b403b64b6b7495a68c72f9e81fbb90c7fb81e20a01bc",
+          "page": 17
+        }
+      ],
+      "source_key": "7ff349c2932d:p17:0"
+    },
+    {
+      "id": "q115",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "what kinds of systems rely on transaction processing",
+      "answers": [
+        {
+          "doc_sha256": "7ff349c2932da60d7317b403b64b6b7495a68c72f9e81fbb90c7fb81e20a01bc",
+          "page": 4
+        }
+      ],
+      "source_key": "7ff349c2932d:p4:0"
+    },
+    {
+      "id": "q116",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "what is the safe way to decide if two schedules are equivalent",
+      "answers": [
+        {
+          "doc_sha256": "090f5ea6aaebccd26672837916a4759dca6983d20eb5bb59998d81704a3164e0",
+          "page": 16
+        }
+      ],
+      "source_key": "090f5ea6aaeb:p16:0"
+    },
+    {
+      "id": "q117",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "why do databases allow transactions to interleave",
+      "answers": [
+        {
+          "doc_sha256": "090f5ea6aaebccd26672837916a4759dca6983d20eb5bb59998d81704a3164e0",
+          "page": 12
+        }
+      ],
+      "source_key": "090f5ea6aaeb:p12:0"
+    },
+    {
+      "id": "q118",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "what is a database transaction",
+      "answers": [
+        {
+          "doc_sha256": "7ff349c2932da60d7317b403b64b6b7495a68c72f9e81fbb90c7fb81e20a01bc",
+          "page": 7
+        }
+      ],
+      "source_key": "7ff349c2932d:p7:0"
+    },
+    {
+      "id": "q119",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "what goes wrong in the temporary update problem when a transaction fails",
+      "answers": [
+        {
+          "doc_sha256": "7ff349c2932da60d7317b403b64b6b7495a68c72f9e81fbb90c7fb81e20a01bc",
+          "page": 18
+        }
+      ],
+      "source_key": "7ff349c2932d:p18:0"
+    },
+    {
+      "id": "q120",
+      "split": "test",
+      "author": "claude-draft",
+      "module": "COMP23111",
+      "question": "why is comparing final results not enough to say two schedules are equivalent",
+      "answers": [
+        {
+          "doc_sha256": "090f5ea6aaebccd26672837916a4759dca6983d20eb5bb59998d81704a3164e0",
+          "page": 15
+        }
+      ],
+      "source_key": "090f5ea6aaeb:p15:0"
+    }
+  ]
+}
