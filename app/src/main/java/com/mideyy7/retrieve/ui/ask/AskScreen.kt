@@ -1,6 +1,7 @@
 package com.mideyy7.retrieve.ui.ask
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -64,7 +65,9 @@ import com.mideyy7.retrieve.ui.components.displayName
 import com.mideyy7.retrieve.ui.components.locationLabel
 import com.mideyy7.retrieve.ui.components.timestamp
 import com.mideyy7.retrieve.ui.slides.SlideImage
+import com.mideyy7.retrieve.ui.theme.Mono
 import com.mideyy7.retrieve.ui.theme.moduleColor
+import androidx.compose.ui.graphics.Color
 
 private val MaxContentWidth = 840.dp
 
@@ -151,7 +154,8 @@ private fun QuestionField(value: String, busy: Boolean, onChange: (String) -> Un
 private fun AnswerCard(state: AskUiState, onOpenSource: (Source) -> Unit, onSearchInstead: (String) -> Unit) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = Modifier.fillMaxWidth().animateContentSize(),
     ) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -197,12 +201,14 @@ private fun Progress(phase: AskPhase) {
 /** The answer with its citation markers as small raised links to the sources. */
 @Composable
 private fun answerText(r: RenderedAnswer, onOpenSource: (Source) -> Unit) = buildAnnotatedString {
-    val link = TextLinkStyles(SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 0.8.em, baselineShift = BaselineShift(0.3f)))
-    val bad = SpanStyle(color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold, fontSize = 0.8.em, baselineShift = BaselineShift(0.3f))
+    // Citation numbers as small filled chips, like the landing page's answer card.
+    val link = TextLinkStyles(SpanStyle(color = Color.White, background = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold, fontSize = 0.75.em, baselineShift = BaselineShift(0.25f)))
+    val bad = SpanStyle(color = Color.White, background = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold, fontSize = 0.75.em, baselineShift = BaselineShift(0.25f))
     var at = 0
     for (m in r.markers) {
         append(r.text.substring(at, m.range.first))
-        val label = r.text.substring(m.range)
+        // "[1, 2]" shows as " 1, 2 " on the chip: the brackets are for the model, not the reader.
+        val label = "\u2009" + r.text.substring(m.range).trim('[', ']') + "\u2009"
         val target = m.sources.firstOrNull()
         if (target == null) {
             pushStyle(bad)
@@ -267,20 +273,21 @@ private fun SourceRow(n: Int, s: Source, cited: Boolean, terms: Set<String>, onC
     val c = s.hit.chunk
     Card(
         onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(Modifier.padding(10.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
-                Modifier.size(26.dp).background(if (cited) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest, CircleShape),
+                Modifier.size(24.dp).background(if (cited) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(6.dp)),
                 contentAlignment = Alignment.Center,
             ) {
                 Text("$n", style = MaterialTheme.typography.labelMedium, color = if (cited) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant)
             }
             if (c.startMs != null) {
                 val color = moduleColor(c.module)
-                Box(Modifier.width(88.dp).aspectRatio(4f / 3f).background(color.container, MaterialTheme.shapes.small), contentAlignment = Alignment.Center) {
-                    Text(timestamp(c.startMs), style = MaterialTheme.typography.titleSmall, color = color.onContainer)
+                Box(Modifier.width(88.dp).aspectRatio(4f / 3f).background(color.accent, MaterialTheme.shapes.small), contentAlignment = Alignment.Center) {
+                    Text(timestamp(c.startMs), style = MaterialTheme.typography.titleSmall.copy(fontFamily = Mono), color = Color.White)
                 }
             } else {
                 SlideImage(c.docId, c.page ?: 1, Modifier.width(88.dp), aspect = 4f / 3f, fallback = locationLabel(s.hit.docType, c.page, null))

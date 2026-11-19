@@ -17,7 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
+import com.mideyy7.retrieve.ui.theme.Mono
 import androidx.compose.ui.unit.dp
 
 /** One line of the search tips: what to type, and what it does. */
@@ -59,7 +59,7 @@ fun SearchHelpSheet(module: String?, onTry: (String) -> Unit, onDismiss: () -> U
                 ) {
                     Text(
                         tip.query,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = Mono,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))

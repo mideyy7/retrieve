@@ -1,5 +1,6 @@
 package com.mideyy7.retrieve.ui.search
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import com.mideyy7.retrieve.ui.theme.Mono
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
@@ -62,7 +66,8 @@ fun BestMatchCard(result: SearchResult, terms: Set<String>, actions: ResultActio
     Card(
         onClick = { actions.onOpen(result) },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = Modifier.fillMaxWidth(),
     ) {
         BoxWithConstraints(Modifier.padding(16.dp)) {
@@ -98,7 +103,8 @@ fun ResultRow(result: SearchResult, terms: Set<String>, actions: ResultActions) 
     val snippet = remember(c.text, terms) { Snippets.make(c.text, terms, maxChars = 220) }
     Card(
         onClick = { actions.onOpen(result) },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -138,17 +144,17 @@ private fun Preview(result: SearchResult, modifier: Modifier, large: Boolean) {
 private fun RecordingTile(module: String, startMs: Long, modifier: Modifier, large: Boolean) {
     val color = moduleColor(module)
     Box(
-        modifier.aspectRatio(if (large) 16f / 9f else 4f / 3f).background(color.container, MaterialTheme.shapes.small),
+        modifier.aspectRatio(if (large) 16f / 9f else 4f / 3f).background(color.accent, MaterialTheme.shapes.small),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Icon(painterResource(R.drawable.ic_captions), null, tint = color.onContainer, modifier = Modifier.size(if (large) 32.dp else 20.dp))
+            Icon(painterResource(R.drawable.ic_captions), null, tint = Color.White, modifier = Modifier.size(if (large) 32.dp else 20.dp))
             Text(
                 timestamp(startMs),
-                style = if (large) MaterialTheme.typography.displaySmall else MaterialTheme.typography.titleMedium,
-                color = color.onContainer,
+                style = (if (large) MaterialTheme.typography.displaySmall else MaterialTheme.typography.titleMedium).copy(fontFamily = Mono, letterSpacing = 0.sp),
+                color = Color.White,
             )
-            if (large) Text("in the lecture recording", style = MaterialTheme.typography.labelMedium, color = color.onContainer)
+            if (large) Text("in the lecture recording", style = MaterialTheme.typography.labelMedium, color = Color.White.copy(alpha = 0.85f))
         }
     }
 }

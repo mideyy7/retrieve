@@ -1,93 +1,129 @@
 package com.mideyy7.retrieve.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.mideyy7.retrieve.R
 
-// Brand: a deep indigo ("ink") with a highlighter yellow for matched words, the two things a student
-// revising from slides actually has on their desk.
-private val Indigo = Color(0xFF3A47D5)
-private val IndigoLight = Color(0xFFBEC2FF)
-
-private val Light = lightColorScheme(
-    primary = Indigo,
-    onPrimary = Color.White,
-    primaryContainer = Color(0xFFE0E0FF),
-    onPrimaryContainer = Color(0xFF00006E),
-    secondary = Color(0xFF5B5D72),
-    secondaryContainer = Color(0xFFE0E0F9),
-    onSecondaryContainer = Color(0xFF181A2C),
-    tertiary = Color(0xFF8A5100),
-    tertiaryContainer = Color(0xFFFFDCBE),
-    onTertiaryContainer = Color(0xFF2C1600),
-    background = Color(0xFFFBF8FF),
-    surface = Color(0xFFFBF8FF),
-    surfaceContainerLowest = Color.White,
-    surfaceContainerLow = Color(0xFFF5F2FA),
-    surfaceContainer = Color(0xFFEFEDF6),
-    surfaceContainerHigh = Color(0xFFE9E7F0),
-    surfaceContainerHighest = Color(0xFFE3E1EA),
-    onSurfaceVariant = Color(0xFF46464F),
-    outlineVariant = Color(0xFFC7C5D0),
-)
-
-private val Dark = darkColorScheme(
-    primary = IndigoLight,
-    onPrimary = Color(0xFF0D16A6),
-    primaryContainer = Color(0xFF2830BE),
-    onPrimaryContainer = Color(0xFFE0E0FF),
-    secondary = Color(0xFFC4C4DD),
-    secondaryContainer = Color(0xFF434559),
-    onSecondaryContainer = Color(0xFFE0E0F9),
-    tertiary = Color(0xFFFFB870),
-    tertiaryContainer = Color(0xFF693C00),
-    onTertiaryContainer = Color(0xFFFFDCBE),
-    background = Color(0xFF121318),
-    surface = Color(0xFF121318),
-    surfaceContainerLowest = Color(0xFF0D0E13),
-    surfaceContainerLow = Color(0xFF1A1B21),
-    surfaceContainer = Color(0xFF1E1F25),
-    surfaceContainerHigh = Color(0xFF292A2F),
-    surfaceContainerHighest = Color(0xFF34343A),
-    onSurfaceVariant = Color(0xFFC7C5D0),
-    outlineVariant = Color(0xFF46464F),
-)
-
-private val AppTypography = Typography().run {
-    copy(
-        displaySmall = displaySmall.copy(fontWeight = FontWeight.Bold, letterSpacing = (-0.5).sp),
-        headlineMedium = headlineMedium.copy(fontWeight = FontWeight.Bold, letterSpacing = (-0.25).sp),
-        headlineSmall = headlineSmall.copy(fontWeight = FontWeight.SemiBold),
-        titleLarge = titleLarge.copy(fontWeight = FontWeight.SemiBold),
-        titleMedium = titleMedium.copy(fontWeight = FontWeight.SemiBold),
-        titleSmall = titleSmall.copy(fontWeight = FontWeight.SemiBold),
-        labelLarge = labelLarge.copy(fontWeight = FontWeight.SemiBold),
-    )
+/*
+ * The look of the Retrieve landing page: a warm off-white page, white cards, near-black ink, the
+ * app's indigo, and a highlighter yellow for matched words. Light only, like the site.
+ */
+object Palette {
+    val Page = Color(0xFFF7F7F5)
+    val Surface = Color(0xFFFFFFFF)
+    val Ink = Color(0xFF0F1115)
+    val Muted = Color(0xFF4A4B57)
+    val Faint = Color(0xFF8A8B98)
+    val Line = Color(0xFFE4E3EA)
+    val Field = Color(0xFFEFEDF6)
+    val Brand = Color(0xFF3A47D5)
+    val BrandDeep = Color(0xFF2A33B0)
+    val BrandSoft = Color(0xFFE0E0FF)
+    val Mark = Color(0xFFFFE24D)
+    val Error = Color(0xFFB42318)
 }
 
+private val Scheme = lightColorScheme(
+    primary = Palette.Brand,
+    onPrimary = Color.White,
+    primaryContainer = Palette.BrandSoft,
+    onPrimaryContainer = Palette.BrandDeep,
+    secondary = Palette.Muted,
+    onSecondary = Color.White,
+    secondaryContainer = Palette.Field,
+    onSecondaryContainer = Palette.Ink,
+    tertiary = Color(0xFFB4610A),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFFCEBD6),
+    onTertiaryContainer = Color(0xFF5A2F00),
+    background = Palette.Page,
+    onBackground = Palette.Ink,
+    surface = Palette.Page,
+    onSurface = Palette.Ink,
+    surfaceVariant = Palette.Field,
+    onSurfaceVariant = Palette.Muted,
+    surfaceContainerLowest = Palette.Surface,
+    surfaceContainerLow = Palette.Surface,
+    surfaceContainer = Color(0xFFF1F0F6),
+    surfaceContainerHigh = Palette.Field,
+    surfaceContainerHighest = Palette.Line,
+    surfaceTint = Color.Transparent,
+    outline = Palette.Faint,
+    outlineVariant = Palette.Line,
+    error = Palette.Error,
+    onError = Color.White,
+    errorContainer = Color(0xFFFEE4E2),
+    onErrorContainer = Color(0xFF7A271A),
+)
+
+/** Bundled variable fonts (SIL OFL, licences in assets/licenses), one instance per weight used. */
+private fun variable(res: Int, vararg weights: FontWeight) = FontFamily(
+    weights.map { w -> Font(res, w, variationSettings = FontVariation.Settings(FontVariation.weight(w.weight))) },
+)
+
+/** Headings: Bricolage Grotesque, set tight. */
+val Display = variable(R.font.bricolage_grotesque, FontWeight.Medium, FontWeight.SemiBold, FontWeight.Bold, FontWeight.ExtraBold)
+
+/** Body and labels: Instrument Sans. */
+val Body = variable(R.font.instrument_sans, FontWeight.Normal, FontWeight.Medium, FontWeight.SemiBold, FontWeight.Bold)
+
+/** Codes, queries and timestamps: JetBrains Mono. */
+val Mono = variable(R.font.jetbrains_mono, FontWeight.Normal, FontWeight.Medium, FontWeight.SemiBold)
+
+private fun display(size: Int, weight: FontWeight, tracking: Double, line: Double = 1.1) =
+    TextStyle(fontFamily = Display, fontWeight = weight, fontSize = size.sp, lineHeight = (size * line).sp, letterSpacing = tracking.em)
+
+private fun body(size: Int, weight: FontWeight = FontWeight.Normal, line: Double = 1.5, tracking: Double = 0.0) =
+    TextStyle(fontFamily = Body, fontWeight = weight, fontSize = size.sp, lineHeight = (size * line).sp, letterSpacing = tracking.em)
+
+private val AppTypography = Typography(
+    displayLarge = display(52, FontWeight.Bold, -0.055, 1.0),
+    displayMedium = display(44, FontWeight.Bold, -0.05, 1.0),
+    displaySmall = display(36, FontWeight.Bold, -0.045, 1.05),
+    headlineLarge = display(32, FontWeight.Bold, -0.04),
+    headlineMedium = display(28, FontWeight.Bold, -0.035),
+    headlineSmall = display(24, FontWeight.Bold, -0.03),
+    titleLarge = display(21, FontWeight.Bold, -0.025, 1.2),
+    titleMedium = display(17, FontWeight.SemiBold, -0.02, 1.25),
+    titleSmall = body(14, FontWeight.SemiBold, 1.35),
+    bodyLarge = body(16),
+    bodyMedium = body(14),
+    bodySmall = body(13, line = 1.45),
+    labelLarge = body(14, FontWeight.SemiBold, 1.3),
+    labelMedium = body(12, FontWeight.SemiBold, 1.3),
+    labelSmall = body(11, FontWeight.Medium, 1.3, 0.01),
+)
+
 private val AppShapes = Shapes(
-    small = RoundedCornerShape(10.dp),
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
     medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(24.dp),
+    large = RoundedCornerShape(28.dp),
+    extraLarge = RoundedCornerShape(28.dp),
 )
 
 /** Colours outside Material's scheme: the highlighter behind matched words. */
 @Immutable
 data class ExtraColors(val highlight: Color, val onHighlight: Color, val dark: Boolean)
 
-private val LocalExtraColors = staticCompositionLocalOf { ExtraColors(Color.Yellow, Color.Black, false) }
+private val LocalExtraColors = staticCompositionLocalOf { ExtraColors(Palette.Mark, Palette.Ink, false) }
 
 object RetrieveColors {
     val extra: ExtraColors
@@ -95,15 +131,8 @@ object RetrieveColors {
 }
 
 @Composable
-fun RetrieveTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val extra = if (dark) ExtraColors(Color(0xFF6B5A00), Color(0xFFFFF4C2), true)
-    else ExtraColors(Color(0xFFFFE97A), Color(0xFF221B00), false)
-    androidx.compose.runtime.CompositionLocalProvider(LocalExtraColors provides extra) {
-        MaterialTheme(
-            colorScheme = if (dark) Dark else Light,
-            typography = AppTypography,
-            shapes = AppShapes,
-            content = content,
-        )
+fun RetrieveTheme(content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalExtraColors provides ExtraColors(Palette.Mark, Palette.Ink, dark = false)) {
+        MaterialTheme(colorScheme = Scheme, typography = AppTypography, shapes = AppShapes, content = content)
     }
 }

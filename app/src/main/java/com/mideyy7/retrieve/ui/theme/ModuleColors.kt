@@ -5,28 +5,26 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-/** A module's accent: [accent] for dots and bars, [container]/[onContainer] for its badge. */
+/**
+ * A module's colour: [accent] is a solid fill that carries white text (badges, timestamp tiles,
+ * week bars), [container] a pale tint of it (folder circles), [onContainer] text or icons on that tint.
+ */
 @Immutable
 data class ModuleColor(val accent: Color, val container: Color, val onContainer: Color)
 
-private data class Hue(val light: ModuleColor, val dark: ModuleColor)
+private fun hue(accent: Long, container: Long, on: Long) = ModuleColor(Color(accent), Color(container), Color(on))
 
-private fun hue(accentL: Long, containerL: Long, onL: Long, accentD: Long, containerD: Long, onD: Long) = Hue(
-    ModuleColor(Color(accentL), Color(containerL), Color(onL)),
-    ModuleColor(Color(accentD), Color(containerD), Color(onD)),
-)
-
-// Eight hues spaced around the wheel, tuned so the light badges read with dark text and the dark
-// ones with light text. Indigo is left out: it's the app's own colour.
+// Eight hues spaced around the wheel, each dark enough for white text on the solid fill (as on the
+// landing page's module badges). Indigo is left out: it's the app's own colour.
 private val Hues = listOf(
-    hue(0xFF00897B, 0xFFC8F2EC, 0xFF00201C, 0xFF5DD6C6, 0xFF004F47, 0xFFC8F2EC), // teal
-    hue(0xFFD84315, 0xFFFFDBD0, 0xFF3A0B00, 0xFFFFB59E, 0xFF7A2A0A, 0xFFFFDBD0), // vermilion
-    hue(0xFF7B1FA2, 0xFFF4D9FF, 0xFF2E004C, 0xFFE3B5FF, 0xFF5B1683, 0xFFF4D9FF), // purple
-    hue(0xFF2E7D32, 0xFFCDEFCB, 0xFF002204, 0xFF8FD88E, 0xFF14521A, 0xFFCDEFCB), // green
-    hue(0xFFC2185B, 0xFFFFD9E2, 0xFF3E0019, 0xFFFFB1C8, 0xFF7E0D3B, 0xFFFFD9E2), // raspberry
-    hue(0xFF0277BD, 0xFFCFE5FF, 0xFF001D35, 0xFF98CBFF, 0xFF004A78, 0xFFCFE5FF), // ocean
-    hue(0xFF9E7700, 0xFFFFE08A, 0xFF251A00, 0xFFF0C030, 0xFF5A4300, 0xFFFFE08A), // ochre
-    hue(0xFF5D4037, 0xFFF2DED6, 0xFF2C1610, 0xFFE0BFB3, 0xFF4E342C, 0xFFF2DED6), // cocoa
+    hue(0xFF13836F, 0xFFD5F0EA, 0xFF0B4D41), // teal
+    hue(0xFFB4610A, 0xFFFCEBD6, 0xFF6B3A06), // amber
+    hue(0xFF7B3FBF, 0xFFEEE3FA, 0xFF4A2475), // purple
+    hue(0xFF2E7D32, 0xFFDCEFDC, 0xFF1B4D1E), // green
+    hue(0xFFC2185B, 0xFFFBDDE8, 0xFF7A0F39), // raspberry
+    hue(0xFF0A6FB0, 0xFFD6E9F7, 0xFF064469), // ocean
+    hue(0xFF8A6D00, 0xFFF6EDC8, 0xFF544200), // ochre
+    hue(0xFF6D4C41, 0xFFEDE3DF, 0xFF432E27), // cocoa
 )
 
 /**
@@ -67,6 +65,5 @@ val LocalModuleHues = staticCompositionLocalOf<Map<String, Int>> { emptyMap() }
 
 @Composable
 fun moduleColor(module: String): ModuleColor {
-    val hue = Hues[LocalModuleHues.current[module.uppercase()] ?: moduleHueIndex(module)]
-    return if (RetrieveColors.extra.dark) hue.dark else hue.light
+    return Hues[LocalModuleHues.current[module.uppercase()] ?: moduleHueIndex(module)]
 }

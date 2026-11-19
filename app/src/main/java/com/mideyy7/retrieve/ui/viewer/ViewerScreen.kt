@@ -62,7 +62,9 @@ import com.mideyy7.retrieve.ui.components.openOriginal
 import com.mideyy7.retrieve.ui.components.shareText
 import com.mideyy7.retrieve.ui.components.timestamp
 import com.mideyy7.retrieve.ui.slides.SlideImage
+import com.mideyy7.retrieve.ui.theme.Mono
 import com.mideyy7.retrieve.ui.theme.moduleColor
+import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.launch
 
 /**
@@ -202,7 +204,7 @@ private fun Transcript(s: ViewerState, terms: Set<String>, modifier: Modifier) {
             val text = remember(p.text, terms) { Snippets.make(p.text, terms, maxChars = p.text.length) }
             Row(
                 Modifier.fillMaxWidth()
-                    .background(if (target) accent.container.copy(alpha = 0.45f) else MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
+                    .background(if (target) accent.container else MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
                     .padding(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
@@ -212,8 +214,8 @@ private fun Transcript(s: ViewerState, terms: Set<String>, modifier: Modifier) {
                 ) {
                     Text(
                         timestamp(p.startMs ?: 0),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (target) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.labelMedium.copy(fontFamily = Mono),
+                        color = if (target) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 Text(highlighted(text.text, text.highlights), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))

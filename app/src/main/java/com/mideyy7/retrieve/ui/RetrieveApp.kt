@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -120,7 +121,7 @@ fun RetrieveApp() {
             snackbarHost = { SnackbarHost(snackbar) },
             bottomBar = {
                 // The viewer is full screen: more room for the slide.
-                if (current?.hasRoute(ViewerRoute::class) != true) NavigationBar {
+                if (current?.hasRoute(ViewerRoute::class) != true) NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
                     Tab.entries.forEach { t ->
                         val selected = current?.hierarchy?.any { it.hasRoute(t.graph::class) } == true
                         NavigationBarItem(

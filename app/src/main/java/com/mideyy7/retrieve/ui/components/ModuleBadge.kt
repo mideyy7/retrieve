@@ -17,9 +17,9 @@ fun ModuleBadge(module: String, modifier: Modifier = Modifier) {
     Text(
         module,
         style = MaterialTheme.typography.labelMedium,
-        color = c.onContainer,
+        color = androidx.compose.ui.graphics.Color.White,
         modifier = modifier
-            .background(c.container, RoundedCornerShape(6.dp))
+            .background(c.accent, RoundedCornerShape(6.dp))
             .padding(horizontal = 8.dp, vertical = 3.dp),
     )
 }

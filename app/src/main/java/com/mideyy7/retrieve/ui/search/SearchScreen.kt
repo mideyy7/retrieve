@@ -57,7 +57,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -77,6 +76,7 @@ import com.mideyy7.retrieve.search.SearchResult
 import com.mideyy7.retrieve.search.Snippets
 import com.mideyy7.retrieve.ui.components.citation
 import com.mideyy7.retrieve.ui.components.copyText
+import com.mideyy7.retrieve.ui.theme.Mono
 import com.mideyy7.retrieve.ui.theme.moduleColor
 import kotlinx.coroutines.launch
 
@@ -202,7 +202,7 @@ private fun Logo(modifier: Modifier = Modifier) {
     Row(modifier, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier.size(56.dp).clip(RoundedCornerShape(16.dp))
-                .background(Brush.linearGradient(listOf(Color(0xFF4A57E8), Color(0xFF2A33B0)))),
+                .background(MaterialTheme.colorScheme.primary),
             contentAlignment = Alignment.Center,
         ) {
             // The foreground is drawn for a 108dp adaptive-icon canvas; scaled up, its art fills the tile.
@@ -231,6 +231,8 @@ private fun SearchField(
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
         shape = RoundedCornerShape(28.dp),
+        // Typed queries are code-like (module:COMP21111 week:4..6), so they're set in mono as on the site.
+        textStyle = MaterialTheme.typography.bodyLarge.copy(fontFamily = Mono),
         placeholder = { Text("Search slides, notes and lectures", maxLines = 1, overflow = TextOverflow.Ellipsis) },
         trailingIcon = {
             Row {
