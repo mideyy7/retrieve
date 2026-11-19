@@ -8,7 +8,13 @@ import kotlinx.coroutines.withContext
 
 enum class MatchedBy { KEYWORD, SEMANTIC, BOTH }
 
-data class SearchResult(val hit: ChunkWithDoc, val score: Float, val matchedBy: MatchedBy = MatchedBy.KEYWORD)
+/** [score] is BM25 for keyword-only queries and the RRF fusion score when [fused] (hybrid). */
+data class SearchResult(
+    val hit: ChunkWithDoc,
+    val score: Float,
+    val matchedBy: MatchedBy = MatchedBy.KEYWORD,
+    val fused: Boolean = false,
+)
 
 sealed interface SearchOutcome {
     data class Results(val results: List<SearchResult>, val hybrid: Boolean = false) : SearchOutcome
@@ -72,7 +78,7 @@ class SearchRepository(
                 l in kwSet -> MatchedBy.KEYWORD
                 else -> MatchedBy.SEMANTIC
             }
-            SearchResult(row, score.toFloat(), by)
+            SearchResult(row, score.toFloat(), by, fused = true)
         }
         return SearchOutcome.Results(results, hybrid = true)
     }

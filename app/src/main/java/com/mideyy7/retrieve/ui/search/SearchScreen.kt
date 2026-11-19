@@ -170,7 +170,8 @@ private fun Breadcrumb(result: SearchResult, onFilter: (key: String, value: Stri
 }
 
 private fun matchLabel(r: SearchResult) = when (r.matchedBy) {
-    MatchedBy.KEYWORD -> "keyword %.2f".format(r.score)
+    // A BM25 score is meaningful to show; a fused RRF score (~0.02) isn't.
+    MatchedBy.KEYWORD -> if (r.fused) "keyword match" else "keyword %.2f".format(r.score)
     MatchedBy.SEMANTIC -> "semantic match"
     MatchedBy.BOTH -> "keyword + semantic"
 }

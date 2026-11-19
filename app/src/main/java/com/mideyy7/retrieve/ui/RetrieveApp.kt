@@ -95,8 +95,10 @@ fun RetrieveApp() {
 
     fun startImport(module: String?, week: Int?) {
         importVm.prepare(module, week)
-        // PDFs, and lecture captions (.vtt) exported from the video portal.
-        picker.launch(arrayOf("application/pdf", "text/vtt"))
+        // PDFs, and lecture captions (.vtt) exported from the video portal. Android's media index often
+        // types .vtt as application/octet-stream (seen on the test tablet), so allow that too; the
+        // import sheet decides by file extension.
+        picker.launch(arrayOf("application/pdf", "text/vtt", "application/octet-stream"))
     }
 
     LaunchedEffect(importMessage) {
