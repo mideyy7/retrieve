@@ -128,7 +128,9 @@ object CitationChecker {
 /**
  * Gemma 3 1B tends to put the letter before the sentence it supports ("[B] An AND gate's output is
  * true when…") even when told to put it after. Readers expect it at the end, so a citation that
- * opens a sentence is moved to just before that sentence's full stop. Citations already at the end
+ * opens a sentence is moved to just before that sentence's full stop. Only when a capitalised
+ * sentence follows: in "[A] explains that…" the letter is the subject, and moving it would leave
+ * "explains that… [A]". Citations already at the end
  * are left alone, and nothing is added or removed.
  */
 fun moveLeadingCitations(answer: String): String =
@@ -138,4 +140,4 @@ fun moveLeadingCitations(answer: String): String =
     }
 
 /** A bracketed letter citation at the start of the text, a line or a sentence, then that sentence. */
-private val LEADING = Regex("(^|\\n|(?<=[.!?])[ \\t]+)(\\[[A-H](?:\\s*[,;]\\s*[A-H])*])[ \\t]*([^\\[\\n.!?]+)([.!?])")
+private val LEADING = Regex("(^|\\n|(?<=[.!?])[ \\t]+)(\\[[A-H](?:\\s*[,;]\\s*[A-H])*])[ \\t]*([A-Z\"“][^\\[\\n.!?]*)([.!?])")

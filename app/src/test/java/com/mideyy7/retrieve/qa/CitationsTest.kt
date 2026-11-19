@@ -93,6 +93,8 @@ class CitationsTest {
             "An AND gate is true when both inputs are 1 [B]. It is rolled back [A, C]. Already fine [D].\nNext line here [B].",
             moveLeadingCitations("[B] An AND gate is true when both inputs are 1. [A, C] It is rolled back. Already fine [D].\n[B] Next line here."),
         )
+        // The letter is the sentence's subject: left where it is.
+        assertEquals("Slow because of carries. [A] explains this.", moveLeadingCitations("Slow because of carries. [A] explains this."))
         // Nothing to move: unchanged.
         assertEquals("Plain answer [A].", moveLeadingCitations("Plain answer [A]."))
     }

@@ -392,3 +392,19 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - Highlight terms now skip filters, AND/OR/NOT and NOT-ed words.
 - Verified by unit + Robolectric UI tests (all green); **not yet checked on the tablet** (it was disconnected).
 
+
+### Phase 9: Q&A (2026-11-19)
+- **Refusal threshold** (`ml/refusal.py`, `docs/results/refusal.csv`): best cosine to any chunk, int8 student, tuned on dev only → **0.4768**. Dev: answers 23/23, refuses 12/12. Test (held out): answers 116/121 (95.9%), refuses 8/8.
+- **Prompt style, 8 dev questions on the tablet** (`ml/data/qa/dev_prompt_check.json`):
+  | style | answers citing anything | what the citations meant |
+  |---|---|---|
+  | tags `[COMP21111 wk4 slide 22]` | 2/8 | real, but rarely written |
+  | numbers [1]..[4] | 8/8 | mostly Gemma numbering its own sentences, i.e. meaningless |
+  | **letters [A]..[D]** | 8/8 | real references; first citation usually the right slide |
+  Letters chosen. Gemma writes the letter *before* the sentence; the app moves it to the end only when a capitalised sentence follows (when the letter is the subject, "[A] explains…", it stays).
+- **30-question evaluation** (`ml/data/qa/qa_questions.json` fixed before generating, commit ef5b6a8; answers `ml/data/qa/runs/qa_answers_tablet.jsonl`; judged CSV `docs/results/qa_eval.csv`). **Judged by Claude at Ayo's request** (each answer read against the full text of the passages it was given; notes per row).
+  - **Faithful: 11 of 30** (2 correct, 4 partly correct, 5 correct refusals). Wrong 10, unsupported claim 7, wrong refusal 2 (q082 by the threshold at 0.407; q018 by the model although [B] answered it).
+  - Slides 5/20, recordings 1/5, not-in-corpus 5/5.
+  - Tablet (Galaxy Tab A7, SM6115): TTFT median **32.5 s**, decode median **4.44 tok/s** (n=24). Development device only; phone numbers will replace these.
+- **Reading of the failures:** retrieval usually supplied the right passage (the gold page was among the 4 passages in most wrong answers: q004, q098, q018, q021, q036, q010), so the main weakness is **Gemma 3 1B's reading**: it pads with repeated sentences, misreads (q010 "two rows" from "2n"), and invents filler (q028 analogies, q060 "four clauses", q134 "discovered by Steve"). Refusals and citation checking work as designed: no off-topic question got an answer, and no citation link points outside the given passages.
+- **Not changed after seeing test answers.** Any improvement (different model on the phone, extractive answers, shorter outputs) must be tried on dev and then re-run on these same 30 as a new, labelled run.
