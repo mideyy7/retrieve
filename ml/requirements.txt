@@ -1,5 +1,6 @@
 ai-edge-litert==2.3.0
 ai-edge-quantizer==0.10.1
+huggingface_hub==2.4.0
 litert-torch==0.10.0
 numpy==2.4.6
 pyarrow==26.0.1
