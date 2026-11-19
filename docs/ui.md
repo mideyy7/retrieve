@@ -9,6 +9,20 @@ shipped, plus module titles (§6.3, schema v3). Decisions taken: Navigation Comp
 per tab (§6.1) and week 0 = "Whole module" (§6.2). The rest of this document is the original
 proposal, kept as the design record.
 
+**Visual pass (2026-11-19, after the merge).** Kept the same screens and simplicity; changed how
+results are *shown*:
+- Brand theme (indigo, highlighter-yellow match marks, light and dark), a stable colour per module
+  (badge, week bar, chips), and an adaptive launcher icon.
+- Results show the slide itself, rendered from the original PDF with `PdfRenderer` (nothing copied at
+  import): a large best-match card (side by side on a tablet) and thumbnails for the rest. Recording
+  results show the timestamp on the module's colour.
+- A full-screen viewer for any result or document page: swipe to neighbouring slides, page text
+  with the search words highlighted, copy citation (`COMP21111 · Week 4 · Lecture 4 · slide 22`),
+  share, open in a PDF app. Recordings open as the transcript, scrolled to the moment.
+- Start screen: what is searchable, module shortcuts, recent searches (on device), and a search-tips
+  sheet whose examples use the student's own modules. Match reasons say "Matches your words" /
+  "Similar meaning" instead of scores.
+
 ## 1. The idea in one paragraph
 
 Blitz organises material as **project → unit → source** (a module, a week or lecture, a file).

@@ -384,3 +384,11 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - Students already have caption files from the video portal; they're tiny, import instantly and need no battery-heavy processing. **Audio/video import and on-device transcription (whisper.cpp) are out of scope.**
 - All three core CV bullets are unaffected. The supporting fact "on-device Whisper transcription at [r]× real time" becomes "lecture recordings searchable through their portal captions, with results pointing to the exact timestamp". The Whisper spike (RTF 0.42 tiny / 0.79 base on the dev tablet) stays above as evaluated, not shipped.
 - Spec §5.6, the evidence table, acceptance §9, Phase 6, Phase 8 (no transcription chain or battery-per-hour-of-transcription) and R2/R3 (no Whisper models, no Whisper licence) are updated. Phase 6 is complete.
+
+### UI visual pass (2026-11-19)
+- Theme, module colours (FNV-1a hash with probing: the plain hash put COMP12111/COMP23111 and COMP21111/COMP23311 on the same hue), launcher icon.
+- Slide previews via `PdfRenderer` on the stored content:// URI; one renderer open at a time behind a mutex, 32 MB bitmap LRU. A file whose permission is gone just shows "slide N" instead of a picture.
+- Viewer screen (`ViewerRoute`, outside the tab graphs, bottom bar hidden). Page text rebuilt from chunks by dropping each later window's 40 shared words (`joinPageChunks`, round-trip tested against `Chunker`).
+- Highlight terms now skip filters, AND/OR/NOT and NOT-ed words.
+- Verified by unit + Robolectric UI tests (all green); **not yet checked on the tablet** (it was disconnected).
+
