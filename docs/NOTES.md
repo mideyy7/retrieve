@@ -342,3 +342,10 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 | base.en-q5_1 (60 MB) | 8.7 s | **0.79** | exact, better punctuation |
 - Both faster than real time even on the Snapdragon 662, so Phase 6 is viable. The real RTF comes from the fixed 30-min recording on the measurement phone (load cost amortised).
 - **Phase 0 spikes: all four done** (1 LLM → Gemma 3 1B; 2 Whisper → viable; 3 LiteRT export → done in Phase 4/5; 4 PDF → done in Phase 1).
+
+---
+
+## 2026-11-19 (Thu, continued): Housekeeping
+- **Question set reviewed by Ayo:** all 120 drafted questions accepted as they are. Provenance for interviews: drafted with an assistant from Ayo's slides, reviewed and accepted by Ayo. questions.json is unchanged, so the frozen test-split hash `57d17ab1…` still holds.
+- UI worktree merged (`9a84580`), `main` fast-forwarded, `ui-modules`/`ui-design` branches and the `retrieve-ui` worktree removed, `docs/ui.md` committed as the design record.
+- Lecture captions found: COMP23311 W3 L1 "Unit Testing" (48:54, 591 cues, 7,102 words) and W3 L2 "From Tests To Test Suites" (44:42, 510 cues, 5,964 words), as `.vtt` + `.txt` automated transcripts. No audio yet.
