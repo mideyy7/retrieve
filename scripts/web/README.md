@@ -1,7 +1,10 @@
 # Retrieve website
 
+Live at **https://retrieve-cs9.pages.dev** (Cloudflare Pages, built from `web/` on every push to `main`).
+This README lives outside `web/` because Cloudflare publishes every file in that folder.
+
 The landing page and privacy policy for the Retrieve app. Plain static files with no build step and no
-dependencies. The design and content plan is in [docs/web.md](../docs/web.md).
+dependencies. The design and content plan is in [docs/web.md](../../docs/web.md).
 
 ```
 web/
@@ -40,7 +43,7 @@ python3 -m http.server 8000 -d web     # then open http://localhost:8000
    don't redeploy the site.
 5. The site is live at `https://<project-name>.pages.dev`. Add a custom domain under Custom domains when you have one.
 
-Cloudflare serves `privacy.html` at `/privacy` too. Use `https://<domain>/privacy` as the Play Console privacy policy URL.
+Cloudflare serves `privacy.html` at `/privacy` too. Use `https://retrieve-cs9.pages.dev/privacy` as the Play Console privacy policy URL.
 
 **Or upload from the terminal** (no Git connection):
 
@@ -65,10 +68,9 @@ Re-run it after changing the Play URL or the OG copy.
       or `.png`, and replace the three `.play` links' contents with an `<img>`. Google's guidelines don't
       allow redrawing it.
 - [ ] **Contact email** in `privacy.html` (`[contact email]`). Use the same address as the Play listing.
-- [ ] **GitHub link**: `index.html` points to `https://github.com/mideyy7/retrieve` (2 places). Fix it
-      if the repo ends up elsewhere, or remove it if the repo stays private.
-- [ ] **Absolute `og:image`**: change `/assets/og.png` in `index.html` to `https://<domain>/assets/og.png`
-      once the domain is known. Some link previewers ignore relative URLs.
+- [x] **GitHub link** points to `https://github.com/mideyy7/retrieve`.
+- [x] **Absolute `og:image`** and canonical URLs point at `https://retrieve-cs9.pages.dev`. Update them in
+      `index.html` and `privacy.html` if you add a custom domain.
 - [ ] **Play link during the closed test**: the listing URL 404s until the app is public. While testing,
       swap the three badge links (search `play.google.com/store/apps/details` in `index.html`) for the
       testing opt-in link `https://play.google.com/apps/testing/com.mideyy7.retrieve`, and re-run

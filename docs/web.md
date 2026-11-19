@@ -4,8 +4,8 @@ A one-page site that explains Retrieve and sends Android users to the Google Pla
 and section rhythm follow [mixhaus.app](https://www.mixhaus.app/). The copy, colours and visuals are
 Retrieve's own. Nothing is copied from their text or assets.
 
-Status: **built** (2026-11-19) in [web/](../web/), deployed with Cloudflare Pages (root `web/`, no
-build step), not GitHub Pages. See [web/README.md](../web/README.md) for deploy steps and the launch
+Status: **built** (2026-11-19) in [web/](../web/), deployed with Cloudflare Pages at https://retrieve-cs9.pages.dev (root `web/`, no
+build step), not GitHub Pages. See [scripts/web/README.md](../scripts/web/README.md) for deploy steps and the launch
 checklist. Sections 5 and 8 below are the original plan; the rest still describes the page.
 
 ## 1. What we're borrowing from Mixhaus
