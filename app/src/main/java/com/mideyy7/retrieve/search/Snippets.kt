@@ -6,9 +6,18 @@ data class Snippet(val text: String, val highlights: List<IntRange>)
 object Snippets {
     private val WORD = Regex("[\\p{L}\\p{N}]+")
 
-    /** Lowercased query words, ignoring quotes and punctuation (display only; ranking is native). */
+    private val FILTER = Regex("(?<![\\p{L}\\p{N}])\\p{L}+:[^\\s()]+")
+    private val NEGATED = Regex("\\bNOT\\s+(\"[^\"]*\"|[^\\s()]+)")
+    private val OPERATOR = Regex("\\b(AND|OR|NOT)\\b")
+
+    /**
+     * Lowercased query words, ignoring quotes and punctuation (display only; ranking is native).
+     * Filters (`module:COMP21111`, `week:4..6`), the operators AND/OR/NOT and words the query
+     * excludes (`NOT example`) aren't words to look for in the text, so they're left out.
+     */
     fun queryTerms(query: String): Set<String> =
-        WORD.findAll(query.lowercase()).map { it.value }.filter { it.length > 1 || it.first().isDigit() }.toSet()
+        WORD.findAll(query.replace(FILTER, " ").replace(NEGATED, " ").replace(OPERATOR, " ").lowercase())
+            .map { it.value }.filter { it.length > 1 || it.first().isDigit() }.toSet()
 
     fun make(text: String, terms: Set<String>, maxChars: Int = 220): Snippet {
         val words = WORD.findAll(text).toList()

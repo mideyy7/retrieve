@@ -11,6 +11,14 @@ class SnippetsTest {
     }
 
     @Test
+    fun queryTermsLeaveOutFiltersOperatorsAndExcludedWords() {
+        assertEquals(
+            setOf("unit", "propagation", "clause"),
+            Snippets.queryTerms("module:COMP21111 week:4..6 \"unit propagation\" NOT example OR clause NOT \"pure literal\""),
+        )
+    }
+
+    @Test
     fun highlightsMatchedWordsCaseInsensitively() {
         val s = Snippets.make("Unit propagation removes the unit.", setOf("unit"))
         assertEquals("Unit propagation removes the unit.", s.text)
