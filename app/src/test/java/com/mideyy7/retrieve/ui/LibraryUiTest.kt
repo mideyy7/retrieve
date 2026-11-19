@@ -28,6 +28,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import com.mideyy7.retrieve.ui.theme.RetrieveTheme
 
 /** Renders the stateless library screens on the JVM and drives them like a user would. */
 @RunWith(RobolectricTestRunner::class)

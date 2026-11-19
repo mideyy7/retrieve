@@ -2,22 +2,19 @@ package com.mideyy7.retrieve.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -43,15 +40,8 @@ import com.mideyy7.retrieve.ui.library.LibraryScreen
 import com.mideyy7.retrieve.ui.module.ModuleScreen
 import com.mideyy7.retrieve.ui.search.SearchScreen
 import com.mideyy7.retrieve.ui.search.SearchViewModel
+import com.mideyy7.retrieve.ui.theme.LocalModuleHues
 import kotlinx.serialization.Serializable
-
-@Composable
-fun RetrieveTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme(),
-        content = content,
-    )
-}
 
 // Type-safe routes: Navigation Compose serialises these into the back stack, so arguments
 // survive process death along with the stack itself.
@@ -114,44 +104,48 @@ fun RetrieveApp() {
         nav.switchTab(Tab.Search)
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbar) },
-        bottomBar = {
-            NavigationBar {
-                Tab.entries.forEach { t ->
-                    val selected = current?.hierarchy?.any { it.hasRoute(t.graph::class) } == true
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = { if (selected) nav.popToTabRoot(t) else nav.switchTab(t) },
-                        icon = { Icon(t.icon, contentDescription = null) },
-                        label = { Text(t.label) },
-                    )
+    val moduleHues by searchVm.moduleHues.collectAsStateWithLifecycle()
+
+    CompositionLocalProvider(LocalModuleHues provides moduleHues) {
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackbar) },
+            bottomBar = {
+                NavigationBar {
+                    Tab.entries.forEach { t ->
+                        val selected = current?.hierarchy?.any { it.hasRoute(t.graph::class) } == true
+                        NavigationBarItem(
+                            selected = selected,
+                            onClick = { if (selected) nav.popToTabRoot(t) else nav.switchTab(t) },
+                            icon = { Icon(t.icon, contentDescription = null) },
+                            label = { Text(t.label) },
+                        )
+                    }
                 }
-            }
-        },
-    ) { padding ->
-        NavHost(nav, startDestination = SearchTab, modifier = Modifier.padding(padding)) {
-            navigation<SearchTab>(startDestination = SearchRoute) {
-                composable<SearchRoute> { SearchScreen(vm = searchVm) }
-            }
-            navigation<LibraryTab>(startDestination = LibraryRoute) {
-                composable<LibraryRoute> {
-                    LibraryScreen(onOpenModule = { nav.navigate(ModuleRoute(it)) }, onImport = { startImport(null, null) })
+            },
+        ) { padding ->
+            NavHost(nav, startDestination = SearchTab, modifier = Modifier.padding(padding)) {
+                navigation<SearchTab>(startDestination = SearchRoute) {
+                    composable<SearchRoute> { SearchScreen(vm = searchVm) }
                 }
-                composable<ModuleRoute> { entry ->
-                    val code = entry.toRoute<ModuleRoute>().code
-                    ModuleScreen(
-                        onBack = { nav.popBackStack() },
-                        onSearch = ::openSearch,
-                        onImport = { week -> startImport(code, week) },
-                        onOpenDocument = { nav.navigate(DocumentRoute(it)) },
-                        // Reopen under the new code, replacing this page in the back stack.
-                        onRenamed = { newCode ->
-                            nav.navigate(ModuleRoute(newCode)) { popUpTo<ModuleRoute> { inclusive = true } }
-                        },
-                    )
+                navigation<LibraryTab>(startDestination = LibraryRoute) {
+                    composable<LibraryRoute> {
+                        LibraryScreen(onOpenModule = { nav.navigate(ModuleRoute(it)) }, onImport = { startImport(null, null) })
+                    }
+                    composable<ModuleRoute> { entry ->
+                        val code = entry.toRoute<ModuleRoute>().code
+                        ModuleScreen(
+                            onBack = { nav.popBackStack() },
+                            onSearch = ::openSearch,
+                            onImport = { week -> startImport(code, week) },
+                            onOpenDocument = { nav.navigate(DocumentRoute(it)) },
+                            // Reopen under the new code, replacing this page in the back stack.
+                            onRenamed = { newCode ->
+                                nav.navigate(ModuleRoute(newCode)) { popUpTo<ModuleRoute> { inclusive = true } }
+                            },
+                        )
+                    }
+                    composable<DocumentRoute> { DocumentScreen(onBack = { nav.popBackStack() }) }
                 }
-                composable<DocumentRoute> { DocumentScreen(onBack = { nav.popBackStack() }) }
             }
         }
     }

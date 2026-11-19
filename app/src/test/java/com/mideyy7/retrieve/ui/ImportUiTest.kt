@@ -23,6 +23,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import com.mideyy7.retrieve.ui.theme.RetrieveTheme
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])

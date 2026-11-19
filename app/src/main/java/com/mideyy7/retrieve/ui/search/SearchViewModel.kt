@@ -10,6 +10,7 @@ import com.mideyy7.retrieve.search.IndexState
 import com.mideyy7.retrieve.search.SearchOutcome
 import com.mideyy7.retrieve.search.SearchRepository
 import com.mideyy7.retrieve.search.SearchResult
+import com.mideyy7.retrieve.ui.theme.assignModuleHues
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -45,11 +46,17 @@ class SearchViewModel(app: Application, private val saved: SavedStateHandle) : A
 
     val indexState: StateFlow<IndexState> = store.state
 
+    private val modules = app.retrieveApp.database.documents().observeModules()
+
     /** Most recently imported modules, offered as one-tap scopes while the query is empty. */
     val recentModules: StateFlow<List<String>> =
-        app.retrieveApp.database.documents().observeModules()
-            .map { modules -> modules.take(6).map { it.module } }
+        modules.map { list -> list.take(6).map { it.module } }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    /** Each module's colour, shared by every screen (this view model lives as long as the Activity). */
+    val moduleHues: StateFlow<Map<String, Int>> =
+        modules.map { list -> assignModuleHues(list.map { it.module }) }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
 
     val ui: StateFlow<SearchUiState> =
         combine(_query.debounce(150).distinctUntilChanged(), store.state) { q, _ -> q }

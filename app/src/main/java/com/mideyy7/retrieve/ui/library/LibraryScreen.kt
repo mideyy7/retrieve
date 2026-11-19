@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,7 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mideyy7.retrieve.nativebridge.NativeBridge
+import com.mideyy7.retrieve.ui.components.ModuleBadge
 import com.mideyy7.retrieve.ui.components.SegmentedBar
+import com.mideyy7.retrieve.ui.theme.moduleColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,22 +138,33 @@ fun ModuleGrid(
 @Composable
 private fun ModuleCardView(card: ModuleCard, onClick: () -> Unit) {
     val m = card.summary
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth().heightIn(min = 120.dp)) {
+    val color = moduleColor(m.module)
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 132.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+    ) {
         Column(
             Modifier.padding(14.dp).clearAndSetSemantics { contentDescription = card.description },
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            Text(m.module, style = MaterialTheme.typography.titleMedium)
+            ModuleBadge(m.module)
             m.title?.let {
-                Text(it, style = MaterialTheme.typography.bodySmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(
+                    it,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 4.dp),
+                )
             }
             Text(
-                "${m.docCount} doc${if (m.docCount == 1) "" else "s"}",
+                "${m.docCount} file${if (m.docCount == 1) "" else "s"}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.weight(1f, fill = false).heightIn(min = 8.dp))
-            SegmentedBar(card.segments.map { segmentColor(it.state) })
+            SegmentedBar(card.segments.map { segmentColor(it.state, color.accent) })
             card.status?.let {
                 Text(
                     it,
@@ -163,8 +177,8 @@ private fun ModuleCardView(card: ModuleCard, onClick: () -> Unit) {
 }
 
 @Composable
-fun segmentColor(state: SegmentState): Color = when (state) {
-    SegmentState.READY -> MaterialTheme.colorScheme.primary
-    SegmentState.BUSY -> MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+fun segmentColor(state: SegmentState, ready: Color = MaterialTheme.colorScheme.primary): Color = when (state) {
+    SegmentState.READY -> ready
+    SegmentState.BUSY -> ready.copy(alpha = 0.35f)
     SegmentState.FAILED -> MaterialTheme.colorScheme.error
 }

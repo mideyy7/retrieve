@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import com.mideyy7.retrieve.ui.RetrieveApp
-import com.mideyy7.retrieve.ui.RetrieveTheme
+import com.mideyy7.retrieve.ui.theme.RetrieveTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {

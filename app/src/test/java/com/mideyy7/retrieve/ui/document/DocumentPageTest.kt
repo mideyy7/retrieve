@@ -7,7 +7,7 @@ import com.mideyy7.retrieve.data.Chunk
 import com.mideyy7.retrieve.data.DocStatus
 import com.mideyy7.retrieve.data.DocType
 import com.mideyy7.retrieve.data.Document
-import com.mideyy7.retrieve.ui.RetrieveTheme
+import com.mideyy7.retrieve.ui.theme.RetrieveTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
