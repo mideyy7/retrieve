@@ -1,0 +1,2 @@
+date,git_commit,device,doc_id,status_when_killed,chunks_before,chunks_after,distinct_keys_after,final_status,pass
+2026-11-19,3aaf022,SM-T505N,22,INDEXING,181,181,181,READY,yes

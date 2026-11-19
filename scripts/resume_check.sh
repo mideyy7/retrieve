@@ -32,14 +32,19 @@ PY
 
 ./gradlew -q installDebug installDebugAndroidTest
 "$ADB" shell am start -n $APP/com.mideyy7.retrieve.MainActivity >/dev/null; sleep 5
-"$ADB" shell am instrument -w -e class com.mideyy7.retrieve.work.ReindexTrigger -e docs "${1:-largest}" "$RUNNER" >/dev/null
+"$ADB" shell am instrument -w -e class com.mideyy7.retrieve.work.ReindexTrigger#queue -e docs "${1:-largest}" "$RUNNER" >/dev/null
+# The instrumentation run ends by killing the app process, leaving the work to the job scheduler,
+# which can wait minutes. Reopening the app lets WorkManager start it straight away.
+"$ADB" shell am start -n $APP/com.mideyy7.retrieve.MainActivity >/dev/null
 DOC=$("$ADB" shell cat /sdcard/Android/data/$APP/files/resume_check.txt | tr -d '\r' | cut -d, -f1)
 mkdir -p "$TMP/before"; pull_db "$TMP/before"
 read -r BEFORE_N BEFORE_K _ < <(counts "$TMP/before" "$DOC")
 echo "document $DOC: $BEFORE_N chunks before"
 
-# Wait until it is indexing, then a little longer so it is mid-way, then kill the process.
-for _ in $(seq 1 60); do mkdir -p "$TMP/w"; pull_db "$TMP/w"; read -r _ _ S < <(counts "$TMP/w" "$DOC"); [[ $S == INDEXING ]] && break; sleep 1; done
+# Wait until it is indexing (up to 10 min), then a little longer so it is mid-way, then kill it.
+S=""
+for _ in $(seq 1 300); do mkdir -p "$TMP/w"; pull_db "$TMP/w"; read -r _ _ S < <(counts "$TMP/w" "$DOC"); [[ $S == INDEXING ]] && break; sleep 2; done
+[[ $S == INDEXING ]] || { echo "indexing never started; not a valid test" >&2; exit 1; }
 sleep "${KILL_AFTER:-8}"
 "$ADB" shell am force-stop $APP
 mkdir -p "$TMP/killed"; pull_db "$TMP/killed"; read -r _ _ KILLED_STATUS < <(counts "$TMP/killed" "$DOC")
@@ -49,7 +54,8 @@ echo "force-stopped while $KILLED_STATUS"
 for _ in $(seq 1 600); do mkdir -p "$TMP/a"; pull_db "$TMP/a"; read -r N K S < <(counts "$TMP/a" "$DOC"); [[ $S == READY || $S == FAILED ]] && break; sleep 2; done
 echo "after reopening: $S, $N chunks, $K distinct keys"
 
-ok=$([[ $S == READY && $N == "$BEFORE_N" && $N == "$K" ]] && echo yes || echo no)
+# Only a kill during INDEXING tests resuming; anything else is reported as a failed check.
+ok=$([[ $KILLED_STATUS == INDEXING && $S == READY && $N == "$BEFORE_N" && $N == "$K" ]] && echo yes || echo no)
 mkdir -p docs/results
 [[ -f docs/results/resume_check.csv ]] || echo "date,git_commit,device,doc_id,status_when_killed,chunks_before,chunks_after,distinct_keys_after,final_status,pass" > docs/results/resume_check.csv
 echo "$(date +%F),$(git rev-parse --short HEAD),$("$ADB" shell getprop ro.product.model | tr -d '\r'),$DOC,$KILLED_STATUS,$BEFORE_N,$N,$K,$S,$ok" >> docs/results/resume_check.csv
