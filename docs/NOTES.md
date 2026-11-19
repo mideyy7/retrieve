@@ -40,14 +40,14 @@ One entry per day worked. Record decisions, measurements (with the CSV they live
 - Android SDK at `~/Library/Android/sdk`: has platform-tools and android-34 only. **Missing:** Android Studio, NDK, SDK CMake, a newer platform (API 35/36 for Play targetSdk). `adb` isn't on PATH.
 
 ### Phase 0 status
-- [ ] Toolchain installed (Android Studio, NDK, SDK CMake, platform for chosen targetSdk)
-- [ ] Test phone chosen: model / Android version / chipset / Vulkan version
-- [ ] Spike 1: LLM runtime + model
-- [ ] Spike 2: whisper.cpp on phone
+- [x] Toolchain installed (SDK, NDK, CMake, JDK 21; command-line builds, no Android Studio needed)
+- [x] Test device chosen: Galaxy Tab A7 SM-T505N
+- [~] Spike 1: LLM runtime + model (prepared: LiteRT-LM + 3 candidate models; needs the tablet)
+- [~] Spike 2: whisper.cpp on phone (prepared: arm64 build + models; needs the tablet)
 - [ ] Spike 3: PyTorch → LiteRT export of MiniLM, run on phone
-- [ ] Spike 4: PDF text extraction library
+- [x] Spike 4: PDF text extraction library (PdfBox + ML Kit, 19 real PDFs in Phase 1)
 - [ ] Corpus collected; 30-min benchmark recording SHA-256 recorded
-- [ ] ≥ 120 question texts in `ml/data/questions_draft.md`
+- [x] ≥ 120 question texts (120 drafted in ml/data/question_drafts.json; Ayo to review)
 - [~] R0: Play account checked and testers recruited (Ayo, 2026-11-19); still to do: targetSdk requirement, size limits, model delivery method
 
 ---
@@ -216,3 +216,63 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 ### R0 update (2026-11-19)
 - Ayo confirmed the Play account check is done and testers are recruited. **Still to record here:** whether the 12-tester / 14-day closed-test rule applies to the account (created before or after 13 Nov 2023), and how many testers have agreed (target ≥ 15 for a buffer above 12).
 - R0 left for me: current Play targetSdk requirement, download size limits, model delivery method (Play AI packs vs first-launch download), each with a link.
+
+---
+
+## 2026-11-19 (Thu, continued): Phase 4, test set, teacher, distillation, int8
+
+### Test set: `ml/data/questions.json` (drafted by Claude at Ayo's request; Ayo to review)
+- 120 questions (**101 test, 19 dev**), stratified across COMP12111/21111/22111/23111, from 134 slides picked by `ml/tools/sample_for_questions.py` (seed 4). Paraphrased as a revising student would ask. `author: claude-draft` on every question.
+- Labels are locations (doc SHA-256 + page). Near-copy pages (Jaccard ≥ 0.95) also count; 0.8 was too loose (Stump Fetch vs Execute signal charts 0.81–0.89, Lost vs Temporary Update 0.88).
+- **Frozen test split sha256 `57d17ab16cb84a36c4e2172d87bf4a90c4daf0a909972a614d52866699227b20`.** If Ayo edits questions, rebuild and record the new hash; don't tune on test.
+- **Known bias:** questions written while reading the slides share their wording, which favours BM25. No recording questions yet (no recordings).
+
+### Models (all numbers from `docs/results/*.csv`)
+| | params | fp32 | int8 | laptop CPU latency (4 threads, batch 1, 128 tok) |
+|---|---|---|---|---|
+| teacher all-MiniLM-L6-v2 (pooler dropped) | 22,565,376 | 90.1 MB | – | 10.99 ms median |
+| student-l3 | 10,429,056 (46.2%) | 42.0 MB | **11.2 MB** (3.74×) | 5.76 ms median |
+- Student: teacher layers 0, 3, 5 (chosen by held-out fidelity before training: 0.558 vs 0.509 for 0,2,5), vocab 30,522 → 13,164 (all lecture pieces + WikiText-2 pieces with count ≥ 20, + single chars), positions 512 → 128.
+- Distillation: 4 epochs, 19,793 texts (lecture windows + WikiText-2), cosine loss, 29 min on M1 CPU; held-out fidelity 0.558 → 0.915. Loss curve: `docs/results/distill_student-l3.csv`.
+- Bug caught: `BertTokenizerFast(vocab_file=...)` silently ignored the file (everything became [UNK], fidelity 0.01). The tokenizer is now built from the teacher's tokenizer.json with the vocabulary swapped.
+- LiteRT export parity on 50 inputs: student max abs 1.7e-7, teacher 2.9e-7. int8 (ai-edge-quantizer dynamic_wi8_afp32) vs fp32: cosine mean 0.9993, min 0.9990.
+- MAX_LEN 128: on dev, identical R@1/5/10 to 256 (MRR 0.582 vs 0.607). 52% of chunks are truncated. Finding: COMP21111 wk3 p77/p79 share their first 128 tokens, so they embed identically.
+
+### Recall: `docs/results/recall.csv`, CIs in `recall_ci.csv` (test, n = 101)
+| method | R@1 | R@5 [95% CI] | R@10 | MRR@10 |
+|---|---|---|---|---|
+| BM25 (retrieve_cli) | 0.594 | 0.812 [0.733, 0.881] | 0.851 | 0.677 |
+| teacher fp32 | 0.535 | 0.842 [0.762, 0.911] | 0.911 | 0.668 |
+| student-l3 fp32 | 0.515 | 0.802 [0.723, 0.871] | 0.851 | 0.630 |
+| **student-l3 int8 (LiteRT file)** | 0.515 | **0.802** [0.723, 0.871] | 0.851 | 0.632 |
+| **hybrid BM25 + student int8 (RRF 60)** | 0.515 | **0.851** [0.782, 0.911] | 0.911 | 0.663 |
+- Paired differences: hybrid − BM25 +0.040 [−0.010, +0.099]; student − teacher −0.040 [−0.099, +0.020]; int8 − fp32 0. **None significant at n = 101**, so CV wording reports the numbers without claiming a significant gain.
+- `ml/tests` (pytest, 7 tests): metric arithmetic, RRF, split integrity, run-to-run reproducibility, self-retrieval sanity.
+
+### Phase 4 exit gate
+- [x] questions.json committed, test split hash recorded, every answer resolves to a chunk (builder + test)
+- [x] recall.csv has BM25, teacher, student, student-int8 (+ hybrid) on test, all from eval.py
+- [x] Parameter counts printed by code (baseline.py / distill.py)
+- [x] Laptop latency recorded (`embed_latency_laptop.csv`)
+- [ ] Ayo reviews the drafted questions (edits → rebuild → new hash)
+
+---
+
+## 2026-11-19 (Thu, continued): Phase 0 remainder, R0 research and spike prep
+
+### R0 research (checked 2026-11-19)
+- **targetSdk:** new apps and updates must target **API 36** since 31 Aug 2026; we target 36. https://support.google.com/googleplay/android-developer/answer/11926878
+- **Size:** base module ≤ 200 MB compressed; asset packs don't count toward it. Our release AAB is 17 MB. https://support.google.com/googleplay/android-developer/answer/9859372
+- **Model delivery decision: Play for On-device AI (beta) AI packs**, ≤ 1.5 GB per pack, ≤ 4 GB total, fast-follow/on-demand via the Play AI Delivery Library. Embedding model (11 MB) and Whisper tiny ship in the base module; Whisper base and the LLM go in on-demand AI packs. **Gemma 4 E2B (~2.6 GB) can't ship as one pack.** https://developer.android.com/google/play/on-device-ai
+- Still from Ayo: does the 12-tester/14-day rule apply to the account, and how many testers?
+
+### Spike 2 prep: whisper.cpp
+- v1.9.5 (`d1be6fd`), built for macOS and cross-compiled with NDK 30 into a static arm64 `whisper-cli` (24.6 MB). Models (SHA-256 prefix): tiny.en 77.7 MB `921e4cf8`, tiny.en-q5_1 32.2 MB `c77c5766`, base.en 148.0 MB `a03779c8`, base.en-q5_1 59.7 MB `4baf70dd`.
+- Laptop: both q5_1 models transcribe the JFK sample correctly (~2.2 s total for 11 s of audio, Metal build; not a device number).
+- On the tablet: `spikes/spike2_whisper_device.sh tiny.en-q5_1` (prints the real-time factor).
+
+### Spike 1 prep: on-device LLM
+- MediaPipe LLM Inference is maintenance-only, so we use **LiteRT-LM**: official `litertlm-android` 0.19.1 from Google Maven, **debug builds only** for now (adds 22.7 MB of native libs to the debug APK).
+- Running the downloaded `litert_lm_main` binary was blocked (unsigned binary, Gatekeeper bypass), and the library route is the Phase 9 path anyway.
+- Candidates (litert-community, not gated): Qwen3-0.6B int4 343 MB `bf1aba9c`, Gemma 3 1B int4 584 MB `e9d9ae55`, Gemma 3 270M int8 304 MB `a63c2450`.
+- On the tablet: `spikes/spike1_llm_device.sh Qwen3-0.6B_dynamic_wi4b32_afp32.litertlm cpu`, then the Gemma 1B. It pushes one model at a time (the tablet has ~3.9 GB free).
