@@ -164,3 +164,43 @@ Corpus so far: `corpus/COMP12111/COMP12111 Part1 Notes_C_Moutafis_2025.pdf` (141
 - [x] Tablet vs CLI: index file **byte-identical**; `scripts/parity_check.py` **30/30 queries identical** (keys, order, scores)
 - [x] No JNI leaks: 1,000 searches with native heap growth under 256 KB; 3,000-chunk build doesn't exhaust local refs (device tests)
 - [x] R1 leftover: search works in the R8 release build (scores match the CLI)
+
+---
+
+## 2026-11-19 (Thu, continued): Phase 3, query language
+
+### Design decision: what juxtaposed words mean
+The spec grammar has implicit AND. Strict AND would make natural questions ("where did they explain unit propagation") match almost nothing, which would wreck the BM25 recall baseline in Phase 4. Adopted Lucene-style roles instead (full rules in `docs/query-language.md`):
+- **required**: filters, phrases, multi-term words (RISC-V, 16:1), groups, anything next to an explicit `AND`
+- **should**: plain single words. At least one must match, unless a required operand already brings words (a phrase or an AND-joined word).
+- **must-not**: `NOT x`
+So `module:COMP21111 unit propagation` = in that module **and** containing unit or propagation; `"stored procedure" parameters` = must have the phrase, and "parameters" only boosts the ranking.
+
+### Built
+- `docs/query-language.md` (written first): grammar, roles, ranking, every error message.
+- `native/query/`: lexer (code-point columns, curly quotes), recursive-descent parser → AST, planned + naive executors, seeded random-query generator.
+- Ties broken by module → week → page/start time → id, so filter-only and NOT-only queries list chunks in course order.
+- `retrieve_cli parse | equiv | bench`; `scripts/make_bench_queries.py` → `bench/queries.txt` (210 distinct: 110 plain, 50 filter, 25 phrase, 25 boolean, generated from the corpus with a fixed seed); `scripts/planner_bench.py` → `docs/results/planner.csv`.
+- App: syntax errors are shown under the search box with their column (QuerySyntaxException from JNI; works in the R8 release build).
+
+### Verification
+- 90 native tests (35 parser: valid trees + exact messages/columns; 14 semantics; equivalence; plus earlier suites), also under ASan + UBSan.
+- **Equivalence:** planned == naive **bit for bit** on 500+ random queries over a synthetic corpus (unit test) and **1,000 random queries over the real corpus vocabulary** (`retrieve_cli equiv`, seed 7: 654 non-empty, 0 mismatches). Both executors add BM25 terms in the same order, which is what makes exact score equality possible.
+- Device: 9 instrumented tests pass; device-vs-CLI parity **40/40** (now including filters, NOT, AND, OR, groups).
+- Hand check on the tablet: `module:COMP21111 week:4..5 "unit propagation" NOT example` → wk4 slides 22, 4, 34 (12 ms). Without `NOT example`: +33, 75, 49, exactly the three containing "example".
+
+### Benchmark: `docs/results/planner.csv` (commit 14f5df3, MacBook Air M1 8 GB, Release -O3, median of 101 alternating runs, top-10)
+| kind | n | planned med | naive med | speedup med | speedup min |
+|---|---|---|---|---|---|
+| plain | 110 | 7.4 µs | 225.6 µs | 31.6× | 11.1× |
+| phrase | 12 | 3.0 µs | 90.4 µs | 29.7× | 4.1× |
+| filter | 66 | 13.6 µs | 92.5 µs | 7.3× | 2.5× |
+| boolean | 22 | 4.2 µs | 162.2 µs | 35.5× | 11.7× |
+| **all** | **210** | **8.9 µs** | **171.1 µs** | **21.4×** | **2.5×** |
+
+**Caveat to keep when quoting this:** the naive baseline (as the spec defines it) tests every one of the 673 chunks one at a time. The speedup therefore measures set-at-a-time evaluation **plus** filters-first, not rarest-first ordering on its own. Laptop numbers, not on-device. The planner was faster on all 210 queries.
+
+### Phase 3 exit gate
+- [x] All C++ tests pass, including ≥ 500-query equivalence (synthetic) and 1,000 on the real corpus vocabulary
+- [x] `planner.csv` committed with commit hash and machine
+- [x] On the tablet, a real module + week range + phrase + NOT query returns the correct pages (hand-checked)
