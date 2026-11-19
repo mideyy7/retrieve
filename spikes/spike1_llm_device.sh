@@ -22,13 +22,14 @@ DIR=/sdcard/Android/data/$APP/files/llm
 ./gradlew -q installDebug installDebugAndroidTest
 "$ADB" shell mkdir -p "$DIR"
 # The tablet has little free storage: keep only the model under test on it.
-"$ADB" shell "ls $DIR" | grep -v "^$MODEL\$" | while read -r old; do [ -n "$old" ] && "$ADB" shell rm -f "$DIR/$old"; done
+# (|| true: with pipefail, grep matching nothing must not abort the script.)
+for old in $("$ADB" shell "ls $DIR" | tr -d '\r' | grep -vx "$MODEL" || true); do "$ADB" shell rm -f "$DIR/$old"; done
 "$ADB" shell "[ -f $DIR/$MODEL ]" || "$ADB" push "spikes/third_party/litertlm/$MODEL" "$DIR/$MODEL"
 
 "$ADB" logcat -c
 out=$("$ADB" shell am instrument -w -r -e class com.mideyy7.retrieve.spikes.LlmSpikeTest -e model "$MODEL" -e backend "$BACKEND" \
       "$APP.test/androidx.test.runner.AndroidJUnitRunner")
-echo "$out" | grep -E "^(OK|FAILURES)|Process crashed|shortMsg|INSTRUMENTATION_RESULT: stream" | head -5
+echo "$out" | grep -E "^(OK|FAILURES)|Process crashed|shortMsg|AssumptionViolated" | head -5 || true
 if "$ADB" logcat -d | grep -qE "lowmemorykiller|Kill.*$APP|$APP.*(died|killed)"; then
   echo "WARNING: low-memory killer activity involving the app during the run"
 fi

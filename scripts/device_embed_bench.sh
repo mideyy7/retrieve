@@ -20,7 +20,7 @@ for f in model.tflite vocab.txt model.json; do "$ADB" push -q "models/device/tea
 
 out=$("$ADB" shell am instrument -w -r -e class com.mideyy7.retrieve.search.EmbedBenchTest -e embedBench true \
       "$APP.test/androidx.test.runner.AndroidJUnitRunner")
-echo "$out" | grep -E "^(OK|FAILURES)|shortMsg" | head -3
+echo "$out" | grep -E "^(OK|FAILURES)|shortMsg|AssumptionViolated" | head -3 || true
 
 "$ADB" shell cat "$DEV/embed_bench.jsonl" > /tmp/embed_bench_$$.jsonl
 python3 - "$(git rev-parse --short HEAD)" /tmp/embed_bench_$$.jsonl <<'EOF'

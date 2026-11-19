@@ -274,7 +274,7 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 ### Spike 1 prep: on-device LLM
 - MediaPipe LLM Inference is maintenance-only, so we use **LiteRT-LM**: official `litertlm-android` 0.19.1 from Google Maven, **debug builds only** for now (adds 22.7 MB of native libs to the debug APK).
 - Running the downloaded `litert_lm_main` binary was blocked (unsigned binary, Gatekeeper bypass), and the library route is the Phase 9 path anyway.
-- Candidates (litert-community, not gated): Qwen3-0.6B int4 343 MB `bf1aba9c`, Gemma 3 1B int4 584 MB `e9d9ae55`, Gemma 3 270M int8 304 MB `a63c2450`.
+- Candidates: Qwen3-0.6B int4 343 MB `bf1aba9c` (open). **Correction:** the Gemma 3 1B and 270M downloads were 137/140-byte "Access … is restricted" error pages (Gemma is gated on Hugging Face despite the listing), so the hashes first recorded here were of error pages. Gemma needs Ayo to accept the licence and provide a token.
 - On the tablet: `spikes/spike1_llm_device.sh Qwen3-0.6B_dynamic_wi4b32_afp32.litertlm cpu`, then the Gemma 1B. It pushes one model at a time (the tablet has ~3.9 GB free).
 
 ---

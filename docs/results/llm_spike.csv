@@ -1,0 +1,3 @@
+date,device,android,model,model_mb,backend,outcome,load_ms,avail_mem_mb_before,avail_mem_mb_after_load,ttft_ms,decode_tok_per_s,streamed_tokens,total_ms,answer_correct,notes,script
+2026-11-19,"SM-T505N (Snapdragon 662, ~3 GB)",12,Qwen3-0.6B_dynamic_wi4b32_afp32.litertlm,343,cpu,ok,17169,1146,432,19487,1.27,392,327626,partly (right mechanism and citation; DPLL expansion wrong),Qwen3 thinking mode: most of the 392 tokens were hidden reasoning before a ~30-word answer,spikes/spike1_llm_device.sh
+2026-11-19,"SM-T505N (Snapdragon 662, ~3 GB)",12,Qwen3-0.6B_dynamic_wi4b32_afp32.litertlm,343,gpu,killed by lmkd (signal 9) during OpenCL init,,,,,,,,,GPU path needs extra weight copies; 3 GB device runs out of memory,spikes/spike1_llm_device.sh
