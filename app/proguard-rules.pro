@@ -5,3 +5,7 @@
 -keepclasseswithmembernames,includedescriptorclasses class * {
     native <methods>;
 }
+
+# PdfBox-Android: JPEG 2000 decoding is an optional dependency we don't ship. Pages with JPX
+# images will lack that image's text layer, which the OCR fallback covers.
+-dontwarn com.gemalto.jp2.JP2Decoder
