@@ -40,6 +40,11 @@ class ImportRepository(
      * Records the document and queues indexing. The file is identified by its SHA-256, so the same
      * file picked twice (even from a different folder) is detected. A previously FAILED import of
      * the same file is retried.
+     *
+     * Re-picking an existing file also points the document at the URI just granted. The picker can
+     * hand out a different URI for the same file depending on how it was reached, and a lost grant
+     * (e.g. after reinstalling) can only be restored this way: keeping the old URI left re-indexing
+     * failing with "permission revoked" even though the user had just granted access again.
      */
     suspend fun import(uri: Uri, name: String, module: String, week: Int, type: DocType): ImportResult =
         withContext(Dispatchers.IO) {
@@ -64,6 +69,7 @@ class ImportRepository(
             }
 
             val existing = requireNotNull(db.documents().bySha(sha))
+            if (existing.sourceUri != uri.toString()) db.documents().setSourceUri(existing.id, uri.toString())
             if (existing.status == DocStatus.FAILED) {
                 enqueueIndexing(existing.id)
                 ImportResult.Queued(existing.id)

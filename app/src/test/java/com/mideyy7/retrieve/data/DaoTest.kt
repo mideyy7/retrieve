@@ -50,6 +50,13 @@ class DaoTest {
     }
 
     @Test
+    fun setSourceUriRepointsTheDocument() = runTest {
+        val id = db.documents().insert(doc("7".repeat(64)))
+        db.documents().setSourceUri(id, "content://new/uri")
+        assertEquals("content://new/uri", db.documents().byId(id)!!.sourceUri)
+    }
+
+    @Test
     fun replaceChunksIsAtomicAndIdempotent() = runTest {
         val sha = "b".repeat(64)
         val id = db.documents().insert(doc(sha))

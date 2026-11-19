@@ -23,6 +23,10 @@ interface DocumentDao {
     @Query("UPDATE documents SET status = :status, error = :error WHERE id = :id")
     suspend fun setStatus(id: Long, status: DocStatus, error: String? = null)
 
+    /** Points a document at a newly granted URI for the same file (see ImportRepository.import). */
+    @Query("UPDATE documents SET sourceUri = :uri WHERE id = :id")
+    suspend fun setSourceUri(id: Long, uri: String)
+
     @Query("SELECT * FROM documents WHERE status = 'READY'")
     suspend fun allReady(): List<Document>
 
