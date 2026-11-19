@@ -86,3 +86,13 @@ One entry per day worked. Record decisions, measurements (with the CSV they live
 - Choice: use it for every on-device number. **Risk:** Phase 9 LLM on 3 GB RAM. Spike 1 must test a ~1B model (Gemma 3 1B / Qwen3 0.6B) on it before relying on it. Gemma 4 E2B won't fit.
 - To do: free ~5 GB of storage before Phase 5.
 - First install: debug build launches (cold start reported by `am start -W`: 2363 ms) and shows "Native engine 0.1.0", so JNI works on the device.
+
+### Phase 1 device checks on the tablet (2026-11-19)
+Corpus so far: `corpus/COMP12111/COMP12111 Part1 Notes_C_Moutafis_2025.pdf` (141 pages, a handout with slide images plus a "Notes:" lines area). Only real lecture PDF on the device so far; more modules still needed.
+
+- **First import:** 195 chunks. Found that blank pages made junk chunks of just the page number ("9"), so pages with fewer than 3 letters are now skipped (commit 5fab64e).
+- **Schema v1 → v2 migration ran on the device** with existing data: user_version 2, all 195 chunks kept.
+- **Crash test PASSED.** Re-import (doc 2, week 1). At page ~12 of 141 the process was killed with `adb shell am crash com.mideyy7.retrieve` (`run-as kill` isn't permitted on this Samsung build). WorkManager restarted the process by itself after ~20 s, with the app not reopened. The import finished READY: 181 chunks, 181 distinct stableKeys, no orphan chunks from the deleted first import.
+- **Dropped pages verified blank:** 2, 9, 23, 35, 41, 55, 65, 71, 87, 127, 131, 138, 139, 140 have 0.01–0.02% ink (page number only).
+- **OCR:** 85 of 127 content pages are image-only slides and went through ML Kit. Spot-check of pages 14, 38, 64, 88, 116 against renders: prose and quiz options exact. Expected losses: superscripts flattened (10³ → 10), diagrams become fragments ("X y-"), one O→0 in a footer.
+- **Known issue, to measure in Phase 5:** boilerplate on every page (garbled sideways logo "Thsniversity MANCHESTER", footer "COMP12111:Overview & Introduction to Logic", "Notes:"). Near-zero IDF, so BM25 should be unaffected, but it may pull embeddings together. If recall suffers, strip lines that repeat on most pages of a document.
