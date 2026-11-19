@@ -1,6 +1,10 @@
 package com.mideyy7.retrieve.ui.search
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,8 +35,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,6 +56,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -124,12 +128,17 @@ fun SearchScreen(
         )
     }
 
-    Box(modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier.fillMaxSize()) {
+        val home = query.isBlank()
+        // On the home screen the logo and search bar sit a little above the middle, like a search
+        // engine's front page; once there's a query the bar moves to the top to make room for results.
+        val homeTop = maxHeight * 0.16f
         Column(
-            Modifier.align(Alignment.TopCenter).widthIn(max = MaxContentWidth).fillMaxWidth().fillMaxHeight().padding(horizontal = 16.dp),
+            Modifier.align(Alignment.TopCenter).widthIn(max = MaxContentWidth).fillMaxWidth().fillMaxHeight()
+                .padding(horizontal = 16.dp).padding(top = 52.dp),
         ) {
-            AnimatedVisibility(visible = query.isBlank()) {
-                Greeting(library, indexState, Modifier.padding(top = 32.dp, bottom = 20.dp))
+            AnimatedVisibility(visible = home) {
+                Logo(Modifier.fillMaxWidth().padding(top = homeTop, bottom = 28.dp))
             }
             SearchField(
                 value = field,
@@ -137,7 +146,8 @@ fun SearchScreen(
                     field = it
                     vm.onQueryChange(it.text)
                 },
-                error = ui.error.takeIf { ui.query == query },
+                error = ui.error.takeIf { ui.query == query }
+                    ?: (indexState as? IndexState.Error)?.let { "Search isn't available: ${it.message}" },
                 onSearch = {
                     vm.commit()
                     keyboard?.hide()
@@ -146,15 +156,14 @@ fun SearchScreen(
                     vm.onQueryChange("")
                     focus.requestFocus()
                 },
-                onHelp = { help = true },
-                modifier = Modifier.padding(top = if (query.isBlank()) 0.dp else 12.dp).focusRequester(focus),
+                modifier = Modifier.focusRequester(focus),
             )
             val searching = query.isNotBlank() && ui.query != query
             Box(Modifier.fillMaxWidth().padding(top = 6.dp).height(3.dp)) {
                 if (searching || indexState is IndexState.NotLoaded) LinearProgressIndicator(Modifier.fillMaxWidth())
             }
             when {
-                query.isBlank() -> StartContent(
+                home -> StartContent(
                     modules = modules,
                     recent = recent,
                     hasLibrary = library.files > 0,
@@ -162,13 +171,15 @@ fun SearchScreen(
                     onRecent = { vm.onQueryChange(it) },
                     onRemoveRecent = vm::removeRecent,
                     onClearRecent = vm::clearRecent,
-                    onHelp = { help = true },
                     onImport = onImport,
                 )
                 ui.query != query || ui.error != null -> Unit
                 ui.results.isEmpty() && indexState is IndexState.Ready -> NoResults(query, onHelp = { help = true })
                 else -> Results(ui, actions)
             }
+        }
+        IconButton(onClick = { help = true }, modifier = Modifier.align(Alignment.TopEnd).padding(top = 4.dp, end = 4.dp)) {
+            Icon(painterResource(R.drawable.ic_help), contentDescription = "Search tips", tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter))
     }
@@ -185,17 +196,23 @@ fun SearchScreen(
     }
 }
 
+/** The app's mark (the launcher icon's slide and magnifier) and its name. */
 @Composable
-private fun Greeting(library: LibraryStats, state: IndexState, modifier: Modifier = Modifier) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text("What are you revising?", style = MaterialTheme.typography.headlineMedium)
-        val sub = when {
-            state is IndexState.Error -> "Search isn't available: ${state.message}"
-            library.files == 0 -> "Import your lecture slides and Retrieve finds the exact slide for any question."
-            else -> "${library.files} file${if (library.files == 1) "" else "s"} from ${library.modules} module${if (library.modules == 1) "" else "s"}, " +
-                "searchable offline. Ask in your own words."
+private fun Logo(modifier: Modifier = Modifier) {
+    Row(modifier, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            Modifier.size(56.dp).clip(RoundedCornerShape(16.dp))
+                .background(Brush.linearGradient(listOf(Color(0xFF4A57E8), Color(0xFF2A33B0)))),
+            contentAlignment = Alignment.Center,
+        ) {
+            // The foreground is drawn for a 108dp adaptive-icon canvas; scaled up, its art fills the tile.
+            Image(painterResource(R.drawable.ic_launcher_foreground), contentDescription = null, modifier = Modifier.requiredSize(84.dp))
         }
-        Text(sub, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(
+            "Retrieve",
+            style = MaterialTheme.typography.displaySmall,
+            modifier = Modifier.padding(start = 14.dp),
+        )
     }
 }
 
@@ -206,7 +223,6 @@ private fun SearchField(
     error: String?,
     onSearch: () -> Unit,
     onClear: () -> Unit,
-    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
@@ -216,13 +232,12 @@ private fun SearchField(
         singleLine = true,
         shape = RoundedCornerShape(28.dp),
         placeholder = { Text("Search slides, notes and lectures", maxLines = 1, overflow = TextOverflow.Ellipsis) },
-        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
         trailingIcon = {
             Row {
                 if (value.text.isNotEmpty()) {
                     IconButton(onClick = onClear) { Icon(Icons.Filled.Clear, contentDescription = "Clear search") }
                 }
-                IconButton(onClick = onHelp) { Icon(painterResource(R.drawable.ic_help), contentDescription = "Search tips") }
+                IconButton(onClick = onSearch) { Icon(Icons.Filled.Search, contentDescription = "Search") }
             }
         },
         isError = error != null,
@@ -247,12 +262,11 @@ private fun StartContent(
     onRecent: (String) -> Unit,
     onRemoveRecent: (String) -> Unit,
     onClearRecent: () -> Unit,
-    onHelp: () -> Unit,
     onImport: () -> Unit,
 ) {
     Column(
         Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(top = 20.dp, bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.spacedBy(28.dp),
     ) {
         if (!hasLibrary) {
             Column(
@@ -269,19 +283,13 @@ private fun StartContent(
             }
         }
         if (modules.isNotEmpty()) {
-            Section("Search in") {
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    modules.forEach { module ->
-                        val color = moduleColor(module)
-                        AssistChip(
-                            onClick = { onModule(module) },
-                            label = { Text(module) },
-                            leadingIcon = { Box(Modifier.size(10.dp).background(color.accent, CircleShape)) },
-                            colors = AssistChipDefaults.assistChipColors(containerColor = color.container.copy(alpha = 0.5f)),
-                            border = null,
-                        )
-                    }
-                }
+            // Module shortcuts, like a browser's new-tab tiles: tap one to search inside it.
+            FlowRow(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                modules.forEach { module -> ModuleTile(module, onClick = { onModule(module) }) }
             }
         }
         if (recent.isNotEmpty()) {
@@ -302,24 +310,22 @@ private fun StartContent(
                 }
             }
         }
-        if (hasLibrary) {
-            Row(
-                Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainerLow, MaterialTheme.shapes.medium)
-                    .clip12().clickable(onClick = onHelp).padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                Icon(painterResource(R.drawable.ic_sparkle), null, tint = MaterialTheme.colorScheme.tertiary)
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text("Search like a pro", style = MaterialTheme.typography.titleSmall)
-                    Text(
-                        "Exact phrases, one module, weeks 4 to 6, leave words out…",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
+    }
+}
+
+/** A module as a round, coloured folder with its code underneath. */
+@Composable
+private fun ModuleTile(module: String, onClick: () -> Unit) {
+    val color = moduleColor(module)
+    Column(
+        Modifier.width(96.dp).clip12().clickable(onClickLabel = "Search only $module", onClick = onClick).padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Box(Modifier.size(60.dp).background(color.container, CircleShape), contentAlignment = Alignment.Center) {
+            Icon(painterResource(R.drawable.ic_folder), contentDescription = null, tint = color.accent, modifier = Modifier.size(28.dp))
         }
+        Text(module, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
