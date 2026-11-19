@@ -128,3 +128,39 @@ Corpus so far: `corpus/COMP12111/COMP12111 Part1 Notes_C_Moutafis_2025.pdf` (141
 - **R1 release check PASSED:** Transactions-01 imported in the upload-key-signed, R8-shrunk release build gives exactly the same chunks (22, 2 OCR, same text) as the debug build. "Search works in release" moves to Phase 2, when search exists.
 
 **Phase 1 exit gate: all items done.**
+
+---
+
+## 2026-11-19 (Thu, continued): Phase 2, C++ keyword engine, JNI and search screen
+
+### What was built
+- `native/index/`: tokenizer → positional inverted index (one binary file, `mmap`ed, validated on open, atomic replace) → BM25 (k1 1.2, b 0.75, non-negative Lucene idf) with quoted phrases.
+- `native/tools/retrieve_cli`: build/search/stats on the desktop from `chunks.json`, using the same sources as the app.
+- JNI bridge + `KeywordIndex` (read-write lock around the native handle) + `KeywordIndexStore` (rebuild after index/delete and at launch) + Search tab.
+
+### Tokenizer decisions (all in `native/index/tokenizer.h`)
+- Lowercase ASCII; split on ASCII and Unicode punctuation/symbols (curly quotes, dashes, bullets, arrows, logic operators).
+- **No stemming, no stopwords.** Cost seen: the phrase `"binary decision diagram"` finds nothing because the slides say "Diagrams" (the unquoted query works). Phase 4 recall will show whether a light plural rule is worth adding.
+- Possessive `'s`/`’s` dropped: "Ohm’s Law" ranked #2 for "Moore's law" before this.
+- Math alphanumeric symbols folded to ASCII: COMP23111 Transactions spells "𝑫𝑩𝑴𝑺 𝑩𝒖𝒇𝒇𝒆𝒓" in U+1D400 code points.
+
+### Bugs caught by tests
+- `cond ? lo : -1` with `lo` uint32_t → "not found" became 4294967295 (phrase tests + ASan). No compiler warning catches this, even `-Weverything`.
+- JNI `GetStringUTFChars` gives modified UTF-8, so supplementary characters would differ from the CLI. JNI now converts UTF-16 → UTF-8 itself; a device test checks it, and real slides contain such characters.
+
+### Numbers (desktop numbers on the M1; device numbers on the Tab A7). Informational, not benchmarks
+- Corpus: 673 chunks, 3,778 terms, 889 KB index, avg 93 tokens/chunk.
+- Build: CLI ~28–44 ms; tablet 494–496 ms (including the Room read).
+- In-app query time shown in the UI: 9–19 ms for typical queries. **The CV P99 number comes from the Phase 7 benchmark, not this.**
+
+### Incident: library wiped by connectedAndroidTest
+- `./gradlew connectedDebugAndroidTest` uninstalls the app after running, which deleted the 19-document library. Restored from a database snapshot pulled earlier (integrity_check ok, 19 docs, 673 chunks).
+- Side effect: the persisted SAF read grants were lost with the uninstall. **Re-index all would mark these documents FAILED** until each file is re-imported (re-importing re-takes the grant). Search and export are unaffected.
+- Fix: `scripts/device-tests.sh` installs both APKs and runs `am instrument` directly, so nothing is uninstalled. Never use connectedAndroidTest on the test device.
+
+### Phase 2 exit gate
+- [x] `ctest`: 40 native tests pass, also under AddressSanitizer + UBSan (`native/build-asan`)
+- [x] retrieve_cli gives sensible top-5 for known-answer queries (unit propagation, stored procedure parameters, trigger, ACID isolation, Moore's law, binary decision diagram)
+- [x] Tablet vs CLI: index file **byte-identical**; `scripts/parity_check.py` **30/30 queries identical** (keys, order, scores)
+- [x] No JNI leaks: 1,000 searches with native heap growth under 256 KB; 3,000-chunk build doesn't exhaust local refs (device tests)
+- [x] R1 leftover: search works in the R8 release build (scores match the CLI)
