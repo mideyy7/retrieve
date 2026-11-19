@@ -1,0 +1,182 @@
+[
+ {
+  "id": "q082",
+  "question": "what are the three stages of running a simulation",
+  "kind": "slides",
+  "module": "COMP22111"
+ },
+ {
+  "id": "q045",
+  "question": "why is a ripple carry parallel adder slow",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q092",
+  "question": "what happens during the fetch state of the processor",
+  "kind": "slides",
+  "module": "COMP22111"
+ },
+ {
+  "id": "q004",
+  "question": "what sequence of steps does a pedestrian crossing controller go through",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q093",
+  "question": "what extra states does the RISC-V design have compared with Stump",
+  "kind": "slides",
+  "module": "COMP22111"
+ },
+ {
+  "id": "q099",
+  "question": "how do you write a CASE statement inside a stored procedure",
+  "kind": "slides",
+  "module": "COMP23111"
+ },
+ {
+  "id": "q028",
+  "question": "what everyday analogy explains abstraction in system design",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q037",
+  "question": "how is inversion shown on a logic gate symbol",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q007",
+  "question": "what topics are covered in the introduction to logic lectures",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q060",
+  "question": "how many clauses does it take to encode sudoku for a SAT solver",
+  "kind": "slides",
+  "module": "COMP21111"
+ },
+ {
+  "id": "q058",
+  "question": "how is implication related to comparing truth values with less than or equal",
+  "kind": "slides",
+  "module": "COMP21111"
+ },
+ {
+  "id": "q098",
+  "question": "when would I use a BEFORE delete trigger rather than an AFTER delete trigger",
+  "kind": "slides",
+  "module": "COMP23111"
+ },
+ {
+  "id": "q018",
+  "question": "why can't a half adder be used on its own for multi-bit addition",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q011",
+  "question": "what are Vdd and Vss on a schematic",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q072",
+  "question": "how does GSAT with random walks choose which variable to flip",
+  "kind": "slides",
+  "module": "COMP21111"
+ },
+ {
+  "id": "q001",
+  "question": "how much should one block of a hierarchical design contain before I split it into another level",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q079",
+  "question": "how are the processor microarchitecture labs submitted and marked",
+  "kind": "slides",
+  "module": "COMP22111"
+ },
+ {
+  "id": "q036",
+  "question": "what is the difference between sum of products and product of sums form",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q010",
+  "question": "how many rows does a truth table need for a function with n inputs",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q021",
+  "question": "why do computers reuse the same hardware over many steps instead of building special logic for every function",
+  "kind": "slides",
+  "module": "COMP12111"
+ },
+ {
+  "id": "q144",
+  "question": "what does it suggest if the arrange step of a test is very complicated",
+  "kind": "recording",
+  "module": "COMP23311"
+ },
+ {
+  "id": "q140",
+  "question": "how does the regular expression that accepts yes answers work",
+  "kind": "recording",
+  "module": "COMP23311"
+ },
+ {
+  "id": "q135",
+  "question": "why could OpenOffice not print on Tuesdays",
+  "kind": "recording",
+  "module": "COMP23311"
+ },
+ {
+  "id": "q134",
+  "question": "what was the bug Margaret Hamilton's daughter found in the Apollo simulator",
+  "kind": "recording",
+  "module": "COMP23311"
+ },
+ {
+  "id": "q123",
+  "question": "why did pytest fail with an error about reading from standard input when importing fizzbuzz",
+  "kind": "recording",
+  "module": "COMP23311"
+ },
+ {
+  "id": "n19",
+  "question": "what does a convolutional layer do in deep learning",
+  "kind": "not_in_corpus",
+  "module": null
+ },
+ {
+  "id": "n13",
+  "question": "how does gradient descent choose its step size",
+  "kind": "not_in_corpus",
+  "module": null
+ },
+ {
+  "id": "n14",
+  "question": "what is photosynthesis",
+  "kind": "not_in_corpus",
+  "module": null
+ },
+ {
+  "id": "n17",
+  "question": "who wrote pride and prejudice",
+  "kind": "not_in_corpus",
+  "module": null
+ },
+ {
+  "id": "n15",
+  "question": "how does the bitcoin blockchain agree on the next block",
+  "kind": "not_in_corpus",
+  "module": null
+ }
+]
