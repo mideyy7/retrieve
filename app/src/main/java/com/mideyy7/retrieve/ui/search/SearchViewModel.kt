@@ -33,6 +33,8 @@ data class SearchUiState(
     val hybrid: Boolean = false,
 )
 
+data class LibraryStats(val modules: Int, val files: Int)
+
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class SearchViewModel(app: Application, private val saved: SavedStateHandle) : AndroidViewModel(app) {
     private val store = app.retrieveApp.keywordIndex
@@ -52,6 +54,14 @@ class SearchViewModel(app: Application, private val saved: SavedStateHandle) : A
     val recentModules: StateFlow<List<String>> =
         modules.map { list -> list.take(6).map { it.module } }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    /** How much is searchable, for the start screen: modules and files that finished indexing. */
+    val library: StateFlow<LibraryStats> =
+        modules.map { list -> LibraryStats(list.size, list.sumOf { it.docCount }) }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LibraryStats(0, 0))
+
+    private val recents = RecentSearches(app)
+    val recent: StateFlow<List<String>> = recents.items
 
     /** Each module's colour, shared by every screen (this view model lives as long as the Activity). */
     val moduleHues: StateFlow<Map<String, Int>> =
@@ -77,6 +87,13 @@ class SearchViewModel(app: Application, private val saved: SavedStateHandle) : A
     fun onQueryChange(q: String) {
         _query.value = q
     }
+
+    /** The user settled on this query (pressed search, opened or copied a result): remember it. */
+    fun commit() = recents.add(_query.value)
+
+    fun removeRecent(query: String) = recents.remove(query)
+
+    fun clearRecent() = recents.clear()
 
     /** Narrows the current query, e.g. after tapping a module or week on a result. */
     fun addFilter(key: String, value: String) {

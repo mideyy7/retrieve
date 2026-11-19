@@ -9,6 +9,7 @@ import com.mideyy7.retrieve.ingest.LibraryRepository
 import com.mideyy7.retrieve.search.KeywordIndexStore
 import com.mideyy7.retrieve.search.SemanticIndex
 import com.mideyy7.retrieve.search.TextEmbedder
+import com.mideyy7.retrieve.ui.slides.SlideRenderer
 import com.mideyy7.retrieve.work.EmbedWorker
 
 /**
@@ -21,6 +22,7 @@ class RetrieveApp : Application() {
     val embedder: TextEmbedder by lazy { TextEmbedder(this) }
     val semanticIndex: SemanticIndex by lazy { SemanticIndex(database) }
     val imports: ImportRepository by lazy { ImportRepository(this, database, WorkManager.getInstance(this)) }
+    val slides: SlideRenderer by lazy { SlideRenderer(this, database) }
     val library: LibraryRepository by lazy {
         LibraryRepository(database, WorkManager.getInstance(this), imports, keywordIndex, semanticIndex)
     }

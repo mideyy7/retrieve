@@ -1,5 +1,6 @@
 package com.mideyy7.retrieve.ui.document
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,7 +56,12 @@ private enum class DocDialog { RENAME, MOVE, DELETE }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DocumentScreen(onBack: () -> Unit, modifier: Modifier = Modifier, vm: DocumentViewModel = viewModel()) {
+fun DocumentScreen(
+    onBack: () -> Unit,
+    onOpenPage: (docId: Long, page: Int?, startMs: Long?) -> Unit = { _, _, _ -> },
+    modifier: Modifier = Modifier,
+    vm: DocumentViewModel = viewModel(),
+) {
     val doc by vm.document.collectAsStateWithLifecycle()
     val pages by vm.pages.collectAsStateWithLifecycle()
     val existingModules by vm.existingModules.collectAsStateWithLifecycle()
@@ -99,7 +105,9 @@ fun DocumentScreen(onBack: () -> Unit, modifier: Modifier = Modifier, vm: Docume
         },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
-        doc?.let { DocumentContent(it, pages, onRetry = vm::retry, modifier = Modifier.padding(padding)) }
+        doc?.let { d ->
+            DocumentContent(d, pages, onRetry = vm::retry, onOpenPage = { p -> onOpenPage(d.id, p.page, p.startMs) }, modifier = Modifier.padding(padding))
+        }
     }
 
     val d = doc ?: return
@@ -127,7 +135,13 @@ fun DocumentScreen(onBack: () -> Unit, modifier: Modifier = Modifier, vm: Docume
 
 /** Stateless: where the document sits, its indexing state, and its pages with the start of their text. */
 @Composable
-fun DocumentContent(doc: Document, pages: List<PageRow>?, onRetry: () -> Unit, modifier: Modifier = Modifier) {
+fun DocumentContent(
+    doc: Document,
+    pages: List<PageRow>?,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+    onOpenPage: (PageRow) -> Unit = {},
+) {
     val chunkCount = pages?.sumOf { it.parts } ?: 0
     val ocrPages = pages?.count { it.ocr } ?: 0
     val row = DocumentRow(DocumentSummary(doc.id, doc.name, doc.module, doc.week, doc.type, doc.status, doc.error, chunkCount), null)
@@ -145,13 +159,13 @@ fun DocumentContent(doc: Document, pages: List<PageRow>?, onRetry: () -> Unit, m
                 HorizontalDivider(Modifier.padding(top = 8.dp))
             }
         }
-        items(pages.orEmpty(), key = { "${it.page}:${it.startMs}" }) { p -> PageRowView(p, doc.type) }
+        items(pages.orEmpty(), key = { "${it.page}:${it.startMs}" }) { p -> PageRowView(p, doc.type, onClick = { onOpenPage(p) }) }
     }
 }
 
 @Composable
-private fun PageRowView(p: PageRow, type: DocType) {
-    Column(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+private fun PageRowView(p: PageRow, type: DocType, onClick: () -> Unit) {
+    Column(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 4.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val where = when {
                 p.startMs != null -> "%d:%02d".format(p.startMs / 60_000, (p.startMs / 1000) % 60)

@@ -41,6 +41,7 @@ import com.mideyy7.retrieve.ui.module.ModuleScreen
 import com.mideyy7.retrieve.ui.search.SearchScreen
 import com.mideyy7.retrieve.ui.search.SearchViewModel
 import com.mideyy7.retrieve.ui.theme.LocalModuleHues
+import com.mideyy7.retrieve.ui.viewer.ViewerScreen
 import kotlinx.serialization.Serializable
 
 // Type-safe routes: Navigation Compose serialises these into the back stack, so arguments
@@ -51,6 +52,9 @@ import kotlinx.serialization.Serializable
 @Serializable data object LibraryRoute
 @Serializable data class ModuleRoute(val code: String)
 @Serializable data class DocumentRoute(val id: Long)
+
+/** A place in a file, full screen: [page] for PDFs, [startMs] (>= 0) for recordings; [query] is highlighted. */
+@Serializable data class ViewerRoute(val docId: Long, val page: Int = 0, val startMs: Long = -1, val query: String = "")
 
 private enum class Tab(val label: String, val icon: ImageVector, val graph: Any) {
     Search("Search", Icons.Filled.Search, SearchTab),
@@ -110,7 +114,8 @@ fun RetrieveApp() {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbar) },
             bottomBar = {
-                NavigationBar {
+                // The viewer is full screen: more room for the slide.
+                if (current?.hasRoute(ViewerRoute::class) != true) NavigationBar {
                     Tab.entries.forEach { t ->
                         val selected = current?.hierarchy?.any { it.hasRoute(t.graph::class) } == true
                         NavigationBarItem(
@@ -125,7 +130,16 @@ fun RetrieveApp() {
         ) { padding ->
             NavHost(nav, startDestination = SearchTab, modifier = Modifier.padding(padding)) {
                 navigation<SearchTab>(startDestination = SearchRoute) {
-                    composable<SearchRoute> { SearchScreen(vm = searchVm) }
+                    composable<SearchRoute> {
+                        SearchScreen(
+                            onOpenResult = { r, q ->
+                                val c = r.hit.chunk
+                                nav.navigate(ViewerRoute(c.docId, c.page ?: 0, c.startMs ?: -1, q))
+                            },
+                            onImport = { startImport(null, null) },
+                            vm = searchVm,
+                        )
+                    }
                 }
                 navigation<LibraryTab>(startDestination = LibraryRoute) {
                     composable<LibraryRoute> {
@@ -144,8 +158,14 @@ fun RetrieveApp() {
                             },
                         )
                     }
-                    composable<DocumentRoute> { DocumentScreen(onBack = { nav.popBackStack() }) }
+                    composable<DocumentRoute> {
+                        DocumentScreen(
+                            onBack = { nav.popBackStack() },
+                            onOpenPage = { docId, page, startMs -> nav.navigate(ViewerRoute(docId, page ?: 0, startMs ?: -1)) },
+                        )
+                    }
                 }
+                composable<ViewerRoute> { ViewerScreen(onBack = { nav.popBackStack() }) }
             }
         }
     }
