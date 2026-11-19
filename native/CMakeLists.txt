@@ -11,9 +11,10 @@ add_library(retrieve_core STATIC
     index/tokenizer.cpp
     index/builder.cpp
     index/index.cpp
+    index/bm25.cpp
 )
 target_include_directories(retrieve_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_options(retrieve_core PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(retrieve_core PRIVATE -Wall -Wextra -Wpedantic -Wsign-conversion -Wshorten-64-to-32)
 target_compile_definitions(retrieve_core PRIVATE RETRIEVE_VERSION="${PROJECT_VERSION}")
 
 if(ANDROID)
@@ -35,6 +36,7 @@ else()
             tests/version_test.cpp
             tests/tokenizer_test.cpp
             tests/index_test.cpp
+            tests/bm25_test.cpp
         )
         target_link_libraries(retrieve_tests PRIVATE retrieve_core GTest::gtest_main)
         include(GoogleTest)
