@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.coroutines.android)
     implementation(libs.pdfbox.android)
     implementation(libs.mlkit.text.recognition)
+    implementation(libs.work.runtime.ktx)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

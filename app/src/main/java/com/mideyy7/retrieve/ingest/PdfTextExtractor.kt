@@ -24,7 +24,7 @@ class PdfTextExtractor(private val minChars: Int = 20) {
     suspend fun extract(
         source: PageTextSource,
         ocr: PageOcr,
-        onPage: (done: Int, total: Int) -> Unit = { _, _ -> },
+        onPage: suspend (done: Int, total: Int) -> Unit = { _, _ -> },
     ): List<ExtractedPage> {
         val total = source.pageCount
         return (0 until total).map { i ->
