@@ -100,6 +100,8 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.material.icons.core)
     debugImplementation(libs.compose.ui.tooling)
+    // On-device LLM: debug-only while it's a spike (Phase 0, Spike 1); moves to implementation in Phase 9.
+    debugImplementation(libs.litertlm.android)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
