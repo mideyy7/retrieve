@@ -57,6 +57,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Separate package so debug and release builds (different signing keys) can be
+            // installed side by side on the test device.
+            applicationIdSuffix = ".debug"
+        }
         release {
             signingConfig = signingConfigs.findByName("upload")
             isMinifyEnabled = true
