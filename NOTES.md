@@ -104,8 +104,8 @@ Corpus so far: `corpus/COMP12111/COMP12111 Part1 Notes_C_Moutafis_2025.pdf` (141
 - [x] Import a real module PDF with image-only slides on the device; OCR spot-checked on 5 pages
 - [x] Process killed mid-import → WorkManager resumed it on its own → no partial or duplicate chunks
 - [x] chunks.json exported, pulled, and deterministic
-- [ ] More of the corpus: 2–3 current modules (~15–20 PDFs). Only one PDF so far.
-- [ ] R1: upload key created and backed up; release build installed through bundletool and works on the tablet
+- [x] Corpus: 4 modules, 19 PDFs (see "Phase 1 closed")
+- [x] R1: upload key created, backed up and restore-tested; release build matches debug on the tablet
 
 ### R1: upload key and release build (2026-11-19)
 - Upload key: `~/keys/retrieve-upload.jks` (PKCS12, RSA 4096, alias `upload`, valid until 2054), CN "Retrieve Upload Key" (no personal name in a certificate anyone can read). Random password, stored only in the gitignored `keystore.properties`.
@@ -120,3 +120,11 @@ Corpus so far: `corpus/COMP12111/COMP12111 Part1 Notes_C_Moutafis_2025.pdf` (141
 - `Week07_21111_slides_week6_bdds.pdf` is filed as **week 7** (confirmed by Ayo; the deck's own filename says week6).
 - **COMP21111 Beamer overlays:** 657 of 865 pages are build-up steps. Collapsed so only the final, complete slide is indexed (commit d041cb4).
 - Gotcha: files pushed with `adb push` don't show in the Downloads picker until they're media-scanned: `am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://<path>`.
+
+### Phase 1 closed (2026-11-19)
+- **Overlay rule tightened:** the 90% word-overlap rule merged distinct COMP12111 quiz slides that differ in one token (4:1 vs 16:1 mux) and ~20 pages in COMP22111/23111. Now every word (with repeats) must reappear on the next page (commit 3168a78). Re-indexed with the new "Re-index all" action: COMP12111 is back to 127 pages / 181 chunks / 85 OCR.
+- **Final library on the tablet:** 19 documents, all READY, 673 chunks (unique stableKeys), 87 OCR chunks. COMP12111 181, COMP21111 274, COMP22111 107, COMP23111 111. Export saved to `ml/data/chunks.json` (gitignored).
+- Triggers.pdf was missing after the batch import because its dialog was dismissed (a tap outside the dialog = Skip). Re-imported fine.
+- **R1 release check PASSED:** Transactions-01 imported in the upload-key-signed, R8-shrunk release build gives exactly the same chunks (22, 2 OCR, same text) as the debug build. "Search works in release" moves to Phase 2, when search exists.
+
+**Phase 1 exit gate: all items done.**
