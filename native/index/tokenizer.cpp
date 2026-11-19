@@ -40,6 +40,20 @@ size_t decode(std::string_view text, size_t i, uint32_t& cp) {
     return 1;
 }
 
+// Mathematical Alphanumeric Symbols (U+1D400–U+1D7FF) -> plain ASCII. PowerPoint equation
+// styling exports words like "𝑫𝑩𝑴𝑺 𝑩𝒖𝒇𝒇𝒆𝒓" in these code points, which nobody can type in a
+// query. The block is regular: 13 styles x 52 letters (A–Z then a–z) from U+1D400, and 5 styles
+// x 10 digits from U+1D7CE. (The few reserved holes in the letter range are unassigned, so
+// mapping them is harmless.) Greek styles are left as they are.
+uint32_t foldMathAlphanumeric(uint32_t cp) {
+    if (cp >= 0x1D400 && cp <= 0x1D6A3) {
+        const uint32_t i = (cp - 0x1D400) % 52;
+        return i < 26 ? 'a' + i : 'a' + (i - 26);
+    }
+    if (cp >= 0x1D7CE && cp <= 0x1D7FF) return '0' + (cp - 0x1D7CE) % 10;
+    return cp;
+}
+
 bool isWordCodePoint(uint32_t cp) {
     if (cp < 0x80) return (cp >= '0' && cp <= '9') || (cp >= 'a' && cp <= 'z') || (cp >= 'A' && cp <= 'Z');
     if (cp == 0xFFFFFFFF) return false;
@@ -70,6 +84,7 @@ std::vector<Token> tokenize(std::string_view text) {
     for (size_t i = 0; i < text.size();) {
         uint32_t cp;
         const size_t len = decode(text, i, cp);
+        cp = foldMathAlphanumeric(cp);
 
         // English possessive: drop "'s" / "’s" after a word, so "Moore's" -> "moore" rather than
         // "moore" + "s" (a stray "s" would match every possessive in the corpus).

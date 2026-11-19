@@ -65,6 +65,14 @@ TEST(Tokenizer, NonAsciiLettersStayInsideTerms) {
     EXPECT_EQ(terms("Gödel’s naïve café"), (V{"gödel", "naïve", "café"}));
 }
 
+TEST(Tokenizer, MathAlphanumericSymbolsFoldToAscii) {
+    // Real text from the COMP23111 Transactions slides (bold italic), plus other styles.
+    EXPECT_EQ(terms("𝑫𝑩𝑴𝑺 𝑩𝒖𝒇𝒇𝒆𝒓 𝑻𝟏"), (V{"dbms", "buffer", "t1"}));
+    EXPECT_EQ(terms("𝐀𝐳 𝑥 𝔄 𝕫 𝟎𝟗 𝟿"), (V{"az", "x", "a", "z", "09", "9"}));
+    EXPECT_EQ(terms("𝑷𝒓𝒐𝒈𝒓𝒂𝒎𝑴𝒆𝒎𝒐𝒓𝒚"), (V{"programmemory"}));
+    EXPECT_EQ(terms("𝚫𝛂"), (V{"𝚫𝛂"}));  // Greek styles are left alone
+}
+
 TEST(Tokenizer, MalformedUtf8IsASeparator) {
     const std::string bad = std::string("abc") + "\xC3" + "def" + "\xFF\xFE" + "ghi";
     EXPECT_EQ(terms(bad), (V{"abc", "def", "ghi"}));

@@ -23,6 +23,9 @@ struct Token {
 //  - Separators include all ASCII punctuation and the Unicode punctuation and symbol blocks that
 //    slides actually use: curly quotes, dashes, bullets, arrows and logic/math operators
 //    (¬ ∧ ∨ → ↔ ≤). Without this, "Moore’s" (curly apostrophe) would never match "Moore's".
+//  - Mathematical Alphanumeric Symbols (𝑨 𝒃 𝟏, U+1D400–U+1D7FF) fold to ASCII letters and
+//    digits. Slides exported from PowerPoint equations contain whole words in these, e.g.
+//    "𝑫𝑩𝑴𝑺 𝑩𝒖𝒇𝒇𝒆𝒓", which would otherwise be unsearchable.
 //  - A possessive "'s" or "’s" directly after a word is dropped: "Moore's" -> "moore". Otherwise
 //    a stray "s" term would match every possessive ("Ohm’s law" for a query about Moore's law).
 //  - No stemming and no stopword removal. Exact terms keep phrase queries and BM25 predictable;
