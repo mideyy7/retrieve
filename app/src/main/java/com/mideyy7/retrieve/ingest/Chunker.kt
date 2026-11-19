@@ -17,7 +17,11 @@ data class PageChunk(val page: Int, val index: Int, val text: String)
  * where k is the smallest count that keeps every window <= [maxTokens]. Neighbouring windows
  * share exactly [overlap] words so a sentence cut at a boundary still appears whole in one chunk.
  */
-class Chunker(private val maxTokens: Int = 200, private val overlap: Int = 40) {
+class Chunker(
+    private val maxTokens: Int = 200,
+    private val overlap: Int = 40,
+    private val minLetters: Int = 3,
+) {
     init {
         require(maxTokens > 0) { "maxTokens must be positive" }
         require(overlap in 0 until maxTokens) { "overlap must be in [0, maxTokens)" }
@@ -28,10 +32,15 @@ class Chunker(private val maxTokens: Int = 200, private val overlap: Int = 40) {
             chunkText(text).mapIndexed { index, chunk -> PageChunk(page = i + 1, index = index, text = chunk) }
         }
 
+    /**
+     * Pages with fewer than [minLetters] letters (blank pages, pages that are only a page number
+     * or a divider line) produce no chunks: they can't answer a question and would only add noise
+     * terms like "9" to the index.
+     */
     fun chunkText(text: String): List<String> {
+        if (text.count { it.isLetter() } < minLetters) return emptyList()
         val words = text.split(WHITESPACE).filter { it.isNotEmpty() }
         val n = words.size
-        if (n == 0) return emptyList()
         if (n <= maxTokens) return listOf(words.joinToString(" "))
 
         val stride = maxTokens - overlap

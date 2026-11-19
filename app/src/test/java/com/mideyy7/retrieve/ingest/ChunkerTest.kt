@@ -20,6 +20,14 @@ class ChunkerTest {
     }
 
     @Test
+    fun pagesWithoutRealWordsGiveNoChunks() {
+        assertEquals(emptyList<String>(), Chunker().chunkText("9"))
+        assertEquals(emptyList<String>(), Chunker().chunkText("23\r\n"))
+        assertEquals(emptyList<String>(), Chunker().chunkText("— 141 —"))
+        assertEquals(listOf("Raft"), Chunker().chunkText("Raft")) // a one-word title slide is kept
+    }
+
+    @Test
     fun pageOfExactlyMaxTokensIsNotSplit() {
         assertEquals(1, Chunker(maxTokens = 200).chunkText(words(200)).size)
     }
@@ -60,9 +68,9 @@ class ChunkerTest {
 
     @Test
     fun chunkPagesNumbersPagesFromOneAndSkipsEmptyPages() {
-        val result = Chunker(maxTokens = 3, overlap = 1).chunkPages(listOf("a b", "", "c d e f"))
+        val result = Chunker(maxTokens = 3, overlap = 1).chunkPages(listOf("Raft log", "", "c d e f"))
         assertEquals(
-            listOf(PageChunk(1, 0, "a b"), PageChunk(3, 0, "c d e"), PageChunk(3, 1, "e f")),
+            listOf(PageChunk(1, 0, "Raft log"), PageChunk(3, 0, "c d e"), PageChunk(3, 1, "e f")),
             result,
         )
     }
