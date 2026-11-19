@@ -96,3 +96,13 @@ Corpus so far: `corpus/COMP12111/COMP12111 Part1 Notes_C_Moutafis_2025.pdf` (141
 - **Dropped pages verified blank:** 2, 9, 23, 35, 41, 55, 65, 71, 87, 127, 131, 138, 139, 140 have 0.01–0.02% ink (page number only).
 - **OCR:** 85 of 127 content pages are image-only slides and went through ML Kit. Spot-check of pages 14, 38, 64, 88, 116 against renders: prose and quiz options exact. Expected losses: superscripts flattened (10³ → 10), diagrams become fragments ("X y-"), one O→0 in a footer.
 - **Known issue, to measure in Phase 5:** boilerplate on every page (garbled sideways logo "Thsniversity MANCHESTER", footer "COMP12111:Overview & Introduction to Logic", "Notes:"). Near-zero IDF, so BM25 should be unaffected, but it may pull embeddings together. If recall suffers, strip lines that repeat on most pages of a document.
+- **Export determinism PASSED.** Two exports from the current build are byte-identical (sha256 a0ac2685…). An export from the previous build (before the format_version fix) has line-for-line identical chunk content. Saved as `ml/data/chunks.json` (181 chunks, 85 OCR), which is gitignored because it holds lecture text.
+- Bug found and fixed while checking: `format_version` was missing from the export (kotlinx.serialization omits default values), commit 6af4b2e.
+
+### Phase 1 exit gate: status
+- [x] Unit tests (35) and native tests pass
+- [x] Import a real module PDF with image-only slides on the device; OCR spot-checked on 5 pages
+- [x] Process killed mid-import → WorkManager resumed it on its own → no partial or duplicate chunks
+- [x] chunks.json exported, pulled, and deterministic
+- [ ] More of the corpus: 2–3 current modules (~15–20 PDFs). Only one PDF so far.
+- [ ] R1: upload key created and backed up; release build installed through bundletool and works on the tablet

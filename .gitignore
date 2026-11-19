@@ -52,3 +52,6 @@ corpus/
 # --- Training outputs (plots/CSVs that matter go in docs/results/)
 ml/runs/
 ml/checkpoints/
+
+# Extracted lecture text (university copyright) until we confirm it's OK to publish.
+ml/data/chunks.json
