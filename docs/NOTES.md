@@ -325,3 +325,12 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - Phone wanted: **≥ 6 GB RAM (8 GB better)**, Android 12+, a recent chip. Ideally one with a LiteRT-LM NPU build (Snapdragon 8 Gen 2/3/Elite = sm8550/8650/8750, or Tensor G5).
 - Phase 9 keeps the generative LLM. On the tablet it's built and checked for correctness with Qwen3-0.6B (slow but works). Gemma needs Ayo's Hugging Face licence acceptance + token.
 - Re-measure on the phone: `scripts/device_embed_bench.sh`, `spikes/spike1_llm_device.sh`, `spikes/spike2_whisper_device.sh`, and the Phase 7/8 benchmarks once written.
+
+### Spike 1 continued: Gemma (licence accepted, logged in via `hf auth login`, token file deleted)
+| model (CPU, tablet) | load | TTFT | decode | total | answer |
+|---|---|---|---|---|---|
+| Qwen3-0.6B int4 (343 MB) | 17.2 s | 19.5 s | 1.27 tok/s | 5.5 min | partly right, hidden thinking tokens |
+| **Gemma 3 1B int4 (584 MB, sha256 `1325ae36`)** | 33.0 s | **9.4 s** | **5.08 tok/s** | **15.9 s** | partly right; **citation corrupted to `COMP2111`** |
+| Gemma 3 270M int8 (304 MB, sha256 `757e9119`) | 6.5 s | 3.3 s | 7.87 tok/s | 5.1 s | wrong, no citation |
+- **Phase 9 model: Gemma 3 1B int4.** Fits on the tablet (978 MB free after load), and is usable even here; the phone should be much faster.
+- **Design consequence:** small models mangle citation tags, so Phase 9 must check every cited tag against the context chunks and repair it (nearest valid tag) or flag it. Never show citations unchecked.
