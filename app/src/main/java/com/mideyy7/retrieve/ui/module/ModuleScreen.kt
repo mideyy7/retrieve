@@ -52,7 +52,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mideyy7.retrieve.data.ModuleCodes
 import com.mideyy7.retrieve.data.Weeks
+import com.mideyy7.retrieve.ui.components.MoveDialog
+import com.mideyy7.retrieve.ui.components.TextInputDialog
 import com.mideyy7.retrieve.ui.library.DocumentRow
 import com.mideyy7.retrieve.ui.library.DocumentStatus
 
@@ -60,12 +63,21 @@ enum class RowAction { OPEN, RETRY, RENAME, MOVE, DELETE }
 
 enum class WeekAction { SEARCH, ADD_FILES }
 
+private sealed interface ModuleDialog {
+    data class Delete(val row: DocumentRow) : ModuleDialog
+    data class Rename(val row: DocumentRow) : ModuleDialog
+    data class Move(val row: DocumentRow) : ModuleDialog
+    data object EditTitle : ModuleDialog
+    data object RenameModule : ModuleDialog
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModuleScreen(
     onBack: () -> Unit,
     onSearch: (String) -> Unit,
     onImport: (week: Int?) -> Unit,
+    onRenamed: (newCode: String) -> Unit,
     modifier: Modifier = Modifier,
     vm: ModuleViewModel = viewModel(),
 ) {
@@ -75,7 +87,12 @@ fun ModuleScreen(
     val toggled by vm.toggled.collectAsStateWithLifecycle()
     val message by vm.message.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
-    var deleting by remember { mutableStateOf<DocumentRow?>(null) }
+    val existingModules by vm.existingModules.collectAsStateWithLifecycle()
+    val renamedTo by vm.renamedTo.collectAsStateWithLifecycle()
+    var dialog by remember { mutableStateOf<ModuleDialog?>(null) }
+    var menu by remember { mutableStateOf(false) }
+
+    LaunchedEffect(renamedTo) { renamedTo?.let(onRenamed) }
 
     LaunchedEffect(message) {
         message?.let {
@@ -98,6 +115,18 @@ fun ModuleScreen(
                         Text(vm.code)
                         title?.let {
                             Text(it, style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
+                    }
+                },
+                actions = {
+                    Box {
+                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = "Module options") }
+                        DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                            DropdownMenuItem(
+                                text = { Text(if (title == null) "Add title" else "Edit title") },
+                                onClick = { menu = false; dialog = ModuleDialog.EditTitle },
+                            )
+                            DropdownMenuItem(text = { Text("Rename module code") }, onClick = { menu = false; dialog = ModuleDialog.RenameModule })
                         }
                     }
                 },
@@ -125,23 +154,72 @@ fun ModuleScreen(
             onRowAction = { row, action ->
                 when (action) {
                     RowAction.RETRY -> vm.retry(row.summary.id)
-                    RowAction.DELETE -> deleting = row
-                    else -> Unit
+                    RowAction.DELETE -> dialog = ModuleDialog.Delete(row)
+                    RowAction.RENAME -> dialog = ModuleDialog.Rename(row)
+                    RowAction.MOVE -> dialog = ModuleDialog.Move(row)
+                    RowAction.OPEN -> Unit
                 }
             },
             modifier = Modifier.padding(padding),
         )
     }
 
-    deleting?.let { row ->
-        AlertDialog(
-            onDismissRequest = { deleting = null },
-            title = { Text("Delete ${row.summary.name}?") },
+    val dismiss = { dialog = null }
+    when (val d = dialog) {
+        null -> Unit
+        is ModuleDialog.Delete -> AlertDialog(
+            onDismissRequest = dismiss,
+            title = { Text("Delete ${d.row.summary.name}?") },
             text = { Text("Its pages are removed from search. The original file on your phone isn't touched.") },
             confirmButton = {
-                TextButton(onClick = { deleting = null; vm.delete(row.summary.id, row.summary.name) }) { Text("Delete") }
+                TextButton(onClick = { dismiss(); vm.delete(d.row.summary.id, d.row.summary.name) }) { Text("Delete") }
             },
-            dismissButton = { TextButton(onClick = { deleting = null }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = dismiss) { Text("Cancel") } },
+        )
+        is ModuleDialog.Rename -> TextInputDialog(
+            title = "Rename file",
+            label = "Name",
+            initial = d.row.summary.name,
+            confirmLabel = "Rename",
+            check = { if (it.isBlank()) "Name can't be empty" else null },
+            onConfirm = { dismiss(); vm.renameDocument(d.row.summary.id, it) },
+            onDismiss = dismiss,
+        )
+        is ModuleDialog.Move -> MoveDialog(
+            name = d.row.summary.name,
+            module = d.row.summary.module,
+            week = d.row.summary.week,
+            existingModules = existingModules,
+            onConfirm = { module, week -> dismiss(); vm.moveDocument(d.row.summary.id, d.row.summary.name, module, week) },
+            onDismiss = dismiss,
+        )
+        ModuleDialog.EditTitle -> TextInputDialog(
+            title = "Title for ${vm.code}",
+            label = "e.g. Algorithms and Data Structures",
+            initial = title.orEmpty(),
+            confirmLabel = "Save",
+            note = { if (it.isBlank()) "Leave empty to remove the title." else null },
+            onConfirm = { dismiss(); vm.setTitle(it) },
+            onDismiss = dismiss,
+        )
+        ModuleDialog.RenameModule -> TextInputDialog(
+            title = "Rename ${vm.code}",
+            label = "Module code",
+            initial = vm.code,
+            confirmLabel = "Rename",
+            check = { text ->
+                when (ModuleCodes.normalize(text)) {
+                    null -> "Letters, digits, - . _ and no spaces"
+                    vm.code -> "That's the current code"
+                    else -> null
+                }
+            },
+            note = { text ->
+                ModuleCodes.normalize(text)?.takeIf { it in existingModules && it != vm.code }
+                    ?.let { "$it already exists: ${vm.code} will be merged into it." }
+            },
+            onConfirm = { dismiss(); vm.renameModule(ModuleCodes.normalize(it)!!) },
+            onDismiss = dismiss,
         )
     }
 }
@@ -262,6 +340,8 @@ private fun DocumentRowView(row: DocumentRow, onAction: (RowAction) -> Unit) {
         Box {
             IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = "${row.summary.name} options") }
             DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                DropdownMenuItem(text = { Text("Rename") }, onClick = { menu = false; onAction(RowAction.RENAME) })
+                DropdownMenuItem(text = { Text("Move to…") }, onClick = { menu = false; onAction(RowAction.MOVE) })
                 DropdownMenuItem(text = { Text("Delete") }, onClick = { menu = false; onAction(RowAction.DELETE) })
             }
         }

@@ -139,6 +139,10 @@ fun RetrieveApp() {
                         onBack = { nav.popBackStack() },
                         onSearch = ::openSearch,
                         onImport = { week -> startImport(code, week) },
+                        // Reopen under the new code, replacing this page in the back stack.
+                        onRenamed = { newCode ->
+                            nav.navigate(ModuleRoute(newCode)) { popUpTo<ModuleRoute> { inclusive = true } }
+                        },
                     )
                 }
             }
