@@ -41,6 +41,25 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun v2ToV3KeepsRowsAndAddsModulesTable() {
+        helper.createDatabase(DB, 2).use { db ->
+            db.execSQL(
+                "INSERT INTO documents (id, sha256, name, module, week, type, status, sourceUri, importedAt, error) " +
+                    "VALUES (1, 'abc', 'w4.pdf', 'COMP26120', 4, 'SLIDES', 'READY', 'content://x', 0, NULL)",
+            )
+        }
+
+        helper.runMigrationsAndValidate(DB, 3, true).use { db ->
+            db.execSQL("INSERT INTO modules (code, title) VALUES ('COMP26120', 'Algorithms')")
+            db.query("SELECT d.name, m.title FROM documents d JOIN modules m ON m.code = d.module").use { c ->
+                c.moveToFirst()
+                assertEquals("w4.pdf", c.getString(0))
+                assertEquals("Algorithms", c.getString(1))
+            }
+        }
+    }
+
     private companion object {
         const val DB = "migration-test.db"
     }
