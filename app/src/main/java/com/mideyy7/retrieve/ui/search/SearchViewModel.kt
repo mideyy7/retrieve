@@ -3,6 +3,7 @@ package com.mideyy7.retrieve.ui.search
 import android.app.Application
 import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.mideyy7.retrieve.retrieveApp
 import com.mideyy7.retrieve.search.IndexState
@@ -10,7 +11,6 @@ import com.mideyy7.retrieve.search.SearchOutcome
 import com.mideyy7.retrieve.search.SearchRepository
 import com.mideyy7.retrieve.search.SearchResult
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,11 +30,12 @@ data class SearchUiState(
 )
 
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-class SearchViewModel(app: Application) : AndroidViewModel(app) {
+class SearchViewModel(app: Application, private val saved: SavedStateHandle) : AndroidViewModel(app) {
     private val store = app.retrieveApp.keywordIndex
     private val repo = SearchRepository(app.retrieveApp.database, store)
 
-    private val _query = MutableStateFlow("")
+    /** Kept in SavedStateHandle so the query survives the process being killed in the background. */
+    private val _query = saved.getMutableStateFlow(KEY_QUERY, "")
     val query: StateFlow<String> = _query.asStateFlow()
 
     val indexState: StateFlow<IndexState> = store.state
@@ -56,5 +57,9 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
 
     fun onQueryChange(q: String) {
         _query.value = q
+    }
+
+    private companion object {
+        const val KEY_QUERY = "query"
     }
 }

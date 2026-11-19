@@ -15,13 +15,22 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
 import com.mideyy7.retrieve.ui.library.LibraryScreen
 import com.mideyy7.retrieve.ui.search.SearchScreen
+import com.mideyy7.retrieve.ui.search.SearchViewModel
+import kotlinx.serialization.Serializable
 
 @Composable
 fun RetrieveTheme(content: @Composable () -> Unit) {
@@ -31,22 +40,40 @@ fun RetrieveTheme(content: @Composable () -> Unit) {
     )
 }
 
-private enum class Tab(val label: String, val icon: ImageVector) {
-    Search("Search", Icons.Filled.Search),
-    Library("Library", Icons.AutoMirrored.Filled.List),
+// Type-safe routes: Navigation Compose serialises these into the back stack, so arguments
+// survive process death along with the stack itself.
+@Serializable data object SearchTab
+@Serializable data object LibraryTab
+@Serializable data object SearchRoute
+@Serializable data object LibraryRoute
+
+private enum class Tab(val label: String, val icon: ImageVector, val graph: Any) {
+    Search("Search", Icons.Filled.Search, SearchTab),
+    Library("Library", Icons.AutoMirrored.Filled.List, LibraryTab),
 }
 
-/** Two tabs; a navigation library isn't worth it for this (spec §10). */
+/**
+ * Bottom bar with one nested graph per tab. Switching tabs saves and restores each tab's back
+ * stack (the standard multiple-back-stacks setup), so leaving the Library mid-way through a module
+ * and coming back lands on the same page.
+ */
 @Composable
 fun RetrieveApp() {
-    var tab by rememberSaveable { mutableStateOf(Tab.Search) }
+    val nav = rememberNavController()
+    // Scoped to the Activity (this composable sits outside the NavHost), so other screens can hand
+    // Search a query through [openSearch] and the query outlives tab switches.
+    val searchVm: SearchViewModel = viewModel()
+    val backStack by nav.currentBackStackEntryAsState()
+    val current = backStack?.destination
+
     Scaffold(
         bottomBar = {
             NavigationBar {
                 Tab.entries.forEach { t ->
+                    val selected = current?.hierarchy?.any { it.hasRoute(t.graph::class) } == true
                     NavigationBarItem(
-                        selected = tab == t,
-                        onClick = { tab = t },
+                        selected = selected,
+                        onClick = { if (selected) nav.popToTabRoot(t) else nav.switchTab(t) },
                         icon = { Icon(t.icon, contentDescription = null) },
                         label = { Text(t.label) },
                     )
@@ -54,9 +81,25 @@ fun RetrieveApp() {
             }
         },
     ) { padding ->
-        when (tab) {
-            Tab.Search -> SearchScreen(Modifier.padding(padding))
-            Tab.Library -> LibraryScreen(Modifier.padding(padding))
+        NavHost(nav, startDestination = SearchTab, modifier = Modifier.padding(padding)) {
+            navigation<SearchTab>(startDestination = SearchRoute) {
+                composable<SearchRoute> { SearchScreen(vm = searchVm) }
+            }
+            navigation<LibraryTab>(startDestination = LibraryRoute) {
+                composable<LibraryRoute> { LibraryScreen() }
+            }
         }
     }
+}
+
+private fun NavHostController.switchTab(tab: Tab) = navigate(tab.graph) {
+    popUpTo(graph.findStartDestination().id) { saveState = true }
+    launchSingleTop = true
+    restoreState = true
+}
+
+/** Re-tapping the selected tab goes back to its first screen. */
+private fun NavHostController.popToTabRoot(tab: Tab) {
+    val root: Any = if (tab == Tab.Search) SearchRoute else LibraryRoute
+    popBackStack(root, inclusive = false)
 }
