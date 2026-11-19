@@ -2,6 +2,7 @@
 # Runs the app's Q&A pipeline on the connected device over a question file and pulls the answers.
 #
 #   scripts/qa_eval.sh <questions.json> <out.jsonl> [LETTERS|NUMBERED|TAGS]
+#   CONFIG=v1|v2 (default v2) picks the pipeline version (AskConfig).
 #   DETACH=1 scripts/qa_eval.sh ...   start it on the device and return; the run continues if the
 #                                     laptop sleeps or the cable comes out. Collect it later with
 #   scripts/qa_eval.sh --pull <out.jsonl>
@@ -34,7 +35,7 @@ NAME="$(basename "$2")"
 "$ADB" shell mkdir -p "$DIR"
 "$ADB" push "$1" "$DIR/input.json" >/dev/null
 "$ADB" shell rm -f "$DIR/$NAME"
-INSTRUMENT="am instrument -w -r -e class com.mideyy7.retrieve.qa.QaEvalTest -e questions qa/input.json -e style $STYLE -e out qa/$NAME $RUNNER"
+INSTRUMENT="am instrument -w -r -e class com.mideyy7.retrieve.qa.QaEvalTest -e questions qa/input.json -e style $STYLE -e config ${CONFIG:-v2} -e out qa/$NAME $RUNNER"
 if [[ "${DETACH:-0}" == 1 ]]; then
   "$ADB" shell rm -f "$DIR/run.log"
   "$ADB" shell "nohup $INSTRUMENT > $DIR/run.log 2>&1 &"
