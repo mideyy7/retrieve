@@ -334,3 +334,11 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 | Gemma 3 270M int8 (304 MB, sha256 `757e9119`) | 6.5 s | 3.3 s | 7.87 tok/s | 5.1 s | wrong, no citation |
 - **Phase 9 model: Gemma 3 1B int4.** Fits on the tablet (978 MB free after load), and is usable even here; the phone should be much faster.
 - **Design consequence:** small models mangle citation tags, so Phase 9 must check every cited tag against the context chunks and repair it (nearest valid tag) or flag it. Never show citations unchecked.
+
+### Spike 2: whisper.cpp on the tablet (dev device; JFK sample, 11.0 s, 4 threads)
+| model | wall (incl. load) | real-time factor | transcript |
+|---|---|---|---|
+| tiny.en-q5_1 (32 MB) | 4.6 s | **0.42** | exact |
+| base.en-q5_1 (60 MB) | 8.7 s | **0.79** | exact, better punctuation |
+- Both faster than real time even on the Snapdragon 662, so Phase 6 is viable. The real RTF comes from the fixed 30-min recording on the measurement phone (load cost amortised).
+- **Phase 0 spikes: all four done** (1 LLM → Gemma 3 1B; 2 Whisper → viable; 3 LiteRT export → done in Phase 4/5; 4 PDF → done in Phase 1).
