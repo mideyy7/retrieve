@@ -31,7 +31,9 @@ data class ExportedChunk(
 )
 
 object ChunkExporter {
-    private val json = Json { prettyPrint = true; prettyPrintIndent = "  " }
+    // encodeDefaults: kotlinx.serialization otherwise omits fields equal to their default value,
+    // which silently dropped format_version from the file.
+    private val json = Json { prettyPrint = true; prettyPrintIndent = "  "; encodeDefaults = true }
 
     fun toJson(appVersion: String, documents: List<Document>, chunks: List<Chunk>): String {
         val docs = documents.associateBy { it.id }

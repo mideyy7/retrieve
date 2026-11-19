@@ -26,6 +26,8 @@ class ChunkExporterTest {
     @Test
     fun includesFieldsNeededForLabels() {
         val json = ChunkExporter.toJson("0.1.0", listOf(doc), listOf(chunk(1, "Raft \"log\" matching")))
+        assertTrue(json.contains("\"format_version\": 1"))
+        assertTrue(json.contains("\"ocr\": false"))
         assertTrue(json.contains("\"doc_sha256\": \"${doc.sha256}\""))
         assertTrue(json.contains("\"page\": 1"))
         assertTrue(json.contains("\"start_ms\": null"))
