@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mideyy7.retrieve.data.DocType
 import com.mideyy7.retrieve.search.IndexState
+import com.mideyy7.retrieve.search.MatchedBy
 import com.mideyy7.retrieve.search.SearchResult
 import com.mideyy7.retrieve.search.Snippets
 
@@ -79,7 +80,7 @@ private fun statusLine(query: String, ui: SearchUiState, state: IndexState): Str
     query.isBlank() && state is IndexState.Ready -> "${state.stats.chunks} chunks indexed"
     ui.query != query -> "Searching…"
     ui.error != null -> "Fix the query to search"
-    else -> "${ui.results.size} results · ${ui.tookMs} ms"
+    else -> "${ui.results.size} results · ${ui.tookMs} ms" + if (ui.hybrid) " · keyword + semantic" else ""
 }
 
 @Composable
@@ -96,12 +97,18 @@ private fun ResultCard(result: SearchResult, terms: Set<String>) {
                 style = MaterialTheme.typography.bodyMedium,
             )
             Text(
-                "${result.hit.docName} · score ${"%.2f".format(result.score)}",
+                "${result.hit.docName} · ${matchLabel(result)}",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
+}
+
+private fun matchLabel(r: SearchResult) = when (r.matchedBy) {
+    MatchedBy.KEYWORD -> "keyword %.2f".format(r.score)
+    MatchedBy.SEMANTIC -> "semantic match"
+    MatchedBy.BOTH -> "keyword + semantic"
 }
 
 private fun location(r: SearchResult): String {

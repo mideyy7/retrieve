@@ -27,12 +27,16 @@ data class SearchUiState(
     val tookMs: Long? = null,
     /** Syntax error with column, e.g. "expected ')' to close '(' at column 1". */
     val error: String? = null,
+    /** Keyword + semantic fusion was used (plain question with embeddings available). */
+    val hybrid: Boolean = false,
 )
 
 @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class SearchViewModel(app: Application) : AndroidViewModel(app) {
     private val store = app.retrieveApp.keywordIndex
-    private val repo = SearchRepository(app.retrieveApp.database, store)
+    private val repo = SearchRepository(
+        app.retrieveApp.database, store, app.retrieveApp.semanticIndex, { app.retrieveApp.embedder.embed(it) },
+    )
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
@@ -47,7 +51,8 @@ class SearchViewModel(app: Application) : AndroidViewModel(app) {
                 } else {
                     val start = SystemClock.elapsedRealtime()
                     when (val outcome = repo.search(q)) {
-                        is SearchOutcome.Results -> SearchUiState(q, outcome.results, SystemClock.elapsedRealtime() - start)
+                        is SearchOutcome.Results ->
+                            SearchUiState(q, outcome.results, SystemClock.elapsedRealtime() - start, hybrid = outcome.hybrid)
                         is SearchOutcome.SyntaxError -> SearchUiState(q, error = outcome.message)
                     }
                 }

@@ -84,3 +84,12 @@ def test_semantic_evaluation_is_reproducible_and_sane():
     index = {c["stable_key"]: i for i, c in enumerate(chunks)}
     for row, c in zip(s1, sample):
         assert row[index[c["stable_key"]]] >= row.max() - 1e-6, c["stable_key"]
+
+
+def test_rrf_matches_shared_fixture():
+    """ml/data/rrf_fixture.json is also checked by the app's RrfTest, so phone and eval fuse identically."""
+    fx = json.load(open(common.path("ml/data/rrf_fixture.json")))
+    assert fx["k"] == 60 and fx["limit"] == harness.K
+    for case in fx["cases"]:
+        got = [loc[0] for loc in harness.rrf([[(x,) for x in l] for l in case["lists"]])]
+        assert got == case["expected"], case["name"]
