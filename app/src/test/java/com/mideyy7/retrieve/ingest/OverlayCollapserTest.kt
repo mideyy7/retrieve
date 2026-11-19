@@ -47,10 +47,23 @@ class OverlayCollapserTest {
     }
 
     @Test
-    fun containmentThresholdIsInclusive() {
-        val a = (1..10).joinToString(" ") { "w$it" }
-        val b = (1..9).joinToString(" ") { "w$it" } + " x1 x2" // 9 of a's 10 words reappear = 90%
-        assertEquals(listOf(2), kept(OverlayCollapser(containment = 0.9).collapse(pages(a, b))))
-        assertEquals(listOf(1, 2), kept(OverlayCollapser(containment = 0.95).collapse(pages(a, b))))
+    fun quizSlidesDifferingInOneTokenAreBothKept() {
+        // Real false positives from the COMP12111 handout under the earlier 90% rule.
+        val q1 = "Quiz-time How many control lines will a 4:1 mux require? A. 1 B. 2 C. 3 D. 4 COMP12111 Overview"
+        val q2 = "Quiz-time How many control lines will a 16:1 mux require? A. 1 B. 2 C. 3 D. 4 COMP12111 Overview"
+        assertEquals(listOf(1, 2), kept(OverlayCollapser().collapse(pages(q1, q2))))
+    }
+
+    @Test
+    fun repeatedWordsMustAllReappear() {
+        // "z a b" twice on page 1 but only once on page 2: not contained, so not a build step.
+        assertEquals(listOf(1, 2), kept(OverlayCollapser().collapse(pages("z a b z a b", "z a b and more words"))))
+        assertEquals(listOf(2), kept(OverlayCollapser().collapse(pages("z a b", "z a b z a b"))))
+    }
+
+    @Test
+    fun replacedTextIsNotCollapsed() {
+        // A Beamer \only swap that removes words keeps both pages, so no content is lost.
+        assertEquals(listOf(1, 2), kept(OverlayCollapser().collapse(pages("Converting a formula to clausal form", "Clausal form example p or q"))))
     }
 }
