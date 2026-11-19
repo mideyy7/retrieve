@@ -47,14 +47,20 @@ fun SearchScreen(modifier: Modifier = Modifier, vm: SearchViewModel = viewModel(
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             singleLine = true,
             label = { Text("Search your lectures") },
-            placeholder = { Text("e.g. unit propagation, \"stored procedure\"") },
+            placeholder = { Text("e.g. module:COMP21111 week:4..6 \"unit propagation\" NOT example") },
+            isError = ui.error != null && ui.query == query,
+            supportingText = if (ui.error != null && ui.query == query) {
+                { Text(ui.error!!) }
+            } else {
+                null
+            },
         )
         Text(
             text = statusLine(query, ui, indexState),
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(vertical = 8.dp),
         )
-        if (query.isNotBlank() && ui.query == query && ui.results.isEmpty() && indexState is IndexState.Ready) {
+        if (query.isNotBlank() && ui.query == query && ui.error == null && ui.results.isEmpty() && indexState is IndexState.Ready) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                 Text("No matches. Try fewer words or check spelling.", modifier = Modifier.padding(top = 32.dp))
             }
@@ -72,6 +78,7 @@ private fun statusLine(query: String, ui: SearchUiState, state: IndexState): Str
     state is IndexState.Error -> "Index error: ${state.message}"
     query.isBlank() && state is IndexState.Ready -> "${state.stats.chunks} chunks indexed"
     ui.query != query -> "Searching…"
+    ui.error != null -> "Fix the query to search"
     else -> "${ui.results.size} results · ${ui.tookMs} ms"
 }
 

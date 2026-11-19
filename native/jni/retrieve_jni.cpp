@@ -25,6 +25,7 @@
 #include "index/bm25.h"
 #include "index/builder.h"
 #include "index/index.h"
+#include "query/ast.h"
 
 namespace {
 
@@ -214,6 +215,11 @@ extern "C" JNIEXPORT jobject JNICALL Java_com_mideyy7_retrieve_nativebridge_Nati
         env->DeleteLocalRef(keys);
         env->DeleteLocalRef(scores);
         return result;
+    } catch (const retrieve::query::QueryError& e) {
+        // Invalid query syntax is a normal outcome for a search box: surface the message (it
+        // includes the column) as a checked Kotlin exception the UI can show.
+        throwJava(env, "com/mideyy7/retrieve/nativebridge/QuerySyntaxException", e.what());
+        return nullptr;
     } catch (const std::exception& e) {
         throwJava(env, "java/lang/RuntimeException", std::string("native search: ") + e.what());
         return nullptr;

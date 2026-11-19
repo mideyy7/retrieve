@@ -30,3 +30,14 @@ register file
 binary number representation
 paxos raft consensus
 zzzz nonexistent qwerty
+# Query language
+module:COMP21111 unit propagation
+module:COMP21111 week:4..5 "unit propagation" NOT example
+module:23111 week:4 trigger
+type:pdf transactions
+(trigger OR procedure) NOT parameters
+stored AND procedure parameters
+NOT module:COMP21111 NOT module:COMP12111 week:5
+module:COMP22111
+week:7 binary decision
+"logic gates" OR "truth table"

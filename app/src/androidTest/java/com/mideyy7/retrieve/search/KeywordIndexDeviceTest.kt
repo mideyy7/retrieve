@@ -76,6 +76,27 @@ class KeywordIndexDeviceTest {
     }
 
     @Test
+    fun invalidQuerySyntaxThrowsWithColumn() {
+        buildAndOpen().use { idx ->
+            try {
+                idx.search("(raft OR log", 10)
+                fail("expected QuerySyntaxException")
+            } catch (e: com.mideyy7.retrieve.nativebridge.QuerySyntaxException) {
+                assertEquals("expected ')' to close '(' at column 1", e.message)
+            }
+        }
+    }
+
+    @Test
+    fun filtersAndNotWorkThroughJni() {
+        buildAndOpen().use { idx ->
+            assertEquals(listOf("d1"), idx.search("module:COMP25111", 10).map { it.stableKey })
+            assertEquals(listOf("d0", "d2"), idx.search("module:26120 week:4..6", 10).map { it.stableKey })
+            assertEquals(listOf("d0"), idx.search("raft NOT log", 10).map { it.stableKey })
+        }
+    }
+
+    @Test
     fun corruptFileThrowsIOExceptionInsteadOfCrashing() {
         val file = File(dir, "corrupt.idx").apply { writeBytes(ByteArray(200) { 7 }) }
         try {

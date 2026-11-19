@@ -34,8 +34,12 @@ object NativeBridge {
     /** [numDocs, numTerms, fileSizeBytes] */
     external fun indexStats(handle: Long): LongArray
 
+    /** Runs a query-language search (docs/query-language.md). Throws [QuerySyntaxException] for invalid syntax. */
     external fun search(handle: Long, query: String, k: Int): NativeHits
 }
 
 /** Search results as returned from native code: parallel arrays, best first. Constructed from JNI. */
 class NativeHits(val stableKeys: Array<String>, val scores: FloatArray)
+
+/** Thrown from native code for an invalid query; the message includes the 1-based column. */
+class QuerySyntaxException(message: String) : IllegalArgumentException(message)
