@@ -4,18 +4,12 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import com.mideyy7.retrieve.data.ChunkExporter
 import com.mideyy7.retrieve.data.DocType
-import com.mideyy7.retrieve.data.DocumentSummary
-import com.mideyy7.retrieve.data.RetrieveDatabase
 import com.mideyy7.retrieve.ingest.FilenameTagParser
 import com.mideyy7.retrieve.ingest.FilenameTags
-import com.mideyy7.retrieve.ingest.ImportRepository
 import com.mideyy7.retrieve.ingest.ImportResult
 import com.mideyy7.retrieve.retrieveApp
-import com.mideyy7.retrieve.work.IndexDocumentWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,10 +22,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-data class Progress(val done: Int, val total: Int)
-
-data class DocumentRow(val summary: DocumentSummary, val progress: Progress?)
-
 /** A picked file waiting for the user to confirm its module/week/type. */
 data class PendingImport(val uri: Uri, val name: String, val guess: FilenameTags)
 
@@ -40,25 +30,13 @@ data class PendingImport(val uri: Uri, val name: String, val guess: FilenameTags
  * changes (rotation, dark-mode switch) that destroy and recreate the Activity and its UI.
  */
 class LibraryViewModel(app: Application) : AndroidViewModel(app) {
-    private val db = RetrieveDatabase.get(app)
-    private val workManager = WorkManager.getInstance(app)
-    private val repo = ImportRepository(app, db, workManager)
+    private val db = app.retrieveApp.database
+    private val repo = app.retrieveApp.imports
 
-    val documents: StateFlow<List<DocumentRow>> =
-        combine(
-            db.documents().observeSummaries(),
-            workManager.getWorkInfosByTagFlow(ImportRepository.TAG_INDEXING),
-        ) { docs, infos ->
-            val progress = infos
-                .filter { it.state == WorkInfo.State.RUNNING }
-                .mapNotNull { info ->
-                    val id = ImportRepository.docIdFromTags(info.tags) ?: return@mapNotNull null
-                    val total = info.progress.getInt(IndexDocumentWorker.KEY_TOTAL, 0)
-                    id to Progress(info.progress.getInt(IndexDocumentWorker.KEY_DONE, 0), total)
-                }
-                .toMap()
-            docs.map { DocumentRow(it, progress[it.id]) }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    /** Null until the first database read, so the screen doesn't flash its empty state. */
+    val modules: StateFlow<List<ModuleCard>?> =
+        combine(db.documents().observeModules(), db.documents().observeWeekStatus(), ::modulesWithSegments)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     private val _pending = MutableStateFlow<List<PendingImport>>(emptyList())
     val pending: StateFlow<List<PendingImport>> = _pending.asStateFlow()
@@ -90,14 +68,6 @@ class LibraryViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun skipImport(item: PendingImport) = _pending.update { it - item }
-
-    fun delete(docId: Long) {
-        viewModelScope.launch {
-            workManager.cancelUniqueWork(IndexDocumentWorker.uniqueName(docId))
-            db.documents().delete(docId)
-            getApplication<Application>().retrieveApp.keywordIndex.rebuild()
-        }
-    }
 
     /** Re-runs indexing for every document, e.g. after a change to extraction or chunking. */
     fun reindexAll() {

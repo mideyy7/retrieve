@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.mideyy7.retrieve.ui.library.LibraryScreen
+import com.mideyy7.retrieve.ui.module.ModuleScreen
 import com.mideyy7.retrieve.ui.search.SearchScreen
 import com.mideyy7.retrieve.ui.search.SearchViewModel
 import kotlinx.serialization.Serializable
@@ -46,6 +47,7 @@ fun RetrieveTheme(content: @Composable () -> Unit) {
 @Serializable data object LibraryTab
 @Serializable data object SearchRoute
 @Serializable data object LibraryRoute
+@Serializable data class ModuleRoute(val code: String)
 
 private enum class Tab(val label: String, val icon: ImageVector, val graph: Any) {
     Search("Search", Icons.Filled.Search, SearchTab),
@@ -65,6 +67,12 @@ fun RetrieveApp() {
     val searchVm: SearchViewModel = viewModel()
     val backStack by nav.currentBackStackEntryAsState()
     val current = backStack?.destination
+
+    /** Folders are queries: a module or week opens Search with its filter typed in. */
+    fun openSearch(query: String) {
+        searchVm.onQueryChange(query)
+        nav.switchTab(Tab.Search)
+    }
 
     Scaffold(
         bottomBar = {
@@ -86,7 +94,10 @@ fun RetrieveApp() {
                 composable<SearchRoute> { SearchScreen(vm = searchVm) }
             }
             navigation<LibraryTab>(startDestination = LibraryRoute) {
-                composable<LibraryRoute> { LibraryScreen() }
+                composable<LibraryRoute> { LibraryScreen(onOpenModule = { nav.navigate(ModuleRoute(it)) }) }
+                composable<ModuleRoute> {
+                    ModuleScreen(onBack = { nav.popBackStack() }, onSearch = ::openSearch)
+                }
             }
         }
     }
