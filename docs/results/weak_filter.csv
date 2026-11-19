@@ -1,0 +1,5 @@
+date,git_commit,machine,split,method,threshold,n,recall@1,recall@5,script
+2026-11-19,e3fc148,Apple M1 8GB macOS 15.6,dev,hybrid,,23,0.4348,0.7826,ml/weak_filter.py
+2026-11-19,e3fc148,Apple M1 8GB macOS 15.6,dev,"hybrid, weak semantic hidden",0.4768,23,0.4348,0.7826,ml/weak_filter.py
+2026-11-19,e3fc148,Apple M1 8GB macOS 15.6,test,hybrid,,121,0.5455,0.8678,ml/weak_filter.py
+2026-11-19,e3fc148,Apple M1 8GB macOS 15.6,test,"hybrid, weak semantic hidden",0.4768,121,0.5702,0.8595,ml/weak_filter.py
