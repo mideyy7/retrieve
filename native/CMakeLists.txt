@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Platform-independent engine code. Built for Android (via the NDK) and for desktop (tests, CLI).
 add_library(retrieve_core STATIC
     core/version.cpp
+    index/tokenizer.cpp
 )
 target_include_directories(retrieve_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_options(retrieve_core PRIVATE -Wall -Wextra -Wpedantic)
@@ -30,6 +31,7 @@ else()
 
         add_executable(retrieve_tests
             tests/version_test.cpp
+            tests/tokenizer_test.cpp
         )
         target_link_libraries(retrieve_tests PRIVATE retrieve_core GTest::gtest_main)
         include(GoogleTest)
