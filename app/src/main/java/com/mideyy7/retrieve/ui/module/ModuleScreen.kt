@@ -78,6 +78,7 @@ fun ModuleScreen(
     onSearch: (String) -> Unit,
     onImport: (week: Int?) -> Unit,
     onRenamed: (newCode: String) -> Unit,
+    onOpenDocument: (docId: Long) -> Unit,
     modifier: Modifier = Modifier,
     vm: ModuleViewModel = viewModel(),
 ) {
@@ -157,7 +158,7 @@ fun ModuleScreen(
                     RowAction.DELETE -> dialog = ModuleDialog.Delete(row)
                     RowAction.RENAME -> dialog = ModuleDialog.Rename(row)
                     RowAction.MOVE -> dialog = ModuleDialog.Move(row)
-                    RowAction.OPEN -> Unit
+                    RowAction.OPEN -> onOpenDocument(row.summary.id)
                 }
             },
             modifier = Modifier.padding(padding),
@@ -330,7 +331,7 @@ private fun WeekHeader(group: WeekGroup, expanded: Boolean, onToggle: () -> Unit
 private fun DocumentRowView(row: DocumentRow, onAction: (RowAction) -> Unit) {
     var menu by remember { mutableStateOf(false) }
     Row(
-        Modifier.fillMaxWidth().padding(start = 48.dp, end = 4.dp, top = 8.dp, bottom = 8.dp),
+        Modifier.fillMaxWidth().clickable { onAction(RowAction.OPEN) }.padding(start = 48.dp, end = 4.dp, top = 8.dp, bottom = 8.dp),
         verticalAlignment = Alignment.Top,
     ) {
         Column(Modifier.weight(1f).padding(top = 4.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {

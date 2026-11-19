@@ -35,6 +35,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.mideyy7.retrieve.ui.document.DocumentScreen
 import com.mideyy7.retrieve.ui.importer.ImportCallbacks
 import com.mideyy7.retrieve.ui.importer.ImportSheet
 import com.mideyy7.retrieve.ui.importer.ImportViewModel
@@ -59,6 +60,7 @@ fun RetrieveTheme(content: @Composable () -> Unit) {
 @Serializable data object SearchRoute
 @Serializable data object LibraryRoute
 @Serializable data class ModuleRoute(val code: String)
+@Serializable data class DocumentRoute(val id: Long)
 
 private enum class Tab(val label: String, val icon: ImageVector, val graph: Any) {
     Search("Search", Icons.Filled.Search, SearchTab),
@@ -139,12 +141,14 @@ fun RetrieveApp() {
                         onBack = { nav.popBackStack() },
                         onSearch = ::openSearch,
                         onImport = { week -> startImport(code, week) },
+                        onOpenDocument = { nav.navigate(DocumentRoute(it)) },
                         // Reopen under the new code, replacing this page in the back stack.
                         onRenamed = { newCode ->
                             nav.navigate(ModuleRoute(newCode)) { popUpTo<ModuleRoute> { inclusive = true } }
                         },
                     )
                 }
+                composable<DocumentRoute> { DocumentScreen(onBack = { nav.popBackStack() }) }
             }
         }
     }
