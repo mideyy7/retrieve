@@ -48,7 +48,7 @@ One entry per day worked. Record decisions, measurements (with the CSV they live
 - [ ] Spike 4: PDF text extraction library
 - [ ] Corpus collected; 30-min benchmark recording SHA-256 recorded
 - [ ] ≥ 120 question texts in `ml/data/questions_draft.md`
-- [ ] R0: Play testing rule, targetSdk requirement, size limits recorded; ≥ 15 testers; model delivery method chosen
+- [~] R0: Play account checked and testers recruited (Ayo, 2026-11-19); still to do: targetSdk requirement, size limits, model delivery method
 
 ---
 
@@ -212,3 +212,7 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
 - Spec: removed the CV supporting fact, its evidence row, §5.8 (old §5.9 Battery is now §5.8), its build-order day and its acceptance item (§9 now has 7 items).
 - Plan: Phase 10 removed, so old Phase 11 (final measurements and release) is now **Phase 10**. Sun 6 Dec becomes a buffer day, most likely needed for the Phase 9 LLM fallback on the 3 GB tablet. The test device no longer needs Vulkan.
 - Earlier entries that mention Vulkan are left as they were written (this is a log).
+
+### R0 update (2026-11-19)
+- Ayo confirmed the Play account check is done and testers are recruited. **Still to record here:** whether the 12-tester / 14-day closed-test rule applies to the account (created before or after 13 Nov 2023), and how many testers have agreed (target ≥ 15 for a buffer above 12).
+- R0 left for me: current Play targetSdk requirement, download size limits, model delivery method (Play AI packs vs first-launch download), each with a link.
