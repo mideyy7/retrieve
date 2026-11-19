@@ -55,3 +55,6 @@ ml/checkpoints/
 
 # Extracted lecture text (university copyright) until we confirm it's OK to publish.
 ml/data/chunks.json
+
+# Downloaded general-English text for distillation (WikiText-2, CC BY-SA)
+ml/data/general/
