@@ -106,3 +106,17 @@ Corpus so far: `corpus/COMP12111/COMP12111 Part1 Notes_C_Moutafis_2025.pdf` (141
 - [x] chunks.json exported, pulled, and deterministic
 - [ ] More of the corpus: 2–3 current modules (~15–20 PDFs). Only one PDF so far.
 - [ ] R1: upload key created and backed up; release build installed through bundletool and works on the tablet
+
+### R1: upload key and release build (2026-11-19)
+- Upload key: `~/keys/retrieve-upload.jks` (PKCS12, RSA 4096, alias `upload`, valid until 2054), CN "Retrieve Upload Key" (no personal name in a certificate anyone can read). Random password, stored only in the gitignored `keystore.properties`.
+- Cert SHA-256: `02:68:1C:D6:D5:69:4A:9D:BA:0D:6E:38:EF:22:AC:58:1A:FB:CD:4B:8C:A4:50:8D:1F:A9:5E:0C:EC:A5:2E:DE`
+- **Backup:** iCloud Drive → `Retrieve-upload-key-backup/` (jks + keystore.properties + README with restore steps). **Restore-tested:** the backup copy opens with its own password and the fingerprint matches.
+- `bundleRelease` AAB is signed with the upload key (jarsigner verified).
+- **R8 caught a real bug:** ML Kit's component registrars lost their no-arg constructors in release, so OCR would have failed only in the Play build. Fixed with a keep rule (commit 6a85951).
+- Debug builds are now `com.mideyy7.retrieve.debug` ("Retrieve (debug)") so both builds install side by side. Use debug for development: `run-as` DB access only works on debuggable builds.
+
+### Corpus imported to tablet (2026-11-19)
+- `~/Downloads/Revision_Slides.zip` → `corpus/revision_zip/`: 18 PDFs, 1,072 pages. COMP21111 Logic and Modelling (weeks 1–5, 7), COMP22111 Processor Microarchitecture (weeks 1–5), COMP23111 Database Systems (weeks 4–5). Plus COMP12111 notes.
+- `Week07_21111_slides_week6_bdds.pdf` is filed as **week 7** (confirmed by Ayo; the deck's own filename says week6).
+- **COMP21111 Beamer overlays:** 657 of 865 pages are build-up steps. Collapsed so only the final, complete slide is indexed (commit d041cb4).
+- Gotcha: files pushed with `adb push` don't show in the Downloads picker until they're media-scanned: `am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://<path>`.
