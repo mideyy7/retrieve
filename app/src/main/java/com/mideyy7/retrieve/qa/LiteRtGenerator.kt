@@ -21,16 +21,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.File
 
-/** Where the answering model lives on the device, and whether it's there. */
-object LlmModel {
-    const val FILE_NAME = "gemma3-1b-it-int4.litertlm"
-
-    /** App-specific external storage: no permission needed, removed with the app. Filled by adb in development. */
-    fun file(context: Context): File = File(context.getExternalFilesDir(null), "llm/$FILE_NAME")
-
-    fun isInstalled(context: Context): Boolean = file(context).let { it.isFile && it.length() > 100_000_000 }
-}
-
 /**
  * Gemma 3 1B (int4) through LiteRT-LM on the CPU (the GPU path ran out of memory on the dev tablet,
  * docs/NOTES.md Spike 1). The engine is loaded on first use, which takes tens of seconds and ~600 MB,
@@ -76,8 +66,7 @@ class LiteRtGenerator(private val context: Context) : Generator, AutoCloseable {
     }.flowOn(Dispatchers.Default)
 
     private fun load(): Engine {
-        val model = LlmModel.file(context)
-        check(model.isFile) { "The answering model isn't installed." }
+        val model = checkNotNull(LlmModel.verifiedFile(context)) { "The answering model isn't installed." }
         ExperimentalFlags.enableBenchmark = true
         val t0 = SystemClock.elapsedRealtime()
         val e = Engine(EngineConfig(modelPath = model.absolutePath, backend = Backend.CPU(), cacheDir = context.cacheDir.path))

@@ -60,6 +60,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mideyy7.retrieve.R
 import com.mideyy7.retrieve.data.Weeks
 import com.mideyy7.retrieve.qa.KeySentence
+import com.mideyy7.retrieve.qa.LlmModel
+import com.mideyy7.retrieve.qa.ModelAvailability
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.Button
+import androidx.compose.ui.platform.LocalContext
 import com.mideyy7.retrieve.qa.RenderedAnswer
 import com.mideyy7.retrieve.qa.Source
 import com.mideyy7.retrieve.qa.render
@@ -88,7 +94,11 @@ fun AskScreen(
     vm: AskViewModel = viewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
+    val model by vm.model.collectAsStateWithLifecycle()
     val keyboard = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
+    // Play's "download 580 MB over mobile data?" dialog; the download carries on once accepted.
+    val confirm = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { }
     DisposableEffect(vm) {
         vm.onScreenShown()
         onDispose { vm.onScreenHidden() }
@@ -121,13 +131,47 @@ fun AskScreen(
                 },
                 onStop = vm::stop,
             )
-            if (!state.modelInstalled && state.phase == AskPhase.IDLE) {
-                Notice("The answering model isn't on this device yet. Search still works as normal.")
+            if (model !is ModelAvailability.Ready) {
+                ModelCard(model, onDownload = vm::downloadModel, onConfirm = { LlmModel.confirm(context, confirm) })
             }
             if (state.phase != AskPhase.IDLE) AnswerCard(state, onOpenSource = { onOpenSource(it, state.question) }, onSearchInstead = onSearchInstead)
         }
     }
 }
+
+/** The answering model isn't on the phone yet: offer the one-off download, then show its progress. */
+@Composable
+private fun ModelCard(model: ModelAvailability, onDownload: () -> Unit, onConfirm: () -> Unit) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("One-time download for Ask", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Text(
+                "Ask writes answers with Gemma, a language model that runs on your phone (about 580 MB). " +
+                    "After this download it works offline. Search doesn't need it.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            when (model) {
+                is ModelAvailability.Downloadable -> Button(onClick = onDownload) { Text("Download (${mb(model.sizeBytes ?: LlmModel.SIZE_BYTES)})") }
+                is ModelAvailability.Downloading -> {
+                    LinearProgressIndicator(progress = { if (model.total > 0) model.bytes.toFloat() / model.total else 0f }, modifier = Modifier.fillMaxWidth())
+                    Text("${mb(model.bytes)} of ${mb(model.total)}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                }
+                ModelAvailability.NeedsConfirmation -> {
+                    Text("It's large, so Play asks before using mobile data.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Button(onClick = onConfirm) { Text("Continue") }
+                }
+                is ModelAvailability.Unavailable -> Text(model.reason, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                ModelAvailability.Ready -> Unit
+            }
+        }
+    }
+}
+
+private fun mb(bytes: Long) = "${bytes / 1_000_000} MB"
 
 @Composable
 private fun QuestionField(value: String, busy: Boolean, onChange: (String) -> Unit, onAsk: () -> Unit, onStop: () -> Unit) {

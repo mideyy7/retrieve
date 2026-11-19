@@ -13,6 +13,8 @@ ksp {
 }
 
 android {
+    // Play for On-device AI: the answering model ships as its own on-demand pack.
+    assetPacks += setOf(":gemma_pack")
     namespace = "com.mideyy7.retrieve"
     // compileSdk = APIs we can compile against (AndroidX needs 37+); targetSdk = runtime behaviour we opt into.
     compileSdk {
@@ -108,6 +110,8 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
     // On-device LLM (LiteRT-LM) for answering questions; the model itself is delivered separately.
     implementation(libs.litertlm.android)
+    // Downloads the gemma_pack AI pack on demand in store builds.
+    implementation(libs.play.ai.delivery)
     // Hosts composables in an empty Activity for Compose UI tests (Robolectric, on the JVM).
     debugImplementation(libs.compose.ui.test.manifest)
 

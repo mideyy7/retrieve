@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Retrieve"
 include(":app")
+include(":gemma_pack")

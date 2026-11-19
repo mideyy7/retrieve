@@ -11,6 +11,9 @@ import com.mideyy7.retrieve.qa.GenerationStats
 import com.mideyy7.retrieve.qa.KeySentence
 import com.mideyy7.retrieve.qa.LiteRtGenerator
 import com.mideyy7.retrieve.qa.LlmModel
+import com.mideyy7.retrieve.qa.ModelAvailability
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import com.mideyy7.retrieve.qa.Source
 import com.mideyy7.retrieve.retrieveApp
 import com.mideyy7.retrieve.search.SearchRepository
@@ -53,6 +56,12 @@ class AskViewModel(app: Application, private val saved: SavedStateHandle) : Andr
         AskUiState(question = saved[KEY_QUESTION] ?: "", modelInstalled = LlmModel.isInstalled(app)),
     )
     val state: StateFlow<AskUiState> = _state.asStateFlow()
+
+    /** Whether the answering model is on the device, or downloading through Play. */
+    val model: StateFlow<ModelAvailability> = LlmModel.states(app)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), if (LlmModel.isInstalled(app)) ModelAvailability.Ready else ModelAvailability.Downloadable(null))
+
+    fun downloadModel() = LlmModel.download(getApplication())
 
     private var job: Job? = null
     private var releaseTimer: Job? = null

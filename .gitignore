@@ -61,3 +61,6 @@ ml/data/general/
 
 # Third-party sources and models fetched for spikes
 spikes/third_party/
+
+# --- Answering model inside the AI pack (gated licence, 584 MB; scripts/install_llm_pack.sh)
+gemma_pack/src/main/assets/*.litertlm
