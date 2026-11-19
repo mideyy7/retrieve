@@ -23,9 +23,17 @@ if(ANDROID)
     target_link_libraries(retrieve PRIVATE retrieve_core log)
     target_compile_options(retrieve PRIVATE -Wall -Wextra)
 else()
+    # Desktop CLI (not shipped in the app). JSON parsing only needed here.
+    include(FetchContent)
+    FetchContent_Declare(nlohmann_json
+        URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    FetchContent_MakeAvailable(nlohmann_json)
+    add_executable(retrieve_cli tools/retrieve_cli.cpp)
+    target_link_libraries(retrieve_cli PRIVATE retrieve_core nlohmann_json::nlohmann_json)
+
     option(RETRIEVE_BUILD_TESTS "Build GoogleTest unit tests" ON)
     if(RETRIEVE_BUILD_TESTS)
-        include(FetchContent)
         FetchContent_Declare(googletest
             URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
             DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
