@@ -85,6 +85,8 @@ android {
     // Exported Room schemas as debug assets, so MigrationTestHelper (under Robolectric, which reads
     // the debug variant's merged assets) can build old versions. Not included in release builds.
     sourceSets.getByName("debug").assets.directories.add("$projectDir/schemas")
+    // Query sets for on-device checks (ParityDumpTest), shared with the desktop scripts.
+    sourceSets.getByName("androidTest").assets.directories.add("$rootDir/bench")
 }
 
 dependencies {

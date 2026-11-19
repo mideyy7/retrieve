@@ -1,0 +1,32 @@
+# Queries for the device-vs-CLI parity check (scripts/parity_check.py). One per line; # = comment.
+# Mix of single terms, multi-term, quoted phrases, case, curly quotes, punctuation and no-match.
+unit propagation
+"unit propagation"
+DPLL splitting
+satisfiability
+"binary decision diagram"
+BDD reduction rules
+Horn clauses
+clausal normal form
+tableau
+stored procedure parameters
+"stored procedure"
+CREATE TRIGGER
+trigger BEFORE UPDATE
+transactions ACID isolation
+conflict serializable schedule
+"conflicting operations"
+Moore's law
+Moore’s law
+truth table
+"logic gates"
+NAND NOR
+multiplexer control lines
+sequential systems flip-flop
+RISC-V
+datapath ALU
+pipeline hazards
+register file
+binary number representation
+paxos raft consensus
+zzzz nonexistent qwerty
