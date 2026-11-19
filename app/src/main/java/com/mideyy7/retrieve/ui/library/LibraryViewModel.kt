@@ -14,6 +14,7 @@ import com.mideyy7.retrieve.ingest.FilenameTagParser
 import com.mideyy7.retrieve.ingest.FilenameTags
 import com.mideyy7.retrieve.ingest.ImportRepository
 import com.mideyy7.retrieve.ingest.ImportResult
+import com.mideyy7.retrieve.retrieveApp
 import com.mideyy7.retrieve.work.IndexDocumentWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -94,6 +95,7 @@ class LibraryViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             workManager.cancelUniqueWork(IndexDocumentWorker.uniqueName(docId))
             db.documents().delete(docId)
+            getApplication<Application>().retrieveApp.keywordIndex.rebuild()
         }
     }
 

@@ -14,6 +14,7 @@ import com.mideyy7.retrieve.ingest.MlKitPageOcr
 import com.mideyy7.retrieve.ingest.OpenedPdf
 import com.mideyy7.retrieve.ingest.PdfBoxTextSource
 import com.mideyy7.retrieve.ingest.PermanentImportError
+import com.mideyy7.retrieve.retrieveApp
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import java.io.FileNotFoundException
 import kotlin.coroutines.cancellation.CancellationException
@@ -37,9 +38,14 @@ class IndexDocumentWorker(context: Context, params: WorkerParameters) : Coroutin
                 setProgress(workDataOf(KEY_DONE to done, KEY_TOTAL to total))
             }
             when (outcome) {
-                is IndexOutcome.Indexed -> Result.success(
-                    workDataOf(KEY_PAGES to outcome.pages, KEY_OCR_PAGES to outcome.ocrPages, KEY_CHUNKS to outcome.chunks),
-                )
+                is IndexOutcome.Indexed -> {
+                    // Chunks are committed; make them searchable. A failed rebuild doesn't fail the
+                    // document (its chunks are safe in Room) and is repaired at the next app start.
+                    applicationContext.retrieveApp.keywordIndex.rebuild()
+                    Result.success(
+                        workDataOf(KEY_PAGES to outcome.pages, KEY_OCR_PAGES to outcome.ocrPages, KEY_CHUNKS to outcome.chunks),
+                    )
+                }
                 IndexOutcome.DocumentGone -> Result.success()
                 is IndexOutcome.Failed -> Result.failure(workDataOf(KEY_ERROR to outcome.reason))
             }
