@@ -27,13 +27,14 @@ class DocumentIndexer(
     private val openPdf: (Document) -> OpenedPdf,
     private val extractor: PdfTextExtractor = PdfTextExtractor(),
     private val chunker: Chunker = Chunker(),
+    private val overlays: OverlayCollapser = OverlayCollapser(),
 ) {
     suspend fun index(docId: Long, onProgress: suspend (done: Int, total: Int) -> Unit = { _, _ -> }): IndexOutcome {
         val doc = db.documents().byId(docId) ?: return IndexOutcome.DocumentGone
         db.documents().setStatus(docId, DocStatus.INDEXING)
 
         val pages = try {
-            openPdf(doc).use { pdf -> extractor.extract(pdf.text, pdf.ocr, onProgress) }
+            openPdf(doc).use { pdf -> overlays.collapse(extractor.extract(pdf.text, pdf.ocr, onProgress)) }
         } catch (e: PermanentImportError) {
             db.documents().setStatus(docId, DocStatus.FAILED, e.message)
             return IndexOutcome.Failed(e.message ?: "import failed")
