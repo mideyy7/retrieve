@@ -1,6 +1,11 @@
 package com.mideyy7.retrieve.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -93,12 +98,21 @@ fun RetrieveApp() {
         if (uris.isNotEmpty()) importVm.onFilesPicked(uris)
     }
 
+    // PDFs, and lecture captions (.vtt) exported from the video portal. Android's media index often
+    // types .vtt as application/octet-stream (seen on the test tablet), so allow that too; the
+    // import sheet decides by file extension.
+    val fileTypes = arrayOf("application/pdf", "text/vtt", "application/octet-stream")
+    // Android 13+ needs permission for the indexing progress notification. Asked once, just before
+    // the first import (when it's clear why); the picker opens whatever the answer, and indexing
+    // works without it, only without the notification.
+    val context = LocalContext.current
+    val notifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { picker.launch(fileTypes) }
+
     fun startImport(module: String?, week: Int?) {
         importVm.prepare(module, week)
-        // PDFs, and lecture captions (.vtt) exported from the video portal. Android's media index often
-        // types .vtt as application/octet-stream (seen on the test tablet), so allow that too; the
-        // import sheet decides by file extension.
-        picker.launch(arrayOf("application/pdf", "text/vtt", "application/octet-stream"))
+        val needsAsk = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        if (needsAsk) notifications.launch(Manifest.permission.POST_NOTIFICATIONS) else picker.launch(fileTypes)
     }
 
     LaunchedEffect(importMessage) {

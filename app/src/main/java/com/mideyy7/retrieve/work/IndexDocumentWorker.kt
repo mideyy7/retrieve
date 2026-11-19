@@ -22,7 +22,10 @@ import kotlin.coroutines.cancellation.CancellationException
 /**
  * Background job that indexes one document. WorkManager persists the request, so it survives the
  * app being closed or the phone rebooting, and re-runs it if the process is killed mid-way.
- * Hardened in Phase 8 (foreground notification, chaining with embedding).
+ * Runs in the foreground with a progress notification (see [IndexingNotifications]); when the
+ * app is in the background and Android refuses that, it carries on as an ordinary worker.
+ * Indexing a document is idempotent (chunks have unique stable keys and are committed together
+ * with READY), so a run killed mid-way simply starts the document again with no duplicates.
  */
 class IndexDocumentWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
@@ -31,6 +34,9 @@ class IndexDocumentWorker(context: Context, params: WorkerParameters) : Coroutin
         if (docId < 0) return Result.failure()
 
         val db = RetrieveDatabase.get(applicationContext)
+        val name = db.documents().byId(docId)?.name ?: "file"
+        goForeground(name, 0, 0)
+        var lastShown = 0L
         val indexer = DocumentIndexer(
             db,
             openPdf = { doc -> openPdf(applicationContext, doc) },
@@ -40,6 +46,12 @@ class IndexDocumentWorker(context: Context, params: WorkerParameters) : Coroutin
         return try {
             val outcome = indexer.index(docId) { done, total ->
                 setProgress(workDataOf(KEY_DONE to done, KEY_TOTAL to total))
+                // Update the notification at most twice a second; Android rate-limits it anyway.
+                val now = android.os.SystemClock.elapsedRealtime()
+                if (now - lastShown > 500 || done == total) {
+                    lastShown = now
+                    goForeground(name, done, total)
+                }
             }
             when (outcome) {
                 is IndexOutcome.Indexed -> {
@@ -63,6 +75,17 @@ class IndexDocumentWorker(context: Context, params: WorkerParameters) : Coroutin
             } else {
                 Result.retry()
             }
+        }
+    }
+
+    private suspend fun goForeground(name: String, done: Int, total: Int) {
+        try {
+            setForeground(IndexingNotifications.foregroundInfo(applicationContext, name, done, total))
+        } catch (e: IllegalStateException) {
+            // Started while the app was in the background (Android 12+ forbids foreground services
+            // then). The work still runs, within the ordinary worker time limit.
+        } catch (e: SecurityException) {
+            // Notification permission/foreground type not granted: same fallback.
         }
     }
 

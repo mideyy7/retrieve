@@ -64,7 +64,7 @@ object Refusal {
      * the question, so the app says so instead of asking the model. Tuned on the dev split only by
      * ml/refusal.py (docs/results/refusal.csv): dev 100% answered / 100% refused, test 96% / 100%.
      */
-    const val THRESHOLD = 0.4768f
+    const val THRESHOLD = com.mideyy7.retrieve.search.SearchRepository.MIN_SIMILARITY
 }
 
 /** Model output so far plus timing, streamed while the answer is written. */

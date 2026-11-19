@@ -58,7 +58,11 @@ class SearchRepository(
         } catch (e: QuerySyntaxException) {
             return SearchOutcome.SyntaxError(e.message ?: "invalid query")
         }
-        val sem = semantic!!.search(embed!!(query), Rrf.LIMIT)
+        val semAll = semantic!!.search(embed!!(query), Rrf.LIMIT)
+        // Meaning-only matches below the threshold are noise for a question the library doesn't
+        // cover ("raft" listed ten unrelated intro slides). Keyword matches are never dropped.
+        // ml/weak_filter.py: dev recall@5 unchanged, test 0.868 -> 0.860, recall@1 0.545 -> 0.570.
+        val sem = semAll.filter { it.score >= MIN_SIMILARITY }
         val byKey = rows(kw.map { it.stableKey } + sem.map { it.stableKey })
         fun loc(key: String) = byKey[key]?.let { Rrf.locationKey(it.docSha, it.chunk.page, it.chunk.startMs) }
         val kwLocs = kw.mapNotNull { loc(it.stableKey) }
@@ -84,13 +88,19 @@ class SearchRepository(
             }
             SearchResult(row, score.toFloat(), by, fused = true)
         }
-        return SearchOutcome.Results(results, hybrid = true, topSimilarity = sem.firstOrNull()?.score)
+        return SearchOutcome.Results(results, hybrid = true, topSimilarity = semAll.firstOrNull()?.score)
     }
 
     private suspend fun rows(keys: List<String>) =
         db.chunks().withDocByStableKeys(keys.distinct()).associateBy { it.chunk.stableKey }
 
     companion object {
+        /**
+         * The best question-to-chunk cosine below which the library almost certainly doesn't cover a
+         * question. Tuned on the dev split only by ml/refusal.py (docs/results/refusal.csv).
+         */
+        const val MIN_SIMILARITY = 0.4768f
+
         private val FILTER = Regex("(?<![^\\s(])[A-Za-z]+:\\S")
         private val OPERATOR = Regex("(^|\\s)(AND|OR|NOT)(\\s|$)")
 
