@@ -1,0 +1,54 @@
+# --- OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# --- Android / Gradle
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.apks
+
+# --- Signing (never commit; back up separately, see IMPLEMENTATION_PLAN R1)
+keystore.properties
+*.jks
+*.keystore
+
+# --- Native desktop builds
+native/build*/
+cmake-build-*/
+
+# --- Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# --- Models and large binaries: fetched by scripts/fetch_models.sh, never committed
+models/
+*.tflite
+*.pte
+*.bin
+*.gguf
+*.task
+*.litertlm
+*.pt
+*.safetensors
+*.onnx
+
+# --- Private lecture material: copyrighted by the university, kept local only
+corpus/
+*.pdf
+*.mp3
+*.m4a
+*.wav
+
+# --- Training outputs (plots/CSVs that matter go in docs/results/)
+ml/runs/
+ml/checkpoints/
