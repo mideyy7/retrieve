@@ -19,7 +19,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import com.mideyy7.retrieve.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -32,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.mideyy7.retrieve.ui.ask.AskScreen
 import com.mideyy7.retrieve.ui.document.DocumentScreen
 import com.mideyy7.retrieve.ui.importer.ImportCallbacks
 import com.mideyy7.retrieve.ui.importer.ImportSheet
@@ -47,8 +49,10 @@ import kotlinx.serialization.Serializable
 // Type-safe routes: Navigation Compose serialises these into the back stack, so arguments
 // survive process death along with the stack itself.
 @Serializable data object SearchTab
+@Serializable data object AskTab
 @Serializable data object LibraryTab
 @Serializable data object SearchRoute
+@Serializable data object AskRoute
 @Serializable data object LibraryRoute
 @Serializable data class ModuleRoute(val code: String)
 @Serializable data class DocumentRoute(val id: Long)
@@ -56,9 +60,10 @@ import kotlinx.serialization.Serializable
 /** A place in a file, full screen: [page] for PDFs, [startMs] (>= 0) for recordings; [query] is highlighted. */
 @Serializable data class ViewerRoute(val docId: Long, val page: Int = 0, val startMs: Long = -1, val query: String = "")
 
-private enum class Tab(val label: String, val icon: ImageVector, val graph: Any) {
-    Search("Search", Icons.Filled.Search, SearchTab),
-    Library("Library", Icons.AutoMirrored.Filled.List, LibraryTab),
+private enum class Tab(val label: String, val graph: Any, val icon: @Composable () -> Unit) {
+    Search("Search", SearchTab, { Icon(Icons.Filled.Search, contentDescription = null) }),
+    Ask("Ask", AskTab, { Icon(painterResource(R.drawable.ic_sparkle), contentDescription = null) }),
+    Library("Library", LibraryTab, { Icon(Icons.AutoMirrored.Filled.List, contentDescription = null) }),
 }
 
 /**
@@ -121,7 +126,7 @@ fun RetrieveApp() {
                         NavigationBarItem(
                             selected = selected,
                             onClick = { if (selected) nav.popToTabRoot(t) else nav.switchTab(t) },
-                            icon = { Icon(t.icon, contentDescription = null) },
+                            icon = t.icon,
                             label = { Text(t.label) },
                         )
                     }
@@ -138,6 +143,17 @@ fun RetrieveApp() {
                             },
                             onImport = { startImport(null, null) },
                             vm = searchVm,
+                        )
+                    }
+                }
+                navigation<AskTab>(startDestination = AskRoute) {
+                    composable<AskRoute> {
+                        AskScreen(
+                            onOpenSource = { s, q ->
+                                val c = s.hit.chunk
+                                nav.navigate(ViewerRoute(c.docId, c.page ?: 0, c.startMs ?: -1, q))
+                            },
+                            onSearchInstead = ::openSearch,
                         )
                     }
                 }
@@ -196,6 +212,10 @@ private fun NavHostController.switchTab(tab: Tab) = navigate(tab.graph) {
 
 /** Re-tapping the selected tab goes back to its first screen. */
 private fun NavHostController.popToTabRoot(tab: Tab) {
-    val root: Any = if (tab == Tab.Search) SearchRoute else LibraryRoute
+    val root: Any = when (tab) {
+        Tab.Search -> SearchRoute
+        Tab.Ask -> AskRoute
+        Tab.Library -> LibraryRoute
+    }
     popBackStack(root, inclusive = false)
 }
