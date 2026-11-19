@@ -95,7 +95,8 @@ fun RetrieveApp() {
 
     fun startImport(module: String?, week: Int?) {
         importVm.prepare(module, week)
-        picker.launch(arrayOf("application/pdf"))
+        // PDFs, and lecture captions (.vtt) exported from the video portal.
+        picker.launch(arrayOf("application/pdf", "text/vtt"))
     }
 
     LaunchedEffect(importMessage) {

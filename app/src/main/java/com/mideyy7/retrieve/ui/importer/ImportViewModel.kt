@@ -54,7 +54,9 @@ class ImportViewModel(app: Application, private val saved: SavedStateHandle) : A
     fun onFilesPicked(uris: List<Uri>) {
         viewModelScope.launch {
             val rows = withContext(Dispatchers.IO) {
-                uris.map { uri -> repo.displayName(uri).let { DraftRow(uri.toString(), it, FilenameTagParser.parse(it)) } }
+                uris.map { uri ->
+                    repo.displayName(uri).let { DraftRow(uri.toString(), it, FilenameTagParser.parse(it)).copy(type = typeForFile(it)) }
+                }
             }
             update { d -> d.copy(rows = d.rows + rows.filter { r -> d.rows.none { it.uri == r.uri } }) }
         }

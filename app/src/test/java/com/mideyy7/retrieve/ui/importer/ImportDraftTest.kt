@@ -49,4 +49,11 @@ class ImportDraftTest {
     fun weekInputKeepsTwoDigits() {
         assertEquals("12", cleanWeek("1a2b3"))
     }
+
+    @Test
+    fun captionFilesAreRecordings() {
+        assertEquals(com.mideyy7.retrieve.data.DocType.AUDIO, typeForFile("COMP23311 202627 - W3 L1 - Unit Testing.vtt"))
+        assertEquals(com.mideyy7.retrieve.data.DocType.AUDIO, typeForFile("lecture.VTT"))
+        assertEquals(com.mideyy7.retrieve.data.DocType.SLIDES, typeForFile("week4.pdf"))
+    }
 }

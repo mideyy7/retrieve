@@ -146,9 +146,13 @@ private fun DraftRowView(
                     isError = check.module == null,
                 )
                 WeekField(check.weekText, { callbacks.onRowWeek(row.uri, it) }, isError = check.week == null)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    listOf(DocType.SLIDES, DocType.PDF).forEach { t ->
-                        FilterChip(selected = row.type == t, onClick = { callbacks.onRowType(row.uri, t) }, label = { Text(t.label()) })
+                if (row.type == DocType.AUDIO) {
+                    Text("Recording (captions)", style = MaterialTheme.typography.bodyMedium)
+                } else {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        listOf(DocType.SLIDES, DocType.PDF).forEach { t ->
+                            FilterChip(selected = row.type == t, onClick = { callbacks.onRowType(row.uri, t) }, label = { Text(t.label()) })
+                        }
                     }
                 }
             }

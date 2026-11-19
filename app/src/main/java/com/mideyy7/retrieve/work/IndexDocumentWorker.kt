@@ -31,7 +31,11 @@ class IndexDocumentWorker(context: Context, params: WorkerParameters) : Coroutin
         if (docId < 0) return Result.failure()
 
         val db = RetrieveDatabase.get(applicationContext)
-        val indexer = DocumentIndexer(db, openPdf = { doc -> openPdf(applicationContext, doc) })
+        val indexer = DocumentIndexer(
+            db,
+            openPdf = { doc -> openPdf(applicationContext, doc) },
+            readCaptions = { doc -> readText(applicationContext, doc) },
+        )
 
         return try {
             val outcome = indexer.index(docId) { done, total ->
@@ -75,6 +79,16 @@ class IndexDocumentWorker(context: Context, params: WorkerParameters) : Coroutin
         fun uniqueName(docId: Long) = "index-doc-$docId"
 
         /** Opens the text layer and the OCR renderer, mapping unrecoverable errors to [PermanentImportError]. */
+        /** Reads a caption file as UTF-8, mapping unrecoverable errors to [PermanentImportError]. */
+        fun readText(context: Context, doc: Document): String = try {
+            context.contentResolver.openInputStream(Uri.parse(doc.sourceUri))?.use { it.readBytes().toString(Charsets.UTF_8) }
+                ?: throw PermanentImportError("Cannot open ${doc.name}")
+        } catch (e: FileNotFoundException) {
+            throw PermanentImportError("${doc.name} is no longer available", e)
+        } catch (e: SecurityException) {
+            throw PermanentImportError("Permission to read ${doc.name} was revoked", e)
+        }
+
         fun openPdf(context: Context, doc: Document): OpenedPdf {
             val uri = Uri.parse(doc.sourceUri)
             val text = try {

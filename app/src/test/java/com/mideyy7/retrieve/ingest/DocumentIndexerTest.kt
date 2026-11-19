@@ -91,6 +91,36 @@ class DocumentIndexerTest {
     }
 
     @Test
+    fun captionsBecomeTimedChunksKeyedByStartTime() = runTest {
+        val id = db.documents().insert(
+            Document(sha256 = sha, name = "w3.vtt", module = "COMP23311", week = 3, type = DocType.AUDIO,
+                sourceUri = "content://x", importedAt = 0),
+        )
+        val vtt = "WEBVTT\n\n" + (0 until 12).joinToString("") { i ->
+            "00:%02d.000 --> 00:%02d.500\nunit tests sentence $i\n\n".format(i * 5, i * 5 + 4)
+        }
+        val outcome = DocumentIndexer(db, { error("not a PDF") }, readCaptions = { vtt }).index(id)
+
+        val chunks = db.chunks().forDoc(id)
+        assertEquals(IndexOutcome.Indexed(pages = 0, ocrPages = 0, chunks = chunks.size), outcome)
+        assertEquals(listOf(0L, 35_000L), chunks.map { it.startMs })
+        assertEquals(listOf("0123456789ab:t0", "0123456789ab:t35000"), chunks.map { it.stableKey })
+        assertTrue(chunks.all { it.page == null && it.module == "COMP23311" && it.week == 3 })
+        assertEquals(DocStatus.READY, db.documents().byId(id)!!.status)
+    }
+
+    @Test
+    fun emptyCaptionFileFails() = runTest {
+        val id = db.documents().insert(
+            Document(sha256 = sha, name = "notes.vtt", module = "COMP23311", week = 3, type = DocType.AUDIO,
+                sourceUri = "content://x", importedAt = 0),
+        )
+        val outcome = DocumentIndexer(db, { error("not a PDF") }, readCaptions = { "just some text" }).index(id)
+        assertTrue(outcome is IndexOutcome.Failed)
+        assertEquals(DocStatus.FAILED, db.documents().byId(id)!!.status)
+    }
+
+    @Test
     fun deletedDocumentIsNotAnError() = runTest {
         assertEquals(IndexOutcome.DocumentGone, DocumentIndexer(db, fakePdf(listOf(slide))).index(999))
     }

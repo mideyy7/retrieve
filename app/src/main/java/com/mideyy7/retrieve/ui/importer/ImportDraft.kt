@@ -58,3 +58,6 @@ fun ImportDraft.check(row: DraftRow): RowCheck {
 
 /** Week input: digits only, at most two. */
 fun cleanWeek(text: String) = text.filter(Char::isDigit).take(2)
+
+/** Caption files (.vtt) are lecture recordings; everything else picked is a PDF, defaulting to slides. */
+fun typeForFile(name: String): DocType = if (name.endsWith(".vtt", ignoreCase = true)) DocType.AUDIO else DocType.SLIDES
