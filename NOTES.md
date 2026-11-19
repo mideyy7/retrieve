@@ -78,3 +78,11 @@ One entry per day worked. Record decisions, measurements (with the CSV they live
 - [ ] **Phone:** kill the app mid-import (`adb shell am kill com.mideyy7.retrieve` while indexing, then force stop), reopen it, check there are no half-imported documents
 - [ ] **Phone:** Export chunks twice → `adb pull /sdcard/Android/data/com.mideyy7.retrieve/files/chunks.json ml/data/chunks.json`, and confirm the two exports are identical (`cmp`)
 - [ ] **R1:** create the upload key and keystore.properties, back up and restore-test the key; release build installed via bundletool imports and searches on the phone
+
+### Test device (read with adb getprop, 2026-11-19)
+- **Samsung Galaxy Tab A7 10.4 (2020), SM-T505N**, Android 12 (API 31)
+- Qualcomm Snapdragon 662 (SM6115, "bengal"), Adreno 610 GPU (Vulkan driver present), arm64-v8a
+- RAM: 2,770,252 kB visible (~3 GB). Free storage at selection: 3.9 GB of 22 GB
+- Choice: use it for every on-device number. **Risk:** Phase 9 LLM on 3 GB RAM. Spike 1 must test a ~1B model (Gemma 3 1B / Qwen3 0.6B) on it before relying on it. Gemma 4 E2B won't fit.
+- To do: free ~5 GB of storage before Phase 5.
+- First install: debug build launches (cold start reported by `am start -W`: 2363 ms) and shows "Native engine 0.1.0", so JNI works on the device.
