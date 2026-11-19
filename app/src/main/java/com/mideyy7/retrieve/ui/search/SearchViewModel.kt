@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 
@@ -40,6 +41,12 @@ class SearchViewModel(app: Application, private val saved: SavedStateHandle) : A
 
     val indexState: StateFlow<IndexState> = store.state
 
+    /** Most recently imported modules, offered as one-tap scopes while the query is empty. */
+    val recentModules: StateFlow<List<String>> =
+        app.retrieveApp.database.documents().observeModules()
+            .map { modules -> modules.take(6).map { it.module } }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     val ui: StateFlow<SearchUiState> =
         combine(_query.debounce(150).distinctUntilChanged(), store.state) { q, _ -> q }
             .mapLatest { q ->
@@ -57,6 +64,11 @@ class SearchViewModel(app: Application, private val saved: SavedStateHandle) : A
 
     fun onQueryChange(q: String) {
         _query.value = q
+    }
+
+    /** Narrows the current query, e.g. after tapping a module or week on a result. */
+    fun addFilter(key: String, value: String) {
+        _query.value = withFilter(_query.value, key, value)
     }
 
     private companion object {
