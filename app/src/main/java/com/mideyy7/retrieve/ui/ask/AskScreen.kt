@@ -59,6 +59,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mideyy7.retrieve.R
 import com.mideyy7.retrieve.data.Weeks
+import com.mideyy7.retrieve.qa.KeySentence
 import com.mideyy7.retrieve.qa.RenderedAnswer
 import com.mideyy7.retrieve.qa.Source
 import com.mideyy7.retrieve.qa.render
@@ -171,14 +172,16 @@ private fun AnswerCard(state: AskUiState, onOpenSource: (Source) -> Unit, onSear
                     val numbered = rendered?.numbered ?: state.sources
                     if (state.keySentences.isNotEmpty()) KeySentenceBlock(state, numbered, onOpenSource)
                     Progress(state.phase)
-                    if (rendered != null && rendered.text.isNotBlank()) {
+                    if (state.modelDeclined && state.phase == AskPhase.DONE) {
+                        Notice("The on-device model couldn't write a summary from these passages, so here are the closest sentences from your slides.")
+                    } else if (rendered != null && rendered.text.isNotBlank()) {
                         if (state.keySentences.isNotEmpty()) {
                             Text("In short · written on this device", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Text(answerText(rendered, onOpenSource), style = MaterialTheme.typography.bodyLarge)
                         if (state.phase == AskPhase.DONE) CitationNotes(state)
                     }
-                    if (state.sources.isNotEmpty()) Sources(rendered?.numbered ?: state.sources, rendered, state.question, onOpenSource)
+                    if (state.sources.isNotEmpty()) Sources(numbered, rendered, state.keySentences, state.question, onOpenSource)
                     state.stats?.takeIf { state.phase == AskPhase.DONE }?.let { s ->
                         val load = s.loadMs?.let { " · model loaded in %.1f s".format(it / 1000.0) }.orEmpty()
                         Text(
@@ -296,8 +299,9 @@ private fun Refused(state: AskUiState, onSearchInstead: (String) -> Unit) {
 
 /** The passages given to the model, numbered as in the answer; uncited ones are marked as such. */
 @Composable
-private fun Sources(numbered: List<Source>, rendered: RenderedAnswer?, question: String, onOpenSource: (Source) -> Unit) {
-    val cited = rendered?.markers?.flatMap { it.sources }?.toSet().orEmpty()
+private fun Sources(numbered: List<Source>, rendered: RenderedAnswer?, keySentences: List<KeySentence>, question: String, onOpenSource: (Source) -> Unit) {
+    // Quoted in the key sentences or cited by the model: either way the answer used it.
+    val cited = rendered?.markers?.flatMap { it.sources }?.toSet().orEmpty() + keySentences.map { it.source }
     val terms = remember(question) { Snippets.queryTerms(question) }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text("Sources", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

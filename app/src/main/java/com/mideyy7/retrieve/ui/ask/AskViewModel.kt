@@ -84,7 +84,9 @@ class AskViewModel(app: Application, private val saved: SavedStateHandle) : Andr
                                 answer = e.checked,
                                 phase = when {
                                     !e.done -> AskPhase.WRITING
-                                    e.modelDeclined -> AskPhase.REFUSED
+                                    // Declined, but sentences from the passages were found: show those
+                                    // rather than a refusal (greedy decoding can decline over a typo).
+                                    e.modelDeclined && it.keySentences.isEmpty() -> AskPhase.REFUSED
                                     else -> AskPhase.DONE
                                 },
                                 stats = e.stats ?: it.stats,
