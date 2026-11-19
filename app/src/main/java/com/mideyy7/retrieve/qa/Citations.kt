@@ -140,4 +140,6 @@ fun moveLeadingCitations(answer: String): String =
     }
 
 /** A bracketed letter citation at the start of the text, a line or a sentence, then that sentence. */
-private val LEADING = Regex("(^|\\n|(?<=[.!?])[ \\t]+)(\\[[A-H](?:\\s*[,;]\\s*[A-H])*])[ \\t]*([A-Z\"“][^\\[\\n.!?]*)([.!?])")
+// The sentence runs to a full stop that really ends it: followed by the end, a line break or a new
+// capitalised sentence. "approx. 4 lectures" or a formula's ". . ." don't end it.
+private val LEADING = Regex("(^|\\n|(?<=[.!?])[ \\t]+)(\\[[A-H](?:\\s*[,;]\\s*[A-H])*])[ \\t]*([A-Z\"“][^\\[\\n]*?)([.!?])(?=\\s*$|\\s*\\n|\\s+[A-Z\"“(\\[])")
