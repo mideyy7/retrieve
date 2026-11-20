@@ -64,3 +64,8 @@ spikes/third_party/
 
 # --- Answering model inside the AI pack (gated licence, 584 MB; scripts/install_llm_pack.sh)
 gemma_pack/src/main/assets/*.litertlm
+
+# Hero video recordings and frames (scripts/web/video/README.md)
+scripts/web/video/clips/
+scripts/web/video/master*.mp4
+scripts/web/video/logo.png
