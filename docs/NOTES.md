@@ -413,3 +413,9 @@ So `module:COMP21111 unit propagation` = in that module **and** containing unit 
   - TTFT median **20.3 s** (v1 32.5 s), decode 4.51 tok/s, same tablet. (Commit a056381's message said 20.5 s / 4.53: `qa_report.py` took the upper-middle of 24 values instead of the median; fixed.)
   - Caveat: v2's design came from reading v1's test answers (failure *types*, not per-question tuning), so 16/30 is a second look at the same 30 questions, not a fresh held-out number. Both runs are kept.
   - Remaining failures: recordings (the right moment often isn't in two passages), and Gemma 3 1B still misreads (q010 "two rows" next to its own key sentence saying 2^n).
+
+### R2: release bundle with the Gemma AI pack (2026-11-20)
+- `scripts/install_llm_pack.sh && ./gradlew bundleRelease` → `app-release.aab` 456 MB, signed with the upload key (`jarsigner -verify`: jar verified). Earlier "R8 / lint internal error" failures were the disk filling mid-build, not the code; with space the release build passes R8 and lint.
+- `bundletool build-apks --local-testing` then `bundletool get-size total --apks`: **base download 38.7 MB** (min 38,702,306 / max 38,722,871 bytes). `gemma_pack` (on-demand, 584,417,280 bytes uncompressed) is downloaded separately when Ask is first opened; Play's per-pack limit is 1.5 GB.
+- Base contents worth knowing: liblitertlm_jni 22.7 MB, ML Kit OCR 11.1 MB, LiteRT 5.6 MB + GPU accelerator 3.3 MB, our engine 0.27 MB, the embedding model 11.2 MB.
+- Release builds need ≥ 8 GB free on this Mac (Gradle caches + R8 + the 584 MB pack twice).
