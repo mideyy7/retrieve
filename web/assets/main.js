@@ -1,51 +1,26 @@
-// Retrieve website: hero demo video and scroll reveals. No dependencies.
+// Retrieve website: hero demo typing loop and scroll reveals. No dependencies.
 (function () {
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Hero video: play only the version that matches the layout (wide on desktop, 4:5 on phones),
-  // so phones never download the wide file. Reduced-motion users get the poster and a play button.
-  var wide = document.querySelector('.hero-video .v-wide');
-  var tall = document.querySelector('.hero-video .v-tall');
-  var btn = document.querySelector('.hero-video .vid-toggle');
-  var narrow = window.matchMedia ? matchMedia('(max-width: 700px)') : { matches: false };
-  var userPaused = reduce;
+  // Typing demo in the phone
+  var typed = document.getElementById('typed');
+  var results = document.getElementById('results');
+  var q = 'raft log matching';
+  if (reduce) { typed.textContent = q; results.classList.remove('hide'); }
+  else {
+    var i = 0, phase = 'type';
+    (function tick() {
+      if (phase === 'type') {
+        typed.textContent = q.slice(0, ++i);
+        if (i >= q.length) { phase = 'show'; setTimeout(tick, 350); } else setTimeout(tick, 70 + Math.random() * 60);
+      } else if (phase === 'show') {
+        results.classList.remove('hide'); phase = 'hold'; setTimeout(tick, 3800);
+      } else {
+        results.classList.add('hide'); typed.textContent = ''; i = 0; phase = 'type'; setTimeout(tick, 900);
+      }
+    })();
+  }
 
-  function current() { return narrow.matches ? tall : wide; }
-  function other() { return narrow.matches ? wide : tall; }
-  function setButton(playing) {
-    if (!btn) return;
-    btn.hidden = false;
-    btn.setAttribute('aria-label', playing ? 'Pause the demo video' : 'Play the demo video');
-    btn.firstElementChild.className = playing ? 'i-pause' : 'i-play';
-  }
-  function sync() {
-    if (!wide || !tall) return;
-    other().pause();
-    var v = current();
-    if (userPaused) { v.pause(); setButton(false); return; }
-    v.preload = 'auto';
-    var p = v.play();
-    if (p && p.catch) p.catch(function () { setButton(false); });
-    setButton(true);
-  }
-  if (reduce) setButton(false);
-  if (btn) btn.addEventListener('click', function () {
-    var v = current();
-    userPaused = !v.paused;
-    if (userPaused) { v.pause(); setButton(false); } else { userPaused = false; sync(); }
-  });
-  if (narrow.addEventListener) narrow.addEventListener('change', sync);
-  // Pause when the hero scrolls out of view, resume when it comes back.
-  if ('IntersectionObserver' in window && wide) {
-    new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (userPaused) return;
-        if (e.isIntersecting) sync(); else current().pause();
-      });
-    }, { threshold: 0.15 }).observe(document.querySelector('.hero-video'));
-  } else {
-    sync();
-  }
 
   // Scroll reveal, only for elements that start below the first screen
   if (!reduce && 'IntersectionObserver' in window) {

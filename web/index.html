@@ -102,17 +102,49 @@
         <li><svg aria-hidden="true"><use href="#tick"/></svg>No internet permission</li>
       </ul>
 
-    </div>
-    <div class="hero-video">
-      <video class="v-wide" aria-label="Demo of Retrieve on a tablet, with MIT OpenCourseWare slides: a search in plain words finds the right slide in 121 ms, the slide opens with the words highlighted, a question about dictionaries jumps to 37:02 in the lecture recording, a filtered search narrows to week 6, and Ask answers with the key sentences and their slides." muted loop playsinline preload="none" poster="assets/video/hero-wide-poster.jpg" width="1920" height="960">
-        <source src="assets/video/hero-wide.mp4" type="video/mp4">
-        <source src="assets/video/hero-wide.webm" type="video/webm">
-      </video>
-      <video class="v-tall" aria-label="Demo of Retrieve on a tablet, with MIT OpenCourseWare slides: a search in plain words finds the right slide in 121 ms, the slide opens with the words highlighted, a question about dictionaries jumps to 37:02 in the lecture recording, a filtered search narrows to week 6, and Ask answers with the key sentences and their slides." muted loop playsinline preload="none" poster="assets/video/hero-tall-poster.jpg" width="1080" height="1350">
-        <source src="assets/video/hero-tall.mp4" type="video/mp4">
-        <source src="assets/video/hero-tall.webm" type="video/webm">
-      </video>
-      <button class="vid-toggle" type="button" aria-label="Pause the demo video" hidden><span class="i-pause"></span></button>
+
+      <div class="frame" role="img" aria-label="Demo: searching 'raft log matching' finds COMP26120 week 6 slide 14 and minute 32:10 of the lecture recording">
+        <div class="floater f-left" aria-hidden="true">
+          <h4>Lecture recording</h4>
+          <div style="color:var(--ink);font-weight:600">COMP26120 · Week 6</div>
+          <div class="scrub"></div>
+          <div class="scrub-t"><span>32:10</span><span>1:52:04</span></div>
+        </div>
+        <div class="stage" aria-hidden="true">
+          <div class="phone">
+            <div class="screen">
+              <div class="sbar"><span>9:41</span><span>✈︎ 100%</span></div>
+              <div class="appbar">Search</div>
+              <div class="search"><svg><use href="#mag"/></svg><span id="typed"></span><span class="caret"></span></div>
+              <div class="results hide" id="results">
+                <div class="hit">
+                  <div class="slide">
+                    <div class="t">Raft: log matching</div>
+                    <div class="ln" style="width:80%"></div>
+                    <div class="ln m" style="width:92%"></div>
+                    <div class="ln" style="width:64%"></div>
+                    <div class="ln" style="width:72%"></div>
+                  </div>
+                  <div class="meta"><span class="badge">COMP26120</span>Week 6 · slide 14<span class="why">Matches your words</span></div>
+                </div>
+                <div class="hit rec">
+                  <span class="ts">32:10</span>
+                  <p>“…so the <mark>log matching</mark> property says if two logs agree on an index and term…”</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="floater f-right" aria-hidden="true">
+          <h4>Week 6 folder</h4>
+          <div class="files">
+            <div>Lecture 11 – Raft.pdf <span>48 pp</span></div>
+            <div>Lecture 12 – Paxos.pdf <span>52 pp</span></div>
+            <div>Tutorial 6.pdf <span>6 pp</span></div>
+            <div style="color:var(--faint)">+ 11 more</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -364,7 +396,7 @@
       <a class="logo" href="#top" style="font-size:1rem"><svg aria-hidden="true" style="width:24px;height:24px"><use href="#logo"/></svg>Retrieve</a>
       <nav><a href="privacy.html">Privacy policy</a><a class="gh-foot" href="https://github.com/mideyy7/retrieve" rel="noopener"><svg aria-hidden="true"><use href="#gh"/></svg>mideyy7/retrieve</a></nav>
     </div>
-    <p class="tm">Made in Manchester by a CS student. Ask uses Gemma, provided under and subject to the <a href="https://ai.google.dev/gemma/terms" rel="noopener">Gemma Terms of Use</a>. The demo video shows slides and captions from <a href="https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/" rel="noopener">MIT OpenCourseWare 6.0001</a> (CC BY-NC-SA 4.0). Google Play and the Google Play logo are trademarks of Google LLC.</p>
+    <p class="tm">Made in Manchester by a CS student. Ask uses Gemma, provided under and subject to the <a href="https://ai.google.dev/gemma/terms" rel="noopener">Gemma Terms of Use</a>. Google Play and the Google Play logo are trademarks of Google LLC.</p>
   </div>
 </footer>
 </body>
