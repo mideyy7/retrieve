@@ -34,15 +34,16 @@
     <li><b>What it builds from them.</b> The text of each page or caption, a search index, and number vectors used for search by meaning. These are stored in the app’s private storage on your phone. The original PDFs stay where they are; Retrieve keeps a reference to them so it can show the slide.</li>
     <li><b>Your searches and questions.</b> Searches and questions are processed on the phone. Recent searches are kept on the phone so you can repeat them, and you can clear them in the app.</li>
     <li><b>Answers.</b> The Ask feature runs a language model (Gemma 3 1B) on the phone. Your question and the passages it uses never leave the device.</li>
+    <li><b>Notifications.</b> Before your first import, Retrieve asks permission to show notifications. It uses them only to show indexing progress (for example “Page 12 of 141”), and they are created on the phone.</li>
   </ul>
 
   <h2>What leaves your phone</h2>
-  <p>Retrieve does not send your files, their text, your searches, your questions or the answers anywhere. It works in airplane mode. Two parts of the app use Google services:</p>
+  <p>Nothing. Retrieve has no internet permission, so Android doesn’t let it connect to any network. Your files, their text, your searches, your questions and the answers stay on the phone, and the app works the same in airplane mode.</p>
   <ul>
-    <li><b>Google Play</b> installs and updates the app, and downloads the answering model (about 580 MB) the first time you open Ask. That download is handled by Google Play under <a href="https://policies.google.com/privacy" rel="noopener">Google’s privacy policy</a>.</li>
-    <li><b>Google ML Kit text recognition</b> reads slides that are images. The recognition model is bundled with the app and runs on the phone. Google states that ML Kit may contact Google’s servers for things like bug fixes and model updates, and sends Google metrics about how the API performs (for example device type, app version and error codes). These do not include the images or text being read. See <a href="https://developers.google.com/ml-kit/terms" rel="noopener">ML Kit’s terms</a>.</li>
+    <li><b>Google Play</b> installs and updates the app, and downloads the answering model (about 580 MB) the first time you open Ask. The Play Store app does that download, under <a href="https://policies.google.com/privacy" rel="noopener">Google’s privacy policy</a>; Retrieve itself doesn’t connect to anything.</li>
+    <li><b>Google ML Kit text recognition</b> reads slides that are images. Its model is bundled with the app and runs on the phone. ML Kit would normally send Google usage metrics, but without network access it can’t send anything.</li>
   </ul>
-  <p>Because of these libraries, the app’s install page lists internet access. Retrieve’s own code makes no network requests.</p>
+  <p>The permissions Retrieve does ask for are to show notifications, and to keep indexing running in the foreground and after a restart (foreground service, wake lock, start after boot).</p>
 
   <h2>Deleting your data</h2>
   <p>Delete a document in the app to remove its text and index. Uninstalling Retrieve, or clearing its storage in Android settings, deletes everything it stored. The developer holds no copy, so there is nothing to request or delete on a server.</p>
