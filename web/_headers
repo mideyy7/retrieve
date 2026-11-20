@@ -12,6 +12,8 @@
 # Stylesheet and script: always revalidate (pages also link them with ?v=<hash>), so a deploy
 # never leaves a browser with new HTML and an old stylesheet.
 /assets/styles.css
+  ! Cache-Control
   Cache-Control: public, max-age=0, must-revalidate
 /assets/main.js
+  ! Cache-Control
   Cache-Control: public, max-age=0, must-revalidate
