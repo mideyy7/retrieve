@@ -293,3 +293,57 @@ footer { border-top: 1px solid var(--line); padding-block: 32px calc(40px + env(
 .notfound .code { font-family: var(--mono); color: var(--brand); background: var(--brand-soft); padding: 6px 12px; border-radius: 999px; font-size: .85rem; }
 .notfound h1 { font-size: clamp(2.4rem, 7vw, 4rem); letter-spacing: -0.05em; }
 .notfound .pill { margin-top: 8px; }
+
+/* header: GitHub + get the app */
+.nav-end { display: flex; align-items: center; gap: 18px; }
+.gh-nav { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 11px; border-radius: 999px; background: var(--ink); color: #fff; text-decoration: none; font-size: .85rem; font-weight: 600; transition: transform .15s ease; }
+.gh-nav:hover { transform: translateY(-1px); }
+.gh-nav svg { width: 18px; height: 18px; }
+@media (max-width: 420px) { .gh-nav span { display: none; } .gh-nav { padding: 0 9px; } }
+
+/* GitHub button: same size and shape as the Play badge so they read as a pair */
+.gh-btn { display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 18px 0 14px; border-radius: 12px; background: var(--surface); color: var(--ink); text-decoration: none; border: 1.5px solid var(--ink); transition: transform .15s ease, box-shadow .15s ease; }
+.gh-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -8px rgba(15,17,21,.35); }
+.gh-btn svg { width: 26px; height: 26px; flex: none; }
+.gh-btn span { display: grid; line-height: 1.05; text-align: left; }
+.gh-btn small { font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.gh-btn b { font: 600 1.12rem/1.1 var(--body); letter-spacing: -0.01em; }
+.gh-btn.gh-sm { height: 44px; border-radius: 999px; padding: 0 18px 0 14px; background: var(--ink); color: #fff; margin-left: auto; }
+.gh-btn.gh-sm svg { width: 20px; height: 20px; }
+.gh-btn.gh-sm b { font-size: .92rem; }
+@media (max-width: 480px) { .gh-btn.gh-sm { margin-left: 0; } }
+.gh-foot { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--ink); }
+.gh-foot svg { width: 16px; height: 16px; }
+.tm a { color: inherit; }
+
+/* availability note: small, next to the Play badge */
+.avail { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 14px; font-size: .78rem; color: var(--faint); }
+.avail i { width: 7px; height: 7px; border-radius: 50%; background: #E0A100; flex: none; }
+.avail.on-dark { justify-content: flex-start; color: #9093A8; margin-top: 12px; }
+.hero .avail + .ticks { margin-top: 12px; }
+
+/* Ask mock: key sentences first */
+.ks { display: grid; gap: 10px; }
+.ks h5, .ask-ans .lbl { margin: 0; font: 600 .74rem/1 var(--body); text-transform: uppercase; letter-spacing: .07em; }
+.ks h5 { color: var(--brand); }
+.ks p { border-left: 3px solid var(--brand); padding-left: 12px; color: var(--ink); font-size: .92rem; line-height: 1.5; }
+.ks mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 2px; }
+.ask-ans .lbl { display: block; color: var(--faint); margin-bottom: 6px; }
+
+/* hero video: full bleed, edge to edge. The video's own background is the page colour,
+   so there is no frame; the top and bottom fade into the page. */
+.hero-video { position: relative; margin-top: 44px; width: 100%; line-height: 0; }
+.hero-video video { display: block; width: 100%; height: auto; max-width: none; background: var(--bg); }
+.hero-video .v-tall { display: none; }
+.hero-video::before, .hero-video::after { content: ""; position: absolute; left: 0; right: 0; height: 48px; pointer-events: none; z-index: 1; }
+.hero-video::before { top: 0; background: linear-gradient(var(--bg), rgba(247,247,245,0)); }
+.hero-video::after { bottom: 0; background: linear-gradient(rgba(247,247,245,0), var(--bg)); }
+.vid-toggle { position: absolute; z-index: 2; right: max(16px, env(safe-area-inset-right, 0px)); bottom: 18px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: grid; place-items: center; cursor: pointer; color: var(--ink); }
+.vid-toggle:hover { background: #fff; }
+.i-pause { width: 12px; height: 14px; border-left: 4px solid currentColor; border-right: 4px solid currentColor; box-sizing: border-box; }
+.i-play { width: 0; height: 0; border-left: 13px solid currentColor; border-top: 8px solid transparent; border-bottom: 8px solid transparent; margin-left: 3px; }
+@media (max-width: 700px) {
+  .hero-video .v-wide { display: none; }
+  .hero-video .v-tall { display: block; }
+  .hero-video { margin-top: 32px; }
+}

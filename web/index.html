@@ -58,6 +58,7 @@
   </symbol>
   <symbol id="tick" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5 8.2l2 2 4-4.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="playmark" viewBox="0 0 26 28"><path d="M2 1.5l14.5 12.5L2 26.5z" fill="#fff"/><path d="M16.5 14l5.5-4.6 2.5 1.5c1.6 1 1.6 2.2 0 3.2l-2.5 1.5z" fill="#fff" opacity=".75"/><path d="M2 1.5L16.5 14 22 9.4z" fill="#fff" opacity=".55"/><path d="M2 26.5L16.5 14 22 18.6z" fill="#fff" opacity=".4"/></symbol>
+  <symbol id="gh" viewBox="0 0 16 16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></symbol>
   <symbol id="mag" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
 </svg>
 
@@ -71,7 +72,10 @@
       <li><a href="#tech">Under the hood</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
-    <a class="get" href="#download">Get the app ↗</a>
+    <div class="nav-end">
+      <a class="gh-nav" href="https://github.com/mideyy7/retrieve" rel="noopener" aria-label="Retrieve on GitHub"><svg aria-hidden="true"><use href="#gh"/></svg><span>GitHub</span></a>
+      <a class="get" href="#download">Get the app ↗</a>
+    </div>
   </div>
 </header>
 
@@ -86,56 +90,29 @@
           <svg aria-hidden="true"><use href="#playmark"/></svg>
           <span><small>Get it on</small><b>Google Play</b></span>
         </a>
-        <a class="pill" href="#how">See how it works</a>
+        <a class="gh-btn" href="https://github.com/mideyy7/retrieve" rel="noopener">
+          <svg aria-hidden="true"><use href="#gh"/></svg>
+          <span><small>Source code</small><b>View on GitHub</b></span>
+        </a>
       </div>
+      <p class="avail"><i></i>In closed testing · waiting for Google Play approval</p>
       <ul class="ticks">
         <li><svg aria-hidden="true"><use href="#tick"/></svg>Free</li>
         <li><svg aria-hidden="true"><use href="#tick"/></svg>Works offline</li>
-        <li><svg aria-hidden="true"><use href="#tick"/></svg>Nothing leaves your phone</li>
+        <li><svg aria-hidden="true"><use href="#tick"/></svg>No internet permission</li>
       </ul>
 
-      <div class="frame" role="img" aria-label="Demo: searching 'raft log matching' finds COMP26120 week 6 slide 14 and minute 32:10 of the lecture recording">
-        <div class="floater f-left" aria-hidden="true">
-          <h4>Lecture recording</h4>
-          <div style="color:var(--ink);font-weight:600">COMP26120 · Week 6</div>
-          <div class="scrub"></div>
-          <div class="scrub-t"><span>32:10</span><span>1:52:04</span></div>
-        </div>
-        <div class="stage" aria-hidden="true">
-          <div class="phone">
-            <div class="screen">
-              <div class="sbar"><span>9:41</span><span>✈︎ 100%</span></div>
-              <div class="appbar">Search</div>
-              <div class="search"><svg><use href="#mag"/></svg><span id="typed"></span><span class="caret"></span></div>
-              <div class="results hide" id="results">
-                <div class="hit">
-                  <div class="slide">
-                    <div class="t">Raft: log matching</div>
-                    <div class="ln" style="width:80%"></div>
-                    <div class="ln m" style="width:92%"></div>
-                    <div class="ln" style="width:64%"></div>
-                    <div class="ln" style="width:72%"></div>
-                  </div>
-                  <div class="meta"><span class="badge">COMP26120</span>Week 6 · slide 14<span class="why">Matches your words</span></div>
-                </div>
-                <div class="hit rec">
-                  <span class="ts">32:10</span>
-                  <p>“…so the <mark>log matching</mark> property says if two logs agree on an index and term…”</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="floater f-right" aria-hidden="true">
-          <h4>Week 6 folder</h4>
-          <div class="files">
-            <div>Lecture 11 – Raft.pdf <span>48 pp</span></div>
-            <div>Lecture 12 – Paxos.pdf <span>52 pp</span></div>
-            <div>Tutorial 6.pdf <span>6 pp</span></div>
-            <div style="color:var(--faint)">+ 11 more</div>
-          </div>
-        </div>
-      </div>
+    </div>
+    <div class="hero-video">
+      <video class="v-wide" aria-label="Demo of Retrieve on a tablet, with MIT OpenCourseWare slides: a search in plain words finds the right slide in 121 ms, the slide opens with the words highlighted, a question about dictionaries jumps to 37:02 in the lecture recording, a filtered search narrows to week 6, and Ask answers with the key sentences and their slides." muted loop playsinline preload="none" poster="assets/video/hero-wide-poster.jpg" width="1920" height="960">
+        <source src="assets/video/hero-wide.mp4" type="video/mp4">
+        <source src="assets/video/hero-wide.webm" type="video/webm">
+      </video>
+      <video class="v-tall" aria-label="Demo of Retrieve on a tablet, with MIT OpenCourseWare slides: a search in plain words finds the right slide in 121 ms, the slide opens with the words highlighted, a question about dictionaries jumps to 37:02 in the lecture recording, a filtered search narrows to week 6, and Ask answers with the key sentences and their slides." muted loop playsinline preload="none" poster="assets/video/hero-tall-poster.jpg" width="1080" height="1350">
+        <source src="assets/video/hero-tall.mp4" type="video/mp4">
+        <source src="assets/video/hero-tall.webm" type="video/webm">
+      </video>
+      <button class="vid-toggle" type="button" aria-label="Pause the demo video" hidden><span class="i-pause"></span></button>
     </div>
   </div>
 
@@ -190,7 +167,7 @@
       </div>
       <div class="steps rv">
         <div class="step"><small>Step 1</small><h3>Import</h3><p>Pick slides, PDFs and caption files and file them under a module and week.</p></div>
-        <div class="step"><small>Step 2</small><h3>Index</h3><p>Retrieve reads every page on the phone, including slides that are only pictures of text.</p></div>
+        <div class="step"><small>Step 2</small><h3>Index</h3><p>Retrieve reads every page on the phone, including slides that are only pictures of text. A notification shows its progress.</p></div>
         <div class="step"><small>Step 3</small><h3>Search</h3><p>Type what you remember. Narrow it with <code>module:</code> or <code>week:4..6</code> when you know roughly where it was.</p></div>
         <div class="step"><small>Step 4</small><h3>Jump to it</h3><p>Open the slide with your words highlighted, or the transcript at the moment it was said.</p></div>
       </div>
@@ -234,7 +211,7 @@
         <div class="feat">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg></div>
           <h3>Stays on your phone</h3>
-          <p>No account and no cloud. Indexing and search run on the device, and it works in airplane mode.</p>
+          <p>No account, no cloud and no internet permission, so the app can’t send anything anywhere. Everything works in airplane mode.</p>
         </div>
       </div>
     </div>
@@ -245,7 +222,7 @@
     <div class="wrap ask-grid">
       <div class="rv">
         <h2>Ask your lectures. Every answer shows where it came from.</h2>
-        <p style="margin:20px 0 32px;max-width:48ch">Ask a question in plain words. Retrieve finds the passages that cover it and writes a short answer from them on your phone, with a numbered link to every slide and recording moment it used.</p>
+        <p style="margin:20px 0 32px;max-width:48ch">Ask a question in plain words. Retrieve finds the passages that cover it, shows their key sentences word for word, and adds a short answer written on your phone, with a numbered link to every slide and recording moment it used.</p>
         <ul class="ask-points">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/><path d="M9 10h6"/></svg><div><b>Answers only from your material</b><p>The model only sees passages from your own slides and captions, not the internet.</p></div></li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><div><b>Every citation is checked</b><p>Tap a number to open that slide, or the transcript at that minute. A citation that doesn’t match a passage the model was given is flagged.</p></div></li>
@@ -254,20 +231,23 @@
         <div class="ask-proof">
           <div><strong>8 of 8</strong><span>off-topic test questions refused</span><span class="src">refusal.csv · test</span></div>
           <div><strong>96%</strong><span>of answerable questions answered</span><span class="src">refusal.csv · test, tuned on dev</span></div>
-          <div><strong class="tbd">— of 30</strong><span>answers judged faithful</span><span class="src">qa_eval.csv · being judged</span></div>
+          <div><strong>16 of 30</strong><span>answers judged faithful to the slides</span><span class="src">qa_eval_v2.csv · up from 11 in v1</span></div>
         </div>
       </div>
-      <div class="ask-demo rv" role="img" aria-label="Ask screen: an answer about unit propagation citing COMP21111 week 4 slide 22 and a recording at 14:30, and a refusal for an off-topic question">
+      <div class="ask-demo rv" role="img" aria-label="Ask screen: key sentences quoted from COMP21111 week 4 slide 22 and the week 4 recording at 14:30, a one-sentence answer, and a refusal for an off-topic question">
         <div class="ask-card" aria-hidden="true">
           <div class="t">Ask your lectures</div>
           <div class="ask-in"><span>what does unit propagation do?</span><i><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></i></div>
-          <div class="ask-ans">When a clause has only one unassigned literal left, unit propagation sets that literal so the clause is true<span class="cn">1</span>. DPLL repeats this after every decision, and an empty clause means a conflict<span class="cn">2</span>.</div>
-          <div class="ask-time">On this device: first word after — s · — tokens/s</div>
+          <div class="ks">
+            <h5>From your slides</h5>
+            <p>“<mark>Unit propagation</mark>: if a clause has only one unassigned literal, assign it the value that makes the clause true.” <span class="cn">1</span></p>
+            <p>“…and if you get the empty clause, that’s a conflict, so you backtrack.” <span class="cn">2</span></p>
+          </div>
+          <div class="ask-ans"><span class="lbl">In short · written on this device</span>It keeps setting the last free literal of a clause until nothing is left to set or a clause becomes empty<span class="cn">1</span>.</div>
           <div class="srcs">
             <h5>Sources</h5>
             <div class="src-row"><span class="num">1</span><span class="thumb"></span><div>Week 4 › slide 22<small>COMP21111 · Lecture 4 – DPLL</small></div></div>
-            <div class="src-row"><span class="num">2</span><span class="ts">14:30</span><div>Week 4 › recording<small>“…and if you get the empty clause, that’s a conflict…”</small></div></div>
-            <div class="src-row uncited"><span class="num">3</span><span class="thumb"></span><div>Week 3 › slide 9<small>Read but not cited</small></div></div>
+            <div class="src-row"><span class="num">2</span><span class="ts">14:30</span><div>Week 4 › recording<small>COMP21111 · Lecture 4</small></div></div>
           </div>
         </div>
         <div class="refuse" aria-hidden="true">
@@ -288,8 +268,8 @@
       <div class="stats rv">
         <div class="stat">
           <div class="n">86<small>%</small></div>
-          <p>of 101 slide questions find the right page in the top five, up from 81% with keyword search alone</p>
-          <div class="src">recall.csv · hybrid vs BM25 · test:slides</div>
+          <p>of 121 test questions find the right slide or minute in the top five, up from 83% with keyword search alone</p>
+          <div class="src">weak_filter.csv · recall.csv · test</div>
         </div>
         <div class="stat">
           <div class="n">3<small>×</small></div>
@@ -309,7 +289,7 @@
       </div>
       <div class="stack rv">
         <span>Kotlin</span><span>Jetpack Compose</span><span>C++ · NDK/JNI</span><span>PyTorch</span><span>LiteRT</span>
-        <a href="https://github.com/mideyy7/retrieve" rel="noopener">Read the code on GitHub ↗</a>
+        <a class="gh-btn gh-sm" href="https://github.com/mideyy7/retrieve" rel="noopener"><svg aria-hidden="true"><use href="#gh"/></svg><b>Read the code on GitHub</b></a>
       </div>
     </div>
   </section>
@@ -320,7 +300,7 @@
       <div class="dl rv">
         <div>
           <h2>Your lectures, searchable in your pocket.</h2>
-          <p>Free on Android. Add your first module in a couple of minutes, then search it anywhere, even without signal.</p>
+          <p>Free on Android. Add your first module in a couple of minutes, then search it anywhere, even without signal. The app is a 39 MB download; the answering model for Ask (584 MB) comes through Google Play the first time you use it.</p>
         </div>
         <div class="dl-tile">
           <div>
@@ -332,6 +312,7 @@
               <svg aria-hidden="true"><use href="#playmark"/></svg>
               <span><small>Get it on</small><b>Google Play</b></span>
             </a>
+            <p class="avail on-dark"><i></i>In closed testing · waiting for Google Play approval</p>
           </div>
           <div class="qr-wrap">
             <div class="qr"><img src="assets/qr-play.svg" width="96" height="96" alt="QR code that opens Retrieve on Google Play"></div>
@@ -347,13 +328,14 @@
     <div class="wrap faq">
       <h2 class="rv">Questions students ask first</h2>
       <div class="list rv">
-        <details open><summary>Does anything get uploaded?</summary><p>No. Your files are read, indexed and searched on the phone. Retrieve has no account and no server, and search works in airplane mode. The <a href="privacy.html">privacy policy</a> has the details.</p></details>
+        <details open><summary>Does anything get uploaded?</summary><p>No. Your files are read, indexed and searched on the phone. Retrieve has no account, no server and no internet permission, so Android won’t let it connect to anything. The <a href="privacy.html">privacy policy</a> has the details.</p></details>
         <details><summary>Which files can I add?</summary><p>PDF slides and documents, and WebVTT caption files (.vtt) from your lecture recording portal. Slides that are only images are read with on-device text recognition.</p></details>
         <details><summary>Can it search lecture recordings?</summary><p>Yes, through their caption files. Each 30 seconds of captions becomes a search result, so you land on the right minute. It doesn’t transcribe audio itself.</p></details>
         <details><summary>What do I type?</summary><p>Whatever you remember, in your own words. If you know roughly where it was, add filters like <code>module:COMP26120</code> or <code>week:4..6</code>. The search tips in the app use your own module codes as examples.</p></details>
-        <details><summary>Can Ask make things up?</summary><p>It can get things wrong, like any language model, which is why every sentence links to its source. It only sees passages from your own material, citations that don’t match those passages are flagged, and when nothing relevant is found it says “Not in your materials” instead of guessing.</p></details>
-        <details><summary>Which phones does it run on?</summary><p>Search runs on Android 10 or later, even on a 3 GB tablet. Ask runs a language model (Gemma 3 1B) on the phone, so it needs a more recent phone with more memory. The model (about 580 MB) downloads the first time you open Ask, and after that it works offline too.</p></details>
+        <details><summary>Can Ask make things up?</summary><p>The short answer can, like any language model, so Ask puts the key sentences from your slides first, copied word for word, and links every sentence to its source. It only sees passages from your own material, citations that don’t match those passages are flagged, and when nothing relevant is found it says “Not in your materials” instead of guessing.</p></details>
+        <details><summary>Which phones does it run on?</summary><p>Android 10 or later. Search is quick even on a 3 GB tablet. Ask runs a language model (Gemma 3 1B) on the phone: it works on that tablet too, but takes about 20 seconds to start writing, so a phone with more memory and a newer chip is a better fit. The model (584 MB) downloads through Google Play the first time you open Ask, and after that it works offline.</p></details>
         <details><summary>Is it free?</summary><p>Yes. There are no ads, subscriptions or in-app purchases.</p></details>
+        <details><summary>When can I get it?</summary><p>Retrieve is in closed testing on Google Play and waiting for Google’s approval. The download links on this page will work as soon as it’s public.</p></details>
       </div>
     </div>
   </section>
@@ -366,7 +348,12 @@
           <svg aria-hidden="true"><use href="#playmark"/></svg>
           <span><small>Get it on</small><b>Google Play</b></span>
         </a>
+        <a class="gh-btn" href="https://github.com/mideyy7/retrieve" rel="noopener">
+          <svg aria-hidden="true"><use href="#gh"/></svg>
+          <span><small>Source code</small><b>View on GitHub</b></span>
+        </a>
       </div>
+      <p class="avail"><i></i>In closed testing · waiting for Google Play approval</p>
     </div>
   </div>
 </main>
@@ -375,9 +362,9 @@
   <div class="wrap">
     <div class="foot">
       <a class="logo" href="#top" style="font-size:1rem"><svg aria-hidden="true" style="width:24px;height:24px"><use href="#logo"/></svg>Retrieve</a>
-      <nav><a href="privacy.html">Privacy policy</a><a href="https://github.com/mideyy7/retrieve" rel="noopener">GitHub</a></nav>
+      <nav><a href="privacy.html">Privacy policy</a><a class="gh-foot" href="https://github.com/mideyy7/retrieve" rel="noopener"><svg aria-hidden="true"><use href="#gh"/></svg>mideyy7/retrieve</a></nav>
     </div>
-    <p class="tm">Made in Manchester by a CS student. Google Play and the Google Play logo are trademarks of Google LLC.</p>
+    <p class="tm">Made in Manchester by a CS student. Ask uses Gemma, provided under and subject to the <a href="https://ai.google.dev/gemma/terms" rel="noopener">Gemma Terms of Use</a>. The demo video shows slides and captions from <a href="https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/" rel="noopener">MIT OpenCourseWare 6.0001</a> (CC BY-NC-SA 4.0). Google Play and the Google Play logo are trademarks of Google LLC.</p>
   </div>
 </footer>
 </body>
