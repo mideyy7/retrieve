@@ -1,0 +1,13 @@
+date,git_commit,machine,split,rule,questions,n,hits_in_2,rate,script
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,dev,top2,all,23,12,0.5217,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,dev,top2,slides,19,9,0.4737,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,dev,top2,recordings,4,3,0.7500,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,dev,max1rec,all,23,12,0.5217,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,dev,max1rec,slides,19,9,0.4737,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,dev,max1rec,recordings,4,3,0.7500,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,test,top2,all,121,87,0.7190,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,test,top2,slides,101,71,0.7030,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,test,top2,recordings,20,16,0.8000,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,test,max1rec,all,121,86,0.7107,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,test,max1rec,slides,101,71,0.7030,ml/ask_sources.py
+2026-11-20,3544f99-dirty,Apple M1 8GB macOS 15.6,test,max1rec,recordings,20,15,0.7500,ml/ask_sources.py

@@ -248,7 +248,7 @@ private fun AnswerCard(state: AskUiState, onOpenSource: (Source) -> Unit, onSear
 private fun KeySentenceBlock(state: AskUiState, numbered: List<Source>, onOpenSource: (Source) -> Unit) {
     val terms = remember(state.question) { Snippets.queryTerms(state.question) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text("From your slides", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+        Text(keySentenceLabel(state.keySentences), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
         state.keySentences.forEach { k ->
             val n = numbered.indexOf(k.source) + 1
             Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -267,6 +267,16 @@ private fun KeySentenceBlock(state: AskUiState, numbered: List<Source>, onOpenSo
                 )
             }
         }
+    }
+}
+
+/** Says where the quoted sentences come from: slides/PDFs, lecture recordings, or both. */
+fun keySentenceLabel(keys: List<KeySentence>): String {
+    val recordings = keys.count { it.source.hit.chunk.startMs != null }
+    return when (recordings) {
+        0 -> "From your slides"
+        keys.size -> "From your lecture recordings"
+        else -> "From your slides and recordings"
     }
 }
 

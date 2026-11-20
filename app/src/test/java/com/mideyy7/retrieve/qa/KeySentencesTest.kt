@@ -49,4 +49,17 @@ class KeySentencesTest {
         assertTrue("Each bit must wait for the carry." in ex)
         assertTrue(ex.startsWith("…") && ex.endsWith("…"))
     }
+
+    @Test
+    fun labelSaysWhereTheSentencesCameFrom() {
+        val slide = KeySentence("a slide sentence here", source(4, "x"), 0.9f)
+        val recHit = ChunkWithDoc(
+            Chunk(stableKey = "r", docId = 2, module = "COMP23311", week = 3, page = null, startMs = 60_000, text = "x"),
+            docName = "w3.vtt", docType = DocType.AUDIO, docSha = "t",
+        )
+        val rec = KeySentence("a recording sentence", Source(citationTag(recHit), recHit), 0.8f)
+        assertEquals("From your slides", com.mideyy7.retrieve.ui.ask.keySentenceLabel(listOf(slide)))
+        assertEquals("From your lecture recordings", com.mideyy7.retrieve.ui.ask.keySentenceLabel(listOf(rec, rec)))
+        assertEquals("From your slides and recordings", com.mideyy7.retrieve.ui.ask.keySentenceLabel(listOf(slide, rec)))
+    }
 }
